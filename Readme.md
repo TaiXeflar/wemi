@@ -79,6 +79,9 @@ Instead, PC users should keep their names to English based names, dashes and und
  - Recommend user names: `C:/Users/SilverWolf999`, `C:/Users/Miku39`, `C:/Users/OMNI_1206` etc.
 
 
+WEMI have not tested on Cygwin/MSYS2 environment yet. I will do later tests by trying compile several projects.
+
+
 ### Language Localization
 Currently main language will be written in English (US). With after updates, there will several languages updates to docunemtation and wemi program.
 
