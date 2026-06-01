@@ -1,0 +1,6 @@
+
+.deps/
+.venv/
+.vscode/
+build/
+test*.py

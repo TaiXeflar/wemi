@@ -1,0 +1,21 @@
+
+
+from .refs import BaseModuleTemplate
+
+class ModuleTemplate(BaseModuleTemplate):
+    
+    def build(self):
+
+        ver = self.module.VERSION
+
+        self.add_module_whatis(
+            self.module.module_whatis
+        )
+
+        self.add_conflict(*self.module.conflicts)
+        self.add_deps(*self.module.deps)
+        self.set_root(self.module.root)
+        self.prepend_path("PATH", *self.module.PATH)
+        self.prepend_path("INCLUDE", *self.module.INCLUDE)
+        self.prepend_path("LIB", *self.module.LIB)
+        self.prepend_path("LD_LIBRARY_PATH", *self.module.LD_LIBRARY_PATH)

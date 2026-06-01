@@ -1,0 +1,33 @@
+
+import os
+
+from typing import Literal, Union
+from pathlib import Path
+
+
+
+CLEAR_HOST = True
+
+DEFAULT_TASK = ''
+
+NO_ANSI_COLOR = True
+NO_NETWORK_REQUEST = False
+LLVM_CONFLICT = True
+HETERO_CONFLICT = True
+FREE_FOR_ALL = False
+NO_COMPILE_FAIL_STOP = True
+TOO_LONG_DIDNT_READ = False
+ENABLE_TCL_EXTENSION = False
+ENABLE_SDKS: list[str] = []
+
+SEH_STYLE: Literal["default", "python", "gcc", "clang", "msvc"] = "gcc"
+GENERATOR_STYLE: Literal["ninja", "make"] = "ninja"
+
+LOCALE: Literal['local', 'global', 'en', 'tw'] = 'global'
+
+MODULE_INSTALL_PREFIX: Path | str = None
+
+
+
+if SEH_STYLE.lower() not in ("default", "python", "gcc", "clang", "msvc"):
+    SEH_STYLE = "default"

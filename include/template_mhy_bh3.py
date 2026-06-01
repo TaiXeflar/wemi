@@ -1,0 +1,20 @@
+
+
+
+from .refs import BaseModuleTemplate
+
+class ModuleTemplate(BaseModuleTemplate):
+    
+    def build(self):
+
+        ver = self.module.VERSION
+
+        self.add_module_whatis(
+            f"MiHoYo/HoYoVerse Honkai Impact 3rd (BH3/HI3) {ver}"
+        )
+
+        self.add_conflict(*self.module.conflicts)
+        self.add_deps(*self.module.deps)
+        self.set_root(self.module.root)
+        self.set_env(**self.module.ENVs)
+        self.prepend_path("PATH", *self.module.PATH)

@@ -1,0 +1,18 @@
+
+
+from .refs import BaseModuleTemplate
+
+class ModuleTemplate(BaseModuleTemplate):
+    
+    def build(self):
+
+        ver = self.module.VERSION
+
+        self.add_module_whatis("")
+
+        self.add_conflict(*self.module.conflicts)
+        self.add_deps(*self.module.deps)
+        self.set_root(self.module.root)
+        self.set_var(**self.module.VARs)
+        self.set_env(**self.module.ENVs)
+        self.prepend_path("PATH", *self.module.PATH)
