@@ -33,7 +33,7 @@ The solution is open a venv with `win32` based Python model, with `uv` is the fa
 
 1. Clone this repo and build a venv.
 
-- PowerShell
+- PowerShell / CMD
     ```
     PS X:\> git clone https://github/TaiXeflar/wemi.git --depth=1 wemi
 
@@ -43,13 +43,13 @@ The solution is open a venv with `win32` based Python model, with `uv` is the fa
 
     PS X:\wemi> .venv/Scripts/Activate.ps1
     ```
-2. Do configuration Steps. Run `wemi.py`, generate a intermediate information/configuration result cache JSON format file named `ModuleCache.json`.
+2. Do configuration Steps. Run `wemi.py`, generate a intermediate information/configuration result cache JSON format file named `cache.json`.
 - PowerShell
     ```
     (.venv) PS X:\wemi> python ./wemi.py configure --<flags/options> -D<FLAGS/OPTIONS>
     ```
 
-3. Base on `ModuleCache.json`, make WEMI start compile target Tcl Modulefiles.
+3. Base on `cache.json`, make WEMI start compile target Tcl Modulefiles.
 - PowerShell
     ```
     (.venv) PS X:\wemi> python ./wemi.py build
