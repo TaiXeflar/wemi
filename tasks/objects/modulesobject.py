@@ -9,16 +9,11 @@ from utils import config
 from utils.compare_functions import VersionNum
 
 class ModulesObject:
-    # 找回記憶體優化魔法
     __slots__ = ('_raw_data',)
 
     def __new__(cls, *args, **kwargs):
-        # 建立物件本身
         return super().__new__(cls)
-    
-    # ==========================================
-    # Type Hint Overloads (使用冒號 : 標註型別，等號 = 給預設值 None)
-    # ==========================================
+
 
     def __init__(self, obj: 'ModulesObject|dict' = None, /, **kwargs):
         if obj is not None and kwargs:

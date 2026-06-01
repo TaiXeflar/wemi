@@ -12,14 +12,13 @@ class Installer:
 
         dest = config.MODULE_INSTALL_PREFIX
 
-        if not dest:  # 直接檢查 None 或空字串更簡潔
+        if not dest:  
             raise ValueError(dedent('''\
                 Install prefix cannot be None or empty.
             '''))
         
         dest = self._path_fixer(dest)
-        # 決定最終的安裝目標目錄 (假設你要放在 dest 下的 modulefiles)
-        # 如果你還是想用 config.MODULE_INSTALL_PREFIX，請把這裡的 dest 換掉
+
         install_dir = dest / 'modulefiles'
 
         cache_file = Path("build/cache.json")
@@ -27,7 +26,7 @@ class Installer:
         if not cache_file.exists():
             raise FileNotFoundError('Cannot find build rules from build/cache.json')
         
-        # 優化：利用 Path.read_text() 直接讀取並解碼，省去 .open().read() 的繁瑣
+
         cache_data = json.loads(cache_file.read_text(encoding='utf-8'))
         cache = [ModulesObject(obj) for obj in cache_data]
         cache_n = len(cache)
@@ -42,12 +41,10 @@ class Installer:
                 
                 dst_file.parent.mkdir(parents=True, exist_ok=True)
 
-                # 【關鍵修改】放棄 copy2，改用最輕量的 copyfile
+
                 shutil.copyfile(src_file, dst_file)
 
                 inst_msg.append(f' -- Installing: {dst_file.as_posix()}')
-                
-                # message('STATUS', f'Installing: {dst_file.as_posix()}')
 
             except FileNotFoundError:
                 raise FileNotFoundError(dedent(f'''\

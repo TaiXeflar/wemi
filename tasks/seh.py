@@ -10,9 +10,6 @@ from pathlib import Path
 from utils import cstring, message
 from utils import config
 
-
-# 切換編譯器風格
-
 E = TypeVar("E", bound=BaseException)
 
 def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
