@@ -52,7 +52,7 @@ class FindVS20XX(FindSDK):
                           conflicts=['vs'],
                           VARs=[],
                           ENVs={
-                            f"{vs_ver}INSTALLDIR":  vs_dir.as_posix(),
+                            f"VS{vs_ver}INSTALLDIR":  vs_dir.as_posix(),
                             "VSINSTALLDIR":         vs_dir.as_posix(),
                             "VCINSTALLDIR":         (vs_dir/"VC/Tools/MSVC").as_posix(),
                             "VCIDEInstallDir":      None,
