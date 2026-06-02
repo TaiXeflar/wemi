@@ -2,17 +2,15 @@
 from typing import Any
 from pathlib import Path
 import json
+from pathlib import Path
+from typing import Dict, Any
+from textwrap import dedent
 
 from .refs import FindSDK
 from .refs._findROCm import RocXParserMixin, rocX_config_version_cmake_phonebook
-from utils import config
-from utils import message
+from utils import config, message
 from tasks import ModulesObject
 
-
-import json
-from pathlib import Path
-from typing import Dict, Any
 
 class FindTheRock(RocXParserMixin, FindSDK):
 
@@ -38,11 +36,12 @@ class FindTheRock(RocXParserMixin, FindSDK):
         hip_dirs_therock = [hip.parent.parent for hip in hip_dirs if self._hip_is_from_therock(hip)]
 
         for dist in hip_dirs_therock:
-
             rocm_config: Dict[str, Any] = {
                 'Path': dist.as_posix(),
                 'Path of LLVM': (dist/"lib/llvm").as_posix()
             }
+            rocm_ver = (dist/'.info/version').read_text('utf-8').strip()
+            message(f'    ROCm/TheRock {rocm_ver}    {dist.resolve().as_posix()}')
 
             dist_info_path = dist/"share/therock/dist_info.json"
             if dist_info_path.exists():
@@ -58,9 +57,12 @@ class FindTheRock(RocXParserMixin, FindSDK):
                 message(f'\t{rocX:<22}{rocm_config[rocX]}')
 
             rocm_version = rocm_config.get('therock')
-            if not rocm_version:
+            if not rocm_version or rocm_version != rocm_ver:
+                message("WARNING", dedent(f'''\
+                Warning: skipping ROCm/TheRock {rocm_ver} profile with version cinfigure incorrect.'''))
                 continue
 
+            
             self.add_rule(ModulesObject(
                 Module=f"ROCm/TheRock/{rocm_version}",
                 output=f"ROCm/TheRock/{rocm_version}",
@@ -77,5 +79,3 @@ class FindTheRock(RocXParserMixin, FindSDK):
                 LD_LIBRARY_PATH=["$root/bin", "$root/lib/llvm/bin"],
                 CMAKE_PREFIX_PATH=["$root", "$root/lib/llvm"]
             ))
-
-            message(f'    AMD ROCm/TheRock {rocm_version}    {dist.resolve().as_posix()}')
