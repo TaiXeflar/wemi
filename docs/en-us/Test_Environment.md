@@ -38,7 +38,7 @@ Tested SDKs:
 | :----:                | :----         | :----         |
 | Windows               | 25H2          | 24H2 install, patch update |
 | Windows Terminal      | 1.24.11321.0  | System contain
-|
+|||
 | Python 3              | 3.14.0        | PSF Installer |
 | Python 3              | 3.14.2        | Astral UV install
 | Astral uv             | 0.11.2        | pwsh -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
@@ -46,7 +46,7 @@ Tested SDKs:
 | Everything            | 1.4.1.1032    | VoidTools website release Installer
 | Everything CLI        | 1.1.0.36      | zip decompress install
 | VSCode                | latest        | 
-| 
+|||
 | AMD HIP SDK           | 7.1           | Installer     |
 | ROCm/TheRock          | 7.12          | -DCMAKE_BUILD_TYPE=Release |
 |                       |               | -THEROCK_DIST_AMDGPU_TARGETS='gfx1100;gfx1101;gfx1102;gfx1151;gfx1201;gfx1202'
@@ -96,7 +96,6 @@ Tested SDKs:
 | Testing Compile Project | Version | Used Profiles |
 | :----: | :----: | :---- |
 | CMake | latest (github) | `vs/2026/BuildTools`, `msvc/v145_14.50.35717/x64`, `cmake/4.2.3`, `ninja/1.12.1`, `ucrt/10.0.26100.0` 
-| 
 
 ## Project Develop Environment
  - ### IDE
