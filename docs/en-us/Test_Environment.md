@@ -48,8 +48,8 @@ Tested SDKs:
 | VSCode                | latest        | 
 |||
 | AMD HIP SDK           | 7.1           | Installer     |
-| ROCm/TheRock          | 7.12          | -DCMAKE_BUILD_TYPE=Release |
-|                       |               | -THEROCK_DIST_AMDGPU_TARGETS='gfx1100;gfx1101;gfx1102;gfx1151;gfx1201;gfx1202'
+| ROCm/TheRock          | 7.12          | `-DCMAKE_BUILD_TYPE=Release` |
+|                       |               | `-THEROCK_DIST_AMDGPU_TARGETS='gfx1100;gfx1101;gfx1102;gfx1151;gfx1201;gfx1202'`|
 | Intel oneAPI          | 2022.2        | Installer
 |                       | 2023.0        | Installer
 |                       | 2025.1        | Installer
@@ -66,10 +66,10 @@ Tested SDKs:
 |                       | 2.5.0 (cuda12, cuda13) | Installer 
 |                       | 2.6.0 (cuda12, cuda13) | Installer
 | NVIDIA cuSPARSELt SDK | 0.8.1 (cuda12) | zip decompress install
-| NVIDIA cutlass        | 4.4.1         | -DCMAKE_BUILD_TYPE=Release -DCMAKE_OBJECT_PATH_MAX=320
-|                       |               | -DCUTLASS_NVCC_ARCHS="75" -DCUTLASS_ENABLE_TESTS=OFF
-|                       |               | -DCUTLASS_ENABLE_EXAMPLES=OFF -DCUTLASS_ENABLE_LIBRARY=ON 
-|                       |               | -DCUTLASS_ENABLE_TOOLS=ON -DCUTLASS_ENABLE_PROFILER=ON
+| NVIDIA cutlass        | 4.4.1         | `-DCMAKE_BUILD_TYPE=Release` `-DCMAKE_OBJECT_PATH_MAX=320` |
+|                       |               | `-DCUTLASS_NVCC_ARCHS="75"` `-DCUTLASS_ENABLE_TESTS=OFF` |
+|                       |               | `-DCUTLASS_ENABLE_EXAMPLES=OFF` `-DCUTLASS_ENABLE_LIBRARY=ON`|
+|                       |               | `-DCUTLASS_ENABLE_TOOLS=ON` `-DCUTLASS_ENABLE_PROFILER=ON`|
 | VS2026 BuildTools     | --            | online install
 | MSVC v145             | latest        | Installer, ATL Library, target x86/x64, ARM64/ARM64EC
 | MSVC v143             | latest        | Installer, ATL Library, target x86/x64, ARM64, ARM
