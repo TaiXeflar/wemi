@@ -7,6 +7,9 @@ WEMI will configure Intel oneAPI root from registry and define any Intel compone
 
 WEMI is not guranteed with any not tested Intel oneAPI and Intel Parallel XE Studio, with these version is not able to download and telling install configuration differences.
 
+Intel profiles are open selection with required `intel/oneapi` profile.
+![image](./_pics/intel_hierarchy.png)
+
 ## Intel C/C++/DPC++ and Visual Fortran compiler
 
 With IntelLLVM is available, WEMI generates modulefile will extend a rule with IntelLLVM contained Tcl Modulefile.
@@ -37,3 +40,14 @@ With IntelLLVM is available, WEMI generates modulefile will extend a rule with I
 
 ## Intel Thread Composability Manager (Intel TCM)
 
+## Intel Debugger (Intel GDB)
+
+## \_\_future\_\_
+ - Intel Data Analytics Library
+ - Intel IPP
+ - Intel IPPCP
+ - Intel ocloc
+ - Intel umf
+ - Intel Inspector
+ - Intel dppcp-ct
+ - Intel Toolkit Linking Tool

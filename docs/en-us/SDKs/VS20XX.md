@@ -10,13 +10,15 @@ WEMI support several Visual Studio installations:
 
 WEMI takes level-access control to unlock its installed compoments. Usage:
 ```
- module load VS2026/BuildTools
- module load msvc/v145/x64
- module load WindowsSDK/x64/10.0.22621.0
+ envmodule load vs/2026/BuildTools
+ envmodule load msvc/v145_14.50.35717/x64
+ envmodule load ucrt/10.0.22621.0
 
  cl.exe
  rc.exe
 ```
+
+![image](./_pics/vs_hierarchy.png)
 
 WEMI and its MSVC, CMake will not auto load Windows SDK/UCRTs.
 
@@ -33,7 +35,7 @@ If MSVC target is ARMEC64, WEMI will generates a cmake toolchain file and combin
  - MSVC v145 (14.5X)
 
 ## MSVC Redistributables
-WEMI can't generate MSVC redistributables modulefiles. 
+WEMI will not generate MSVC redistributables modulefiles. 
   
 ## LLVM/Clang
 WEMI will generates LLVM Tcl Modulefile rules with VS20XX pre-load level access.
@@ -48,4 +50,11 @@ You can take seperating control with VS20XX contained CMake and Ninja-Build exec
 
 ## Windows SDK / Universal CRT
 Windows SDK will have its install directory. So Windows SDK will be independent to VS20XX profiles.
+
+
+## \_\_future\_\_
+
+ - Disscuss on Roslyn compilers.
+ - Disscuss on MSVC redist.
+
 

@@ -12,6 +12,7 @@ The possiable NVIDIA CUDA Toolkit configuration support range will be around ove
 
 Any CUDA-X Library(ies) will set with its required CUDA Major version dependicies, within a level-access module load progress.
 
+![image](./_pics/nv_hierarchy.png)
 
 ## NVIDIA cuDNN Library
 
@@ -43,3 +44,11 @@ Within CUDA Toolkit Version limitation mentioned above, most of cuDNN is support
 NVIDIA cutlass is version analyzable and CUDA major version non-analyzable, so NVIDIA/cutlass will be a general unlock options.
 
 When you load any `nvidia/cuda` profile, you can see unlocked `nvidia/cutlass` options.
+
+
+## \_\_future\_\_
+- NVIDIA cuTile (if independent build is analyzable)
+- NVIDIA cuQuantum (if it is support to Windows)
+- NVIDIA cuPQC (if it is support to Windows)
+- NVIDIA HPC SDK (if is re-starts support to Windows x64/ARM64)
+- NVIDIA CUDA Toolkit (Update patch on if Windows ARM64 release)
