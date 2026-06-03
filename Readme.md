@@ -11,7 +11,7 @@ If you have problems like:
  - Many CUDA_PATH_VXXX and dont know how to set it get false CUDA path setups
  - Developer Prompt for Visual Studio is not working
  - Have path management problems ...
- - From macOS/Linux/BSDs develop to Windows
+ - From macOS/Linux/BSDs Environment Modules develop to Windows
 
 Then you can try have a WEMI setup, to make your Windows device have toolchains control like Linux HPC clusters.
 
@@ -24,7 +24,7 @@ Then you can try have a WEMI setup, to make your Windows device have toolchains 
 
 ## Limitations
 
-Cygwin/MSYS2 Environment is not available with their Python executables are `posix` model, doesn't contain `winreg` in Python Standard Library. 
+Cygwin/MSYS2 Environment is not available to run wemi with their Python executables are `posix` model, doesn't contain `winreg` in Python Standard Library.
 
 The solution is open a venv with `win32` based Python model, with `uv` is the fastest way to run it. The installation doesn't effected with Python `posix`/`win32` differences, by you can just set a install prefix.
 
