@@ -28,7 +28,41 @@ class FindCUDA(FindSDK):
 
     def __init__(self):
         super().__init__()
-        # Exclude SDKs will contain redistributed nvcc 
+        # Exclude SDKs will contain redistributed nvcc
+
+    def __WINDOWS__(self):
+        
+        seen_roots = set()
+
+        # Using $env:CUDA_PATH* = <PATH> (O(1) 命中) ---
+        _cuda_ver_regex = re.compile(r"^CUDA_PATH_V(\d+)(?:_(\d+))?$", re.IGNORECASE)
+        for k, v in os.environ.items():
+            if _cuda_ver_regex.match(k):
+                self._verify_and_register(Path(v), seen_roots)
+
+        # Using 'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA'
+        default_root = Path(r"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA")
+        if default_root.exists() and default_root.is_dir():
+            for sub_dir in default_root.iterdir():
+                if sub_dir.is_dir():
+                    self._verify_and_register(sub_dir, seen_roots)
+
+        # Using Everything CLI (es.exe)
+        try:
+
+            nvccs = self.everything(regex=r'bin\\nvcc\.exe$')
+            
+            for nvcc in nvccs:
+                # nvcc_path = Path(nvcc.strip())
+                if nvcc.exists():
+                    cuda_root = nvcc.parent.parent
+                    self._verify_and_register(cuda_root, seen_roots)
+                    
+        except FileNotFoundError:
+            
+            pass
+        except subprocess.CalledProcessError as e:
+            message(f"    [Warning] es.exe execution failed: {e}")
 
     def _is_blacklisted(self, path_str: str) -> bool:
         path_lower = path_str.lower()
@@ -94,6 +128,7 @@ class FindCUDA(FindSDK):
             Include_file="template_nvidia_cuda_toolkit",
             Version=verstr,
             conflicts=["nvidia/cuda"],
+            prereq=['msvc'],
             deps=[],
             ENVs={
                 "CUDA_HOME": "$root", 
@@ -106,8 +141,8 @@ class FindCUDA(FindSDK):
             root=cuda_path.as_posix(),
             PATH=[
                 f"$root/bin", 
-                f"$root/bin/{_WIN_PLATFORM_}",
-                f"$root/nvvm/bin/{_WIN_PLATFORM_}"
+                f"$root/bin/$env(VSCMD_ARG_TGT_ARCH)",
+                f"$root/nvvm/bin/$env(VSCMD_ARG_TGT_ARCH)"
             ],
             INCLUDE=[
                 "$root/include", 
@@ -115,11 +150,11 @@ class FindCUDA(FindSDK):
             ],
             LIB=[
                 f"$root/lib/",
-                f"$root/lib/{_WIN_PLATFORM_}"
+                f"$root/lib/$env(VSCMD_ARG_TGT_ARCH)"
             ],
             LD_LIBRARY_PATH=[
                 f"$root/bin", 
-                f"$root/bin/{_WIN_PLATFORM_}"
+                f"$root/bin/$env(VSCMD_ARG_TGT_ARCH)"
             ],
             MODULEPATH=[
                 f".deps/nvidia/cuda/{major}",
@@ -127,37 +162,3 @@ class FindCUDA(FindSDK):
             ]
         ))
         return True
-
-    def __WINDOWS__(self):
-        
-        seen_roots = set()
-
-        # Using $env:CUDA_PATH* = <PATH> (O(1) 命中) ---
-        _cuda_ver_regex = re.compile(r"^CUDA_PATH_V(\d+)(?:_(\d+))?$", re.IGNORECASE)
-        for k, v in os.environ.items():
-            if _cuda_ver_regex.match(k):
-                self._verify_and_register(Path(v), seen_roots)
-
-        # Using 'C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA'
-        default_root = Path(r"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA")
-        if default_root.exists() and default_root.is_dir():
-            for sub_dir in default_root.iterdir():
-                if sub_dir.is_dir():
-                    self._verify_and_register(sub_dir, seen_roots)
-
-        # Using Everything CLI (es.exe)
-        try:
-
-            nvccs = self.everything(regex=r'bin\\nvcc\.exe$')
-            
-            for nvcc in nvccs:
-                # nvcc_path = Path(nvcc.strip())
-                if nvcc.exists():
-                    cuda_root = nvcc.parent.parent
-                    self._verify_and_register(cuda_root, seen_roots)
-                    
-        except FileNotFoundError:
-            
-            pass
-        except subprocess.CalledProcessError as e:
-            message(f"    [Warning] es.exe execution failed: {e}")
