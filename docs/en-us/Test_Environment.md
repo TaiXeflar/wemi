@@ -95,7 +95,7 @@ Tested SDKs:
 ## Tested Projects
 | Testing Compile Project | Version | Used Profiles |
 | :----: | :----: | :---- |
-| CMake | latest (github) | `vs/2026/BuildTools`, `msvc/v145_14.50.35717/x64`, `cmake/4.2.3`, `ninja/1.12.1`, `ucrt/10.0.26100.0` 
+| CMake | latest (github) | `vs/2026/BuildTools`, `msvc/v145_14.50.35717/x64`, `cmake/4.2.3`, `ninja/1.12.1`, `ucrt/10.0.26100.0` |
 
 ## Project Develop Environment
  - ### IDE
