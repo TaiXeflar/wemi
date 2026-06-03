@@ -15,15 +15,15 @@
 
 # Supported/Implemented SDKs
 
- - AMD HIP SDK
- - ROCm/TheRock
- - Intel oneAPI (compiler, mkl, tbb, mpi, dnnl, tcm)
- - NVIDIA CUDA Toolkit
- - NVIDIA cuDNN
- - NVIDIA cuDSS
- - NVIDIA cuTENSOR
- - NVIDIA cuSPARSELt
- - NVIDIA cutlass
+ - [AMD HIP SDK](./SDKs/AMD.md)
+ - [ROCm/TheRock](./SDKs/AMD.md)
+ - [Intel oneAPI][] (compiler, mkl, tbb, mpi, dnnl, tcm)
+ - [NVIDIA CUDA Toolkit](./SDKs/NVIDIA.md/#nvidia-cuda-toolkit)
+ - [NVIDIA cuDNN](./SDKs/NVIDIA.md/#nvidia-cuda-toolkit)
+ - [NVIDIA cuDSS](./SDKs/NVIDIA.md/#nvidia-cuda-toolkit)
+ - [NVIDIA cuTENSOR](./SDKs/NVIDIA.md/#nvidia-cuda-toolkit)
+ - [NVIDIA cuSPARSELt](./SDKs/NVIDIA.md/#nvidia-cuda-toolkit)
+ - [NVIDIA cutlass](./SDKs/NVIDIA.md/#nvidia-cuda-toolkit)
  - Cangjie
  - MATLAB
  - Generic Mapping Tools
