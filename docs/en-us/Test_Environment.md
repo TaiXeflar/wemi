@@ -92,8 +92,17 @@ Tested SDKs:
 |                       | 1.1.0         | zip decompress install
 | 
 
+## Tested Projects
+| Testing Compile Project | Version | Used Profiles |
+| :----: | :----: | :----
+| CMake | latest (github) | `vs/2026/BuildTools`, `msvc/v145_14.50.35717/x64`, `cmake/4.2.3`, `ninja/1.12.1`, `ucrt/10.0.26100.0` 
+| 
 
 ## Project Develop Environment
+ - ### IDE
+ - Python 3.14.X
+ - Astral UV
+ - VSCode 
  - ### YT Music
  - 七見斷滅智論抄 Prajnaparamitopadesa to Quell Seven Calamities (HoYo-Mix, 2026)
  - Upgrade (Slizzy McGuire, 2025)
