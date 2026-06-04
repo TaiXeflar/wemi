@@ -5,6 +5,7 @@ from typing import Any, Literal, Union, overload
 
 from utils.compare_functions import VersionNum
 from tasks import ModulesObject
+from tasks.objects.modulesobject import ModulesObject
 
 class BaseModuleTemplate:
     def __init__(self, module_obj:ModulesObject): 
@@ -13,7 +14,7 @@ class BaseModuleTemplate:
 
         ...
 
-
+    def add_content(self, *contents:str) -> None: ...
     def add_splitline(self) -> None: ...
     def add_modules_help(self, *content:str): ...
     def add_module_whatis(self, *content:str): ...
