@@ -4,6 +4,8 @@ from pathlib import Path
 from typing import Any, Literal, Union, overload, List
 from utils.compare_functions import VersionNum
 
+from modulesobject import PROFILES_HINT
+
 class ModulesObject:
     __slots__ = ('_raw_data',)
 
@@ -26,15 +28,17 @@ class ModulesObject:
         modules_help:str = ...,
         module_whaits:str = ...,
         Version: str | VersionNum = ..., 
-        deps: list[str] = ..., 
-        conflicts: list[str] = ...,
+        prereq: list[PROFILES_HINT] = ...,
+        deps: list[PROFILES_HINT] = ..., 
+        conflicts: list[PROFILES_HINT] = ...,
+        llvm_conflicts:list[PROFILES_HINT] = ...,
+        hetero_conflicts:list[PROFILES_HINT] = ...,
         # dict 的語法正確，因為 dict 需要 Key 和 Value 兩個型別
         vcompare: list[dict[Literal['env', 'compare', 'ver'], Union[VersionNum | str]]] = ...,
         VARs: dict[str, str] = ..., 
         ENVs: dict[str, str] = ...,
         root: str = ...,
         
-        # 將 list[Literal, str] 修正為 list[Literal | str]
         PATH: list[Literal['$root/bin']] = ..., 
         INCLUDE: list[Literal['$root/include']] = ..., 
         LIB: list[Literal['$root/lib']] = ..., 
@@ -101,6 +105,12 @@ class ModulesObject:
     
     @property
     def conflicts(self) -> list[str]: ...
+
+    @property
+    def conflicts_llvm(self) -> list[str]: ...
+
+    @property
+    def conflicts_hetero(self) -> list[str]: ...
     
     @property
     def vcompare(self) -> list[dict[Literal['env', 'compare', 'ver'], Union[VersionNum, str]]]: ...
