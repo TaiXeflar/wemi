@@ -8,6 +8,21 @@ from textwrap import dedent
 from utils import config
 from utils.compare_functions import VersionNum
 
+PROFILES_HINT = Literal[
+    "amd/hip", 'ROCm/TheRock',
+    'intel', 'intel/oneapi', 'intel/compiler', 'intel/dnnl', 'intel/ocloc', 'intel/mkl',
+    'nvidia', 'nvidia/cuda', 'nvidia/cudnn', 'nvidia/cudss', 'nvidia/cutensor', 
+    'nvidia/cusparselt', 'nvidia/tensorrt', 'nvidia/cutlass',
+    'nvidia/nvhpc', 'nvidia/nvhpc-byo', 'nvidia/cuquantum', 'nvidia/cupqc', 'nvidia/'
+    'cangjie',
+    'borland',
+    'matlab',
+    'gmt',
+    'vs', 'msvc', 'ucrt', 'llvm',
+    'gcc',
+
+]
+
 class ModulesObject:
     __slots__ = ('_raw_data',)
 
@@ -106,6 +121,14 @@ class ModulesObject:
     @property
     def conflicts(self) -> list[str]:
         return self._raw_data.get("conflicts", [])
+    
+    @property
+    def conflicts_llvm(self) -> list[str]:
+        return self._raw_data.get('conflicts_llvm', []) if config.LLVM_CONFLICT else []
+
+    @property
+    def conflicts_hetero(self) -> list[str]:
+        return self._raw_data.get('conflicts_hetero', []) if config.HETERO_CONFLICT else []
     
     @property
     def vcompare(self) -> list[dict[Literal["env", "compare", "ver"], Union[VersionNum, str]]]:
