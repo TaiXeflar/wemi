@@ -14,7 +14,17 @@ class ModuleTemplate(BaseModuleTemplate):
             'amd/hip', ''
         )
 
-        self.add_conflict(*self.module.conflicts)
+        self.add_content(
+            'if { [info exists env(VSCMD_ARG_TGT_ARCH)] } {',
+            '    if { $env(VSCMD_ARG_TGT_ARCH) ne "x64" } {',
+            '        puts stderr "\[Error\] Architecture mismatch for Intel Compiler."',
+            '        puts stderr "  Intel oneAPI compiler requires MSVC target architecture to be x64."',
+            '        puts stderr "  But your current VSCMD_ARG_TGT_ARCH is: $env(VSCMD_ARG_TGT_ARCH)"',
+            '        puts stderr "  Please load a compatible MSVC (x64) environment first."',
+            '        break',
+            '    }',
+            '}',
+        )
         self.add_deps(*self.module.deps)
         self.set_root(self.module.root)
         self.set_var(**self.module.VARs)
