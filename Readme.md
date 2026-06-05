@@ -1,7 +1,5 @@
-<!-- 
-    # SPDX-License-Identifier: MIT
-    # Copyright (c) 2026 TaiXeflar 
--->
+<!-- # SPDX-License-Identifier: MIT -->    
+<!-- # Copyright (c) 2026 TaiXeflar  -->
 
 # Windows Environment Modulefiles Installer (WEMI)
 
