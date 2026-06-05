@@ -96,7 +96,7 @@ Currently main language will be written in English (US). With after updates, the
 [Environment Modules]:                  https://github.com/envmodules/modules
 
 ### The idea/inventing monent
-This project is based on my collage school lifetime thoughts and with listening [七見斷滅智論抄][Il Dottore] [Prajnaparamidopadesa to Quell Seven Calmites][Il Dottore].
+This project is based on my collage school lifetime thoughts and with listening [七見斷滅智論抄][Il Dottore] [Prajnaparamidopadesa to Quell Seven Calamites][Il Dottore].
 
 
 
