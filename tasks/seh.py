@@ -1,8 +1,5 @@
-
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
@@ -18,6 +15,7 @@ from utils import config
 
 E = TypeVar("E", bound=BaseException)
 
+
 def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
     """
     Usage
@@ -31,8 +29,10 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
     seh_style = config.SEH_STYLE.lower()
 
     if issubclass(exc_type, KeyboardInterrupt):
-        message("ERROR",
-                f'WEMI stopped {config.DEFAULT_TASK.capitalize()} process by recieving user Keyboard Interrupt (Ctrl+C).')
+        message(
+            "ERROR",
+            f"WEMI stopped {config.DEFAULT_TASK.capitalize()} process by recieving user Keyboard Interrupt (Ctrl+C).",
+        )
         sys.exit(130)
 
     # === 核心魔法：縫合被截斷的呼叫堆疊 ===
@@ -59,7 +59,7 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
         return
 
     elif seh_style in ("gcc", "clang"):
-        message('')
+        message("")
         message("ERROR", f"Python traceback (most recent call last): {str(exc_value)}")
     else:
         print("Python traceback:")
@@ -68,13 +68,13 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
     formatted_frames = list(frames.format())
 
     for i, (frame, fmt_str) in enumerate(zip(frames, formatted_frames)):
-        is_last = (i == len(frames) - 1)
+        is_last = i == len(frames) - 1
 
         filename = Path(frame.filename).resolve().as_posix()
         lineno = frame.lineno
         func_name = frame.name if frame.name != "<module>" else "global scope"
 
-        lines = fmt_str.rstrip('\n').split('\n')
+        lines = fmt_str.rstrip("\n").split("\n")
         code_line = ""
         caret_line = ""
 
@@ -88,15 +88,19 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
         if caret_line.startswith("    "):
             caret_line = caret_line[4:]
 
-        col = (getattr(frame, 'colno', 0) or 0) + 1
+        col = (getattr(frame, "colno", 0) or 0) + 1
 
         # ==== 準備上色的字串元件 ====
 
         # 決定當前層級的主題色：最後一層(error)用 ERROR，前面呼叫堆疊(note)用 HINT
 
         # 1. 檔案路徑與位置 (粗體)
-        file_loc = cstring(f"{filename}:{lineno}:{col}:", )
-        file_loc_msvc = cstring(f"{filename}({lineno},{col}):", )
+        file_loc = cstring(
+            f"{filename}:{lineno}:{col}:",
+        )
+        file_loc_msvc = cstring(
+            f"{filename}({lineno},{col}):",
+        )
 
         # 2. 標籤與錯誤訊息
         if is_last:
@@ -113,8 +117,8 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
         colored_code_line = code_line
         if code_line and caret_line:
             # 取得波浪號的起點與終點索引
-            start_idx = len(caret_line) - len(caret_line.lstrip(' '))
-            end_idx = len(caret_line.rstrip(' '))
+            start_idx = len(caret_line) - len(caret_line.lstrip(" "))
+            end_idx = len(caret_line.rstrip(" "))
 
             # 安全防護，避免超出字串長度
             start_idx = min(start_idx, len(code_line))
@@ -133,7 +137,9 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
 
         # ==== 根據風格輸出 ====
         if seh_style == "gcc":
-            colored_file = cstring(filename, )
+            colored_file = cstring(
+                filename,
+            )
             colored_func = cstring(func_name, None, "BOLD")
 
             print(f"In Python file {colored_file}: In function {colored_func}()")
@@ -154,7 +160,7 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
         elif seh_style == "msvc":
             if is_last:
                 pseudo_code = f"P{abs(hash(exc_type.__name__)) % 10000:04d}"
-                msg_msvc = cstring(f"error:", "ERROR", "BOLD")
+                msg_msvc = cstring("error:", "ERROR", "BOLD")
                 # msg_msvc = f"{tag_msvc} {err_type}: {err_text}"
             else:
                 msg_msvc = f"{tag} called from here"
@@ -168,12 +174,12 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
         # print("WEMI Configure incomplete, errors occured!")
         print()
 
+
 # 替換全域的例外處理 Hook
+
 
 def setup_excepthook():
     sys.excepthook = unwind
-
-
 
 
 # # =========================================

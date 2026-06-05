@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
@@ -26,7 +25,7 @@ class ColorString:
         self,
         text: str,
         rgb: Optional[tuple[int, int, int]] = None,
-        bold: Literal["BOLD", None] = None
+        bold: Literal["BOLD", None] = None,
     ) -> None:
         self.content = text
         self.rgb = rgb
@@ -64,7 +63,7 @@ _NAMED_COLORS = {
     "SUCCESS": (6, 171, 80),
     "HINT": (67, 245, 245),
     "MIKU": (57, 197, 187),
-    'MIKU-PINK': (225, 40, 133),
+    "MIKU-PINK": (225, 40, 133),
     "Elysia": (255, 135, 255),
     "Cyrene": (255, 135, 255),
 }
@@ -130,10 +129,11 @@ def _parse_color(v: Any) -> tuple[int, int, int]:
 # =========================================================================
 
 
-def cstring(text: str | ColorString,
-            color: Any = None,
-            bold: Literal["BOLD", None] = None,) -> Union[ColorString, str]:
-
+def cstring(
+    text: str | ColorString,
+    color: Any = None,
+    bold: Literal["BOLD", None] = None,
+) -> Union[ColorString, str]:
     raw_text = text.content if hasattr(text, "content") else str(text)
 
     if color is None and bold is None:
@@ -146,19 +146,24 @@ def cstring(text: str | ColorString,
         raise e
 
 
-def message(mode: Union[Literal["NOTICE",
-                                "REPRINT",
-                                "STATUS",
-                                "CHECK",
-                                "HINT",
-                                "WARNING",
-                                "ERROR",
-                                "DEPRECATED",
-                                "FATAL_ERROR",],
-                        str],
-            text: str = None,
-            latency: float = 0.05, ) -> None:
-
+def message(
+    mode: Union[
+        Literal[
+            "NOTICE",
+            "REPRINT",
+            "STATUS",
+            "CHECK",
+            "HINT",
+            "WARNING",
+            "ERROR",
+            "DEPRECATED",
+            "FATAL_ERROR",
+        ],
+        str,
+    ],
+    text: str = None,
+    latency: float = 0.05,
+) -> None:
     if text is None:
         text = mode
         mode = "NOTICE"

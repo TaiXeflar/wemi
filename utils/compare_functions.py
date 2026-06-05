@@ -1,13 +1,11 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
 from __future__ import annotations
 from typing import Iterable, Tuple, Union, Literal, overload
 import re
-
 
 
 class VersionNum:
@@ -106,7 +104,6 @@ def VERSION(
     blacklist: Iterable[str | VersionNum] = None,
     fuzzy: bool = False,
 ) -> bool:
-
     if obj is None:
         return False
 
@@ -178,7 +175,6 @@ def VERSION_EXCLUDE_RANGE(
     blacklist: Iterable[str | VersionNum] = None,
     fuzzy: bool = False,
 ):
-
     if v is None:
         return False
     # (v, ">=", max, "<=", min) -> v > b and v < a
@@ -202,7 +198,6 @@ def VERSION_WHITELIST(
     *,
     compatibility: Literal["STRICT", "MINOR", "MAJOR", "FUZZY"] = "STRICT",
 ) -> bool:
-
     if v is None:
         return False
 
@@ -238,7 +233,6 @@ def VERSION_BLACKLIST(
     *,
     fuzzy: bool = False,
 ):
-
     if v is None:
         return False
 
@@ -264,7 +258,6 @@ def STREQUAL(obj1: VersionNum, obj2: VersionNum) -> bool: ...
 
 
 def STREQUAL(obj1: Union[str, VersionNum], obj2: Union[str, VersionNum]):
-
     if obj1 is None:
         return False
 
@@ -277,6 +270,7 @@ def STREQUAL(obj1: Union[str, VersionNum], obj2: Union[str, VersionNum]):
 def STRMATCH(obj: str, find: str) -> bool: ...
 @overload
 def STRMATCH(obj: str, find: Iterable[str] | list[str] | Tuple[str]) -> bool: ...
+
 
 def STRMATCH(obj: str, find: str | Iterable[str] | list[str] | Tuple[str]) -> bool:
     target_str = str(obj)

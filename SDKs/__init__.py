@@ -1,16 +1,14 @@
-
-
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
 from .find_AMD_HIP import FindHIPSDK
 from .find_AMD_ROCm import FindTheRock
 from .find_NVIDIA_CUDA import FindCUDA
-from .find_NVIDIA_CUDAX import FindCUDAX #FindCUDNN, FindCUDSS, FindCUTENSOR, FindCUSPARSTLT, Findcutile, Findcutlass, FindTensorRT #, FindcuQuantum
+from .find_NVIDIA_CUDAX import (
+    FindCUDAX,
+)  # FindCUDNN, FindCUDSS, FindCUTENSOR, FindCUSPARSTLT, Findcutile, Findcutlass, FindTensorRT #, FindcuQuantum
 from .find_INTEL_ONEAPI import FindOneAPI
 from .find_MSMPI_MPI import FindMSMPI
 from .find_MSMPI_SDK import FindMSMPISDK
@@ -28,14 +26,17 @@ from .find_Minecraft import FindMinecraft
 __all__ = [
     "FindHIPSDK",
     "FindTheRock",
-    "FindCUDA", "FindCUDAX",
-    "FindVS20XX", "FindUCRT",
+    "FindCUDA",
+    "FindCUDAX",
+    "FindVS20XX",
+    "FindUCRT",
     "FindCangjie",
     "FindMATLAB",
-    'FindGMT',
-    "FindMSMPI", "FindMSMPISDK",
+    "FindGMT",
+    "FindMSMPI",
+    "FindMSMPISDK",
     "FindStrawberryPerl",
     "FindOneAPI",
     "FindMiHoYo",
-    'FindMinecraft',
+    "FindMinecraft",
 ]

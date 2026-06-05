@@ -1,9 +1,5 @@
-
-
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
@@ -15,28 +11,45 @@ from utils import config
 from utils.compare_functions import VersionNum
 
 PROFILES_HINT = Literal[
-    "amd/hip", 'ROCm/TheRock',
-    'intel', 'intel/oneapi', 'intel/compiler', 'intel/dnnl', 'intel/ocloc', 'intel/mkl',
-    'nvidia', 'nvidia/cuda', 'nvidia/cudnn', 'nvidia/cudss', 'nvidia/cutensor',
-    'nvidia/cusparselt', 'nvidia/tensorrt', 'nvidia/cutlass',
-    'nvidia/nvhpc', 'nvidia/nvhpc-byo', 'nvidia/cuquantum', 'nvidia/cupqc', 'nvidia/'
-    'cangjie',
-    'borland',
-    'matlab',
-    'gmt',
-    'vs', 'msvc', 'ucrt', 'llvm',
-    'gcc',
-
+    "amd/hip",
+    "ROCm/TheRock",
+    "intel",
+    "intel/oneapi",
+    "intel/compiler",
+    "intel/dnnl",
+    "intel/ocloc",
+    "intel/mkl",
+    "nvidia",
+    "nvidia/cuda",
+    "nvidia/cudnn",
+    "nvidia/cudss",
+    "nvidia/cutensor",
+    "nvidia/cusparselt",
+    "nvidia/tensorrt",
+    "nvidia/cutlass",
+    "nvidia/nvhpc",
+    "nvidia/nvhpc-byo",
+    "nvidia/cuquantum",
+    "nvidia/cupqc",
+    "nvidia/" "cangjie",
+    "borland",
+    "matlab",
+    "gmt",
+    "vs",
+    "msvc",
+    "ucrt",
+    "llvm",
+    "gcc",
 ]
 
+
 class ModulesObject:
-    __slots__ = ('_raw_data',)
+    __slots__ = ("_raw_data",)
 
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
 
-
-    def __init__(self, obj: 'ModulesObject|dict' = None, /, **kwargs):
+    def __init__(self, obj: "ModulesObject|dict" = None, /, **kwargs):
         if obj is not None and kwargs:
             raise KeyError("Cannot specify both obj (ModulesObject/dict) and kwargs.")
 
@@ -47,27 +60,31 @@ class ModulesObject:
         else:
             self._raw_data = kwargs.copy()
 
-        obj_type = self._raw_data.get("mode", 'tcl')
+        obj_type = self._raw_data.get("mode", "tcl")
 
         if obj_type not in ("tcl", "cmake"):
             raise ValueError(f"Cannot compile {obj_type} type object")
 
-        self._raw_data.update({
-            flag: kwargs.get(flag)
-            for flag in ("CFLAGS", "CXXFLAGS", "CPPFLAGS", "FFLAGS", "FCFLAGS", "LDFLAGS")
-            if isinstance(flag, str)
-        })
+        self._raw_data.update(
+            {
+                flag: kwargs.get(flag)
+                for flag in (
+                    "CFLAGS",
+                    "CXXFLAGS",
+                    "CPPFLAGS",
+                    "FFLAGS",
+                    "FCFLAGS",
+                    "LDFLAGS",
+                )
+                if isinstance(flag, str)
+            }
+        )
 
         if config.ENABLE_TCL_EXTENSION:
-            self._raw_data.update({
-                'output': kwargs.get('output') + '.tcl'
-            })
+            self._raw_data.update({"output": kwargs.get("output") + ".tcl"})
 
         if config.FREE_FOR_ALL:
-            self._raw_data.update({
-                'conflicts': []
-            })
-
+            self._raw_data.update({"conflicts": []})
 
     def __getitem__(self, key: str) -> Any:
         return self._raw_data[key]
@@ -130,14 +147,18 @@ class ModulesObject:
 
     @property
     def conflicts_llvm(self) -> list[str]:
-        return self._raw_data.get('conflicts_llvm', []) if config.LLVM_CONFLICT else []
+        return self._raw_data.get("conflicts_llvm", []) if config.LLVM_CONFLICT else []
 
     @property
     def conflicts_hetero(self) -> list[str]:
-        return self._raw_data.get('conflicts_hetero', []) if config.HETERO_CONFLICT else []
+        return (
+            self._raw_data.get("conflicts_hetero", []) if config.HETERO_CONFLICT else []
+        )
 
     @property
-    def vcompare(self) -> list[dict[Literal["env", "compare", "ver"], Union[VersionNum, str]]]:
+    def vcompare(
+        self,
+    ) -> list[dict[Literal["env", "compare", "ver"], Union[VersionNum, str]]]:
         return self._raw_data.get("vcompare")
 
     @property
@@ -218,17 +239,18 @@ class ModulesObject:
         return path.split(";") if isinstance(path, str) else path
 
 
-def modules_object_json_encoder(obj:VersionNum|ModulesObject|Path):
-
-    if type(obj).__name__ == 'ModulesObject':
+def modules_object_json_encoder(obj: VersionNum | ModulesObject | Path):
+    if type(obj).__name__ == "ModulesObject":
         return obj._raw_data
 
-    if type(obj).__name__ == 'VersionNum':
+    if type(obj).__name__ == "VersionNum":
         return str(obj)
 
-    if type(obj).__name__ == 'Path' or type(obj).__name__ == 'WindowsPath':
+    if type(obj).__name__ == "Path" or type(obj).__name__ == "WindowsPath":
         return obj.resolve().as_posix()
 
-    raise TypeError(dedent(f"""\
+    raise TypeError(
+        dedent(f"""\
             Object of type {obj.__class__.__name__} is not JSON serializable.
-             >>> Debug: object is {obj} """))
+             >>> Debug: object is {obj} """)
+    )

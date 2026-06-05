@@ -1,27 +1,19 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2026-${year} WEMI Contributors
-#
-# This software is released under the MIT License.
-# https://opensource.org/licenses/MIT
 
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
-# This software is released under the MIT License.
-# https://opensource.org/licenses/MIT
-
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
 from typing import Literal
 import platform
 import subprocess
+import time
+from functools import wraps
+from pathlib import Path
+from utils import config
+
 
 def os_type() -> Literal["Windows", "Linux", "BSD", "macOS"]:
-
     name: str = platform.system()
 
     if name == "Windows":
@@ -37,14 +29,18 @@ def os_type() -> Literal["Windows", "Linux", "BSD", "macOS"]:
 
     return sysname
 
-def subdirs(path: Path, leaf:bool=False) -> list[Path] | list[str]:
 
+def subdirs(path: Path, leaf: bool = False) -> list[Path] | list[str]:
     if isinstance(path, str):
         path = Path(path)
 
     if not path.is_dir():
         return []
-    folders =  [p.parts[-1] for p in path.iterdir() if p.is_dir()] if leaf else [p for p in path.iterdir() if p.is_dir()]
+    folders = (
+        [p.parts[-1] for p in path.iterdir() if p.is_dir()]
+        if leaf
+        else [p for p in path.iterdir() if p.is_dir()]
+    )
 
     # if any(folder for folder in folders if folder in ['bin', 'include', 'lib']):
     #     excluded = [folder for folder in folders if folder in ['bin', 'include', 'lib']]
@@ -60,18 +56,15 @@ def where(exe: str, /):
     return which(exe)
 
 
-import time
-from functools import wraps
-from typing import Union, Literal
-from pathlib import Path
-from utils import config
-
 #   =======================================================================================================================================================================================
 #       clear function for clear terminal.
 #
 
+
 def clear():
-    import os, sys, subprocess
+    import os
+    import sys
+    import subprocess
 
     if config.CLEAR_HOST:
         if sys.version_info < (3, 14):
@@ -84,7 +77,7 @@ def clear():
         pass
 
 
-def tic_toc(message:str= ...):
+def tic_toc(message: str = ...):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -93,9 +86,7 @@ def tic_toc(message:str= ...):
             result = func(*args, **kwargs)
 
             toc = time.perf_counter()
-            print(
-                f" -- {message} ({(toc - tic):.1f}s)"
-            )
+            print(f" -- {message} ({(toc - tic):.1f}s)")
             return result
 
         return wrapper
@@ -108,6 +99,7 @@ def git_head():
         ["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True
     ).stdout.strip()
     return _head
+
 
 def git_repo():
     finder = subprocess.run(

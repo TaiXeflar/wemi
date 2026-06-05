@@ -2,34 +2,30 @@
 
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
 from .refs import BaseModuleTemplate
 
+
 class ModuleTemplate(BaseModuleTemplate):
-
     def build(self):
-
         ver = self.module.VERSION
 
-        self.add_module_whatis("")
+        self.add_module_whatis(f"Intel compiler {ver}")
 
-        self.add_llvm_conflict(
-            'amd/hip', ''
-        )
+        self.add_llvm_conflict("amd/hip", "")
 
         self.add_content(
-            'if { [info exists env(VSCMD_ARG_TGT_ARCH)] } {',
+            "if { [info exists env(VSCMD_ARG_TGT_ARCH)] } {",
             '    if { $env(VSCMD_ARG_TGT_ARCH) ne "x64" } {',
             '        puts stderr "\[Error\] Architecture mismatch for Intel Compiler."',
             '        puts stderr "  Intel oneAPI compiler requires MSVC target architecture to be x64."',
             '        puts stderr "  But your current VSCMD_ARG_TGT_ARCH is: $env(VSCMD_ARG_TGT_ARCH)"',
             '        puts stderr "  Please load a compatible MSVC (x64) environment first."',
-            '        break',
-            '    }',
-            '}',
+            "        break",
+            "    }",
+            "}",
         )
         self.add_deps(*self.module.deps)
         self.set_root(self.module.root)

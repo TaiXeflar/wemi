@@ -2,14 +2,11 @@
 
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
 from pathlib import Path
-from pprint import pprint
 import json
-import sys
 from textwrap import dedent
 
 from SDKs.refs import FindSDK
@@ -21,37 +18,34 @@ from utils import message, tic_toc, config
 from tasks import seh, ModulesObject, modules_object_json_encoder
 from .windows_checks import WindowsCheck
 
-class WindowsNT():
 
+class WindowsNT:
     _SDK_REGISTRY: dict[str, FindSDK] = {
-            "TheRock":      FindTheRock,
-            "HIP":          FindHIPSDK,
-            "CUDA":         FindCUDA,
-            "CUDA-X":       FindCUDAX,
-            "oneAPI":       FindOneAPI,
-            "VS20XX":       FindVS20XX,
-            "UCRT":         FindUCRT,
-            "MSMPI":        FindMSMPI,
-            "MPISDK":       FindMSMPISDK,
-            "Cangjie":      FindCangjie,
-            "GMT":          FindGMT,
-            "MATLAB":       FindMATLAB,
-            "Strawberry":   FindStrawberryPerl,
+        "TheRock": FindTheRock,
+        "HIP": FindHIPSDK,
+        "CUDA": FindCUDA,
+        "CUDA-X": FindCUDAX,
+        "oneAPI": FindOneAPI,
+        "VS20XX": FindVS20XX,
+        "UCRT": FindUCRT,
+        "MSMPI": FindMSMPI,
+        "MPISDK": FindMSMPISDK,
+        "Cangjie": FindCangjie,
+        "GMT": FindGMT,
+        "MATLAB": FindMATLAB,
+        "Strawberry": FindStrawberryPerl,
+        # Experimential
+        "MiHoYo": FindMiHoYo,
+        "Minecraft": FindMinecraft,
+    }
 
-
-            # Experimential
-            "MiHoYo":       FindMiHoYo,
-            "Minecraft":    FindMinecraft,
-        }
-
-    @tic_toc('Configuring Done')
+    @tic_toc("Configuring Done")
     def __init__(self):
-
         WindowsCheck()
 
         self.info: dict[str, FindSDK] = {}
 
-        raw_target_sdks = getattr(config, 'ENABLE_SDKS', [])
+        raw_target_sdks = getattr(config, "ENABLE_SDKS", [])
         registry_lower = {k.lower(): v for k, v in self._SDK_REGISTRY.items()}
 
         if not raw_target_sdks:
@@ -60,7 +54,6 @@ class WindowsNT():
         else:
             target_sdks = raw_target_sdks
             message(f" -- WEMI Selected SDKs: {target_sdks}")
-
 
         for sdk_name in target_sdks:
             sdk_class = registry_lower.get(sdk_name.lower())
@@ -78,16 +71,22 @@ class WindowsNT():
         except KeyboardInterrupt as e:
             seh.unwind(type(e), e, e.__traceback__)
 
-    @tic_toc('Generating Done')
+    @tic_toc("Generating Done")
     def export(self):
         cache = Path("build/cache.json")
         cache.parent.mkdir(parents=True, exist_ok=True)
 
         try:
-            with cache.open('w', encoding='utf-8') as f:
-                f.write(json.dumps(self.rules, default=modules_object_json_encoder, indent=4))
+            with cache.open("w", encoding="utf-8") as f:
+                f.write(
+                    json.dumps(
+                        self.rules, default=modules_object_json_encoder, indent=4
+                    )
+                )
 
         except PermissionError:
-            raise PermissionError(dedent(f'''\
+            raise PermissionError(
+                dedent("""\
                 WEMI cannot export build rules with Permission error occured.
-                '''))
+                """)
+            )

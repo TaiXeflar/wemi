@@ -1,20 +1,16 @@
 
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-import os
-
-from typing import Literal, Union
+from typing import Literal
 from pathlib import Path
-
 
 
 CLEAR_HOST = True
 
-DEFAULT_TASK = ''
+DEFAULT_TASK = ""
 
 NO_ANSI_COLOR = True
 NO_NETWORK_REQUEST = False
@@ -29,10 +25,9 @@ ENABLE_SDKS: list[str] = []
 SEH_STYLE: Literal["default", "python", "gcc", "clang", "msvc"] = "gcc"
 GENERATOR_STYLE: Literal["ninja", "make"] = "ninja"
 
-LOCALE: Literal['local', 'global', 'en', 'tw'] = 'global'
+LOCALE: Literal["local", "global", "en", "tw"] = "global"
 
 MODULE_INSTALL_PREFIX: Path | str = None
-
 
 
 if SEH_STYLE.lower() not in ("default", "python", "gcc", "clang", "msvc"):

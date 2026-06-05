@@ -1,9 +1,5 @@
-
-
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
@@ -24,9 +20,9 @@ from tasks import ModulesObject
 
 _WIN_PLATFORM_ = cpu_host_arch()
 
-class FindCUDA(FindSDK):
 
-    _name_desc = 'NVIDIA CUDA Toolkit'
+class FindCUDA(FindSDK):
+    _name_desc = "NVIDIA CUDA Toolkit"
     is_hetero_tgt = True
     is_llvm_infra = False
 
@@ -37,7 +33,6 @@ class FindCUDA(FindSDK):
         # Exclude SDKs will contain redistributed nvcc
 
     def __WINDOWS__(self):
-
         seen_roots = set()
 
         # Using $env:CUDA_PATH* = <PATH> (O(1) 命中) ---
@@ -55,8 +50,7 @@ class FindCUDA(FindSDK):
 
         # Using Everything CLI (es.exe)
         try:
-
-            nvccs = self.everything(regex=r'bin\\nvcc\.exe$')
+            nvccs = self.everything(regex=r"bin\\nvcc\.exe$")
 
             for nvcc in nvccs:
                 # nvcc_path = Path(nvcc.strip())
@@ -65,7 +59,6 @@ class FindCUDA(FindSDK):
                     self._verify_and_register(cuda_root, seen_roots)
 
         except FileNotFoundError:
-
             pass
         except subprocess.CalledProcessError as e:
             message(f"    [Warning] es.exe execution failed: {e}")
@@ -82,8 +75,8 @@ class FindCUDA(FindSDK):
             return False
 
         # Fingerprint
-        version_file = cuda_path / 'version.json'
-        nvcc_exe = cuda_path / 'bin' / 'nvcc.exe'
+        version_file = cuda_path / "version.json"
+        nvcc_exe = cuda_path / "bin" / "nvcc.exe"
         if not version_file.exists() or not nvcc_exe.exists():
             return False
 
@@ -91,7 +84,9 @@ class FindCUDA(FindSDK):
             with open(version_file, "r", encoding="utf-8") as f:
                 cuda_version_json: dict[str, dict[str, str]] = json.loads(f.read())
         except (json.JSONDecodeError, UnicodeDecodeError):
-            message(f'    [Error] Corrupted version.json found at {cuda_path}. Skipping.')
+            message(
+                f"    [Error] Corrupted version.json found at {cuda_path}. Skipping."
+            )
             return False
 
         cuda_root_info = cuda_version_json.get("cuda", {})
@@ -106,9 +101,11 @@ class FindCUDA(FindSDK):
         cuda_path_verstr = f"CUDA_PATH_V{major}_{minor}"
 
         seen_roots.add(cuda_path)
-        message(f'    NVIDIA CUDA {verstr}:    {cuda_path.as_posix()}')
+        message(f"    NVIDIA CUDA {verstr}:    {cuda_path.as_posix()}")
 
-        cudax_stat: dict[CUDA_X_TYPEHINT, Union[str, None]] = { "Path": cuda_path.as_posix() }
+        cudax_stat: dict[CUDA_X_TYPEHINT, Union[str, None]] = {
+            "Path": cuda_path.as_posix()
+        }
 
         for cudaX, vv in cuda_components_phonebook.items():
             cudaX_version = None
@@ -124,48 +121,38 @@ class FindCUDA(FindSDK):
                     if isinstance(cudaX_dict, dict):
                         cudaX_version = cudaX_dict.get("version")
 
-            message(f'\t{cudaX:<22} {cudaX_version}')
+            message(f"\t{cudaX:<22} {cudaX_version}")
             cudax_stat[cudaX] = cudaX_version
 
-        self.add_rule(ModulesObject(
-            Module=f"nvidia/cuda/{verstr}",
-            output=f"nvidia/cuda/{verstr}",
-            mode='tcl',
-            Include_file="template_nvidia_cuda_toolkit",
-            Version=verstr,
-            conflicts=["nvidia/cuda", "nvidia/nvhpc", 'nvidia/nvhpc-byo'],
-            hetero_conflicts=['amd/hip', 'intel/ocloc'],
-            prereq=['msvc', 'ucrt'],
-            deps=[],
-            ENVs={
-                "CUDA_HOME": "$root",
-                "CUDA_PATH": "$root",
-                cuda_path_verstr: "$root",
-                "CUDA_VERSION": verstr,
-                "CUDA_MAJOR_VERSION": major,
-                "CUDA_MINOR_VERSION": minor,
-            },
-            root=cuda_path.as_posix(),
-            PATH=[
-                f"$root/bin",
-                f"$root/bin/$env(VSCMD_ARG_TGT_ARCH)",
-                f"$root/nvvm/bin/$env(VSCMD_ARG_TGT_ARCH)"
-            ],
-            INCLUDE=[
-                "$root/include",
-                "$root/include/cccl"
-            ],
-            LIB=[
-                f"$root/lib/",
-                f"$root/lib/$env(VSCMD_ARG_TGT_ARCH)"
-            ],
-            LD_LIBRARY_PATH=[
-                f"$root/bin",
-                f"$root/bin/$env(VSCMD_ARG_TGT_ARCH)"
-            ],
-            MODULEPATH=[
-                f".deps/nvidia/cuda/{major}",
-                f".deps/nvidia/cuda/cudaX"
-            ]
-        ))
+        self.add_rule(
+            ModulesObject(
+                Module=f"nvidia/cuda/{verstr}",
+                output=f"nvidia/cuda/{verstr}",
+                mode="tcl",
+                Include_file="template_nvidia_cuda_toolkit",
+                Version=verstr,
+                conflicts=["nvidia/cuda", "nvidia/nvhpc", "nvidia/nvhpc-byo"],
+                hetero_conflicts=["amd/hip", "intel/ocloc"],
+                prereq=["msvc", "ucrt"],
+                deps=[],
+                ENVs={
+                    "CUDA_HOME": "$root",
+                    "CUDA_PATH": "$root",
+                    cuda_path_verstr: "$root",
+                    "CUDA_VERSION": verstr,
+                    "CUDA_MAJOR_VERSION": major,
+                    "CUDA_MINOR_VERSION": minor,
+                },
+                root=cuda_path.as_posix(),
+                PATH=[
+                    "$root/bin",
+                    "$root/bin/$env(VSCMD_ARG_TGT_ARCH)",
+                    "$root/nvvm/bin/$env(VSCMD_ARG_TGT_ARCH)",
+                ],
+                INCLUDE=["$root/include", "$root/include/cccl"],
+                LIB=["$root/lib/", "$root/lib/$env(VSCMD_ARG_TGT_ARCH)"],
+                LD_LIBRARY_PATH=["$root/bin", "$root/bin/$env(VSCMD_ARG_TGT_ARCH)"],
+                MODULEPATH=[f".deps/nvidia/cuda/{major}", ".deps/nvidia/cuda/cudaX"],
+            )
+        )
         return True

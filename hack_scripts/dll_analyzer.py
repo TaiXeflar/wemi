@@ -1,31 +1,32 @@
+
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
 import re
 from pathlib import Path
 
-def find_dll_dependencies(file_path: str | Path):
 
+def find_dll_dependencies(file_path: str | Path):
     target = Path(file_path)
     if not target.exists():
         print(f"Cannot find {target}")
         return
 
-    print(f"Checking for DLL: {target.name} ({target.stat().st_size / 1024 / 1024:.2f} MB)")
+    print(
+        f"Checking for DLL: {target.name} ({target.stat().st_size / 1024 / 1024:.2f} MB)"
+    )
 
     try:
-
         with open(target, "rb") as f:
             binary_data = f.read()
 
-        pattern = re.compile(rb'[A-Za-z0-9_-]+\.dll', re.IGNORECASE)
+        pattern = re.compile(rb"[A-Za-z0-9_-]+\.dll", re.IGNORECASE)
 
         matches = set(pattern.findall(binary_data))
 
-        dll_list = sorted([m.decode('ascii') for m in matches])
+        dll_list = sorted([m.decode("ascii") for m in matches])
 
         print(f"Found DLL references in {target.name}:")
 
@@ -37,7 +38,7 @@ def find_dll_dependencies(file_path: str | Path):
 
 
 if __name__ == "__main__":
-    pth = Path(r'C:\Developer\NVIDIA\cutlass\4.4.1\bin')
+    pth = Path(r"C:\Developer\NVIDIA\cutlass\4.4.1\bin")
     dlls = list(pth.glob("cutlass.*dll"))
 
     for dll in dlls:

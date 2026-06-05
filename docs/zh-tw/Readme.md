@@ -1,11 +1,8 @@
-SPDX-License-Identifier: MIT
-Copyright (c) 2026-${year} WEMI Contributors
 
-This software is released under the MIT License.
-https://opensource.org/licenses/MIT
-
-<!-- SPDX-License-Identifier: MIT -->
-<!-- Copyright (c) 2026 TaiXeflar -->
+ <!-- SPDX-License-Identifier: MIT
+ Copyright (c) 2026-${year} WEMI Contributors
+ This software is released under the MIT License.
+ https://opensource.org/licenses/MIT -->
 
 # WEMI 環境模組安裝器
 

@@ -1,23 +1,16 @@
-
-
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-import os
 import re
 from pathlib import Path
 
-from utils import message
-from tasks import ModulesObject
 
 # Individual NVIDIA Library installation via installer/cmake install
 
-class NVIDIA_CUDAX_EXTENSION:
 
+class NVIDIA_CUDAX_EXTENSION:
     @staticmethod
     def cudaX_cuda_deps(dll_path: Path, /) -> str | None:
         """
@@ -38,28 +31,37 @@ class NVIDIA_CUDAX_EXTENSION:
                 binary_data = f.read()
 
             # 優先權 1：抓取 NVRTC (最精準，能給出 Major.Minor，如 130 -> 13.0)
-            match_nvrtc = re.search(rb"nvrtc64_(\d+)_0\.dll", binary_data, re.IGNORECASE)
+            match_nvrtc = re.search(
+                rb"nvrtc64_(\d+)_0\.dll", binary_data, re.IGNORECASE
+            )
             if match_nvrtc:
                 ver_code = match_nvrtc.group(1).decode("ascii")
                 if len(ver_code) >= 2:
                     return f"{ver_code[:-1]}.{ver_code[-1]}"
 
             # 優先權 2：抓取傳統 CUDART (向下相容 cuDNN 7/8 架構)
-            match_cudart = re.search(rb"cudart64_(\d+)\.dll", binary_data, re.IGNORECASE)
+            match_cudart = re.search(
+                rb"cudart64_(\d+)\.dll", binary_data, re.IGNORECASE
+            )
             if match_cudart:
                 cudart_ver = match_cudart.group(1).decode("ascii")
-                if cudart_ver.startswith("12"): return "12"
-                if cudart_ver == "110": return "11"
-                if cudart_ver == "102": return "10.2"
+                if cudart_ver.startswith("12"):
+                    return "12"
+                if cudart_ver == "110":
+                    return "11"
+                if cudart_ver == "102":
+                    return "10.2"
                 return cudart_ver
 
             # 優先權 3：抓取 cuBLAS (最終兜底方案)
-            match_cublas = re.search(rb"cublas(?:Lt)?64_(\d+)\.dll", binary_data, re.IGNORECASE)
+            match_cublas = re.search(
+                rb"cublas(?:Lt)?64_(\d+)\.dll", binary_data, re.IGNORECASE
+            )
             if match_cublas:
                 return match_cublas.group(1).decode("ascii")
 
         except Exception:
-            pass # 遇到權限鎖定或讀取異常，安全略過
+            pass  # 遇到權限鎖定或讀取異常，安全略過
 
         return
 
@@ -73,7 +75,7 @@ class NVIDIA_CUDAX_EXTENSION:
             return None
 
         try:
-            content = header_path.read_text(encoding="utf-8", errors='ignore')
+            content = header_path.read_text(encoding="utf-8", errors="ignore")
 
             # 分別匹配 Major, Minor, Patch
             major_match = re.search(r"#define\s+CUDNN_MAJOR\s+(\d+)", content)
@@ -87,7 +89,7 @@ class NVIDIA_CUDAX_EXTENSION:
                 patch = patch_match.group(1) if patch_match else "0"
                 return f"{major}.{minor}.{patch}"
 
-        except Exception as e:
+        except Exception:
             pass
 
     @staticmethod
@@ -100,7 +102,7 @@ class NVIDIA_CUDAX_EXTENSION:
             return None
 
         try:
-            content = header_path.read_text(encoding="utf-8", errors='ignore')
+            content = header_path.read_text(encoding="utf-8", errors="ignore")
 
             # 分別匹配 Major, Minor, Patch
             major_match = re.search(r"#define\s+CUDSS_VERSION_MAJOR\s+(\d+)", content)
@@ -114,7 +116,7 @@ class NVIDIA_CUDAX_EXTENSION:
                 patch = patch_match.group(1) if patch_match else "0"
                 return f"{major}.{minor}.{patch}"
 
-        except Exception as e:
+        except Exception:
             pass
 
     @staticmethod
@@ -127,7 +129,7 @@ class NVIDIA_CUDAX_EXTENSION:
             return None
 
         try:
-            content = header_path.read_text(encoding="utf-8", errors='ignore')
+            content = header_path.read_text(encoding="utf-8", errors="ignore")
 
             # 分別匹配 Major, Minor, Patch
             major_match = re.search(r"#define\s+CUTENSOR_MAJOR\s+(\d+)", content)
@@ -141,7 +143,7 @@ class NVIDIA_CUDAX_EXTENSION:
                 patch = patch_match.group(1) if patch_match else "0"
                 return f"{major}.{minor}.{patch}"
 
-        except Exception as e:
+        except Exception:
             pass
 
     @staticmethod
@@ -154,7 +156,7 @@ class NVIDIA_CUDAX_EXTENSION:
             return None
 
         try:
-            content = header_path.read_text(encoding="utf-8", errors='ignore')
+            content = header_path.read_text(encoding="utf-8", errors="ignore")
 
             # 分別匹配 Major, Minor, Patch
             major_match = re.search(r"#define\s+CUSPARSELT_VER_MAJOR\s+(\d+)", content)
@@ -168,7 +170,7 @@ class NVIDIA_CUDAX_EXTENSION:
                 patch = patch_match.group(1) if patch_match else "0"
                 return f"{major}.{minor}.{patch}"
 
-        except Exception as e:
+        except Exception:
             pass
 
     @staticmethod
@@ -181,7 +183,7 @@ class NVIDIA_CUDAX_EXTENSION:
             return
 
         try:
-            content = header_path.read_text(encoding="utf-8", errors='ignore')
+            content = header_path.read_text(encoding="utf-8", errors="ignore")
 
             # 分別匹配 Major, Minor, Patch
             major_match = re.search(r"#define\s+TRT_MAJOR_ENTERPRISE\s+(\d+)", content)
@@ -195,7 +197,7 @@ class NVIDIA_CUDAX_EXTENSION:
                 patch = patch_match.group(1) if patch_match else "0"
                 return f"{major}.{minor}.{patch}"
 
-        except Exception as e:
+        except Exception:
             pass
 
     @staticmethod
@@ -204,7 +206,7 @@ class NVIDIA_CUDAX_EXTENSION:
             return
 
         try:
-            content = header_path.read_text(encoding="utf-8", errors='ignore')
+            content = header_path.read_text(encoding="utf-8", errors="ignore")
 
             # 分別匹配 Major, Minor, Patch
             major_match = re.search(r"#define\s+CUTLASS_MAJOR\s+(\d+)", content)
@@ -218,5 +220,5 @@ class NVIDIA_CUDAX_EXTENSION:
                 patch = patch_match.group(1) if patch_match else "0"
                 return f"{major}.{minor}.{patch}"
 
-        except Exception as e:
+        except Exception:
             pass

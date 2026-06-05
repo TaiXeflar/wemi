@@ -1,9 +1,5 @@
-
-
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
@@ -62,9 +58,7 @@ ROC_X_LIBS_TYPEHINT = Literal[
 rocX_config_version_cmake_phonebook: dict[ROC_X_LIBS_TYPEHINT, str] = {
     # For NOTDEFINED/Wrong cmake versioning configure file
     #   "rocX-config-version.cmake" should fix.
-
     "therock": r".info/version",
-
     # https://github.com/ROCm/llvm-project/tree/amd-staging/amd/comgr
     "amd_comgr": r"lib/cmake/amd_comgr/amd_comgr-config-version.cmake",
     # https://github.com/ROCm/llvm-project
@@ -151,8 +145,6 @@ rocX_config_version_cmake_phonebook: dict[ROC_X_LIBS_TYPEHINT, str] = {
     "rocr-runtime": None,
     # https://github.com/ROCm/rocm-systems/tree/develop/projects/rdc
     "rdc": None,
-    # https://github.com/ROCm/ROCgdb
-    "rocgdb": r"bin/rocgdb",
     # https://github.com/ROCm/rocm-systems/tree/develop/projects/rocprofiler
     "rocprofiler": r"lib/cmake/rocprofiler/rocprofiler-config-version.cmake",
     # https://github.com/ROCm/rocm-libraries/tree/develop/shared/rocroller
@@ -170,14 +162,18 @@ def _test_phonebook():
     _test_typehint_list = [rocX.lower() for rocX in ROC_X_LIBRARIES_LIST].sort()
 
     if _test_phonebook_list != _test_typehint_list:
-        message("FATAL_ERROR", f"""Found ROCm Libraries record have error.""")
+        message("FATAL_ERROR", """Found ROCm Libraries record have error.""")
+
 
 _test_phonebook()
+
 
 class RocXParserMixin:
     """專門用來解析 AMD rocX 元件版本的擴充包"""
 
-    def _get_rocx_version(self, rocX: str, value_rule: Optional[str], base_path: Path) -> Optional[Any]:
+    def _get_rocx_version(
+        self, rocX: str, value_rule: Optional[str], base_path: Path
+    ) -> Optional[Any]:
         if not value_rule:
             return None
 
@@ -196,9 +192,7 @@ class RocXParserMixin:
 
         if configure_actual_filename.suffix == ".cmake":
             query = cmake_variable_finder(
-                file=configure_actual_filename,
-                hint=["PACKAGE_VERSION"],
-                output="all"
+                file=configure_actual_filename, hint=["PACKAGE_VERSION"], output="all"
             )
             return query.get("PACKAGE_VERSION")
 
@@ -215,14 +209,16 @@ class RocXParserMixin:
     def _hip_is_from_therock(self, hipcc: Path | str, /) -> bool:
         hip = Path(hipcc)
         if not hip.exists() or hip is None:
-            raise ValueError(f'Unknown error on configure hipcc where value is None.')
+            raise ValueError("Unknown error on configure hipcc where value is None.")
 
         hip_bin_dir = hip.parent
         hip_dir = hip.parent.parent
 
-        if (hip_bin_dir/'clang.exe').exists() and (hip_dir/'amdgcn').exists():
+        if (hip_bin_dir / "clang.exe").exists() and (hip_dir / "amdgcn").exists():
             return False
-        elif (hip_dir/'lib/llvm/bin/clang.exe').exists():
+        elif (hip_dir / "lib/llvm/bin/clang.exe").exists():
             return True
         else:
-            raise RuntimeError("Configuring hipcc have errors where identifying hipcc release is out of cases")
+            raise RuntimeError(
+                "Configuring hipcc have errors where identifying hipcc release is out of cases"
+            )

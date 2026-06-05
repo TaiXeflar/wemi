@@ -1,50 +1,44 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2026-${year} WEMI Contributors
-#
-# This software is released under the MIT License.
-# https://opensource.org/licenses/MIT
-
 repos:
-  # -------------------------------------------------------------------
   # 1. 基礎檢查與防呆
-  # (WEMI 作為 Windows 環境工具，確保換行符號統一為 LF 極度重要，
-  # 以免 Tcl 或 Shell 腳本在 Cygwin/WSL 中因 CRLF 解析錯誤而掛掉)
-  # -------------------------------------------------------------------
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
-      - id: check-yaml
       - id: mixed-line-ending
-        args: ['--fix=lf']  # 強制將混合的換行符號統一為 LF
+        args: ['--fix=lf']
 
-  # -------------------------------------------------------------------
-  # 2. 自動插入 / 檢查 SPDX License
-  # -------------------------------------------------------------------
+  # # 2. Ruff 文法檢查與自動格式化 (同時支援 .py 與 .pyi)
+  # - repo: https://github.com/astral-sh/ruff-pre-commit
+  #   rev: v0.4.8
+  #   hooks:
+  #     - id: ruff
+  #       args: [ --fix ]
+  #     - id: ruff-format
+
+  # 3. 自動插入 / 檢查 SPDX License
   - repo: https://github.com/lucas-c/pre-commit-hooks
     rev: v1.5.5
     hooks:
-      # [A] 針對 Python 與 YAML 檔案
-      # 涵蓋所有的 .py 腳本與 .yaml/.yml 設定檔 (包含本設定檔本身)
+      # [A] 針對 Python 檔案 (.py 和 .pyi)
       - id: insert-license
-        name: Insert SPDX License (Python & YAML)
-        files: \.(py|yaml|yml)$
-        exclude: ^\.github/LICENSE_HEADER\.txt$  # 避免腳本把授權碼塞進模板檔自己身上
+        name: Insert SPDX License (Python)
+        files: \.(py|pyi)$
+        exclude: ^\.github/LICENSE_HEADER\.txt$
         args:
           - --license-filepath
           - .github/LICENSE_HEADER.txt
           - --comment-style
-          - "|#|"              # 強制使用 # 作為行首註解
-          - --use-current-year # 自動將模板中的年份標籤更新為今年
+          - "|#|"              # 每一行前面加上 #
+          - --use-current-year
 
-      # [B] 針對 Markdown 檔案
+# [B] 針對 Markdown 檔案 (.md)
       - id: insert-license
         name: Insert SPDX License (Markdown)
         files: \.md$
         args:
           - --license-filepath
-          - .github/LICENSE_HEADER.txt
+          - .github/LICENSE_HEADER_MD.txt # 指向已經寫好 的新模板
           - --comment-style
-          - ""       # Markdown 必須使用 HTML 區塊註解格式
+          - "||"                          # 告訴 pre-commit 不要加任何註解符號，直接貼上
           - --use-current-year

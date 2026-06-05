@@ -1,24 +1,16 @@
+
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
-#
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2026 TaiXeflar
-
 import sys
-sys.dont_write_bytecode = True
-
-
-from utils.functions import clear
 from utils.argparse_handler import args_update
-
-from pprint import pprint
-
 from tasks.driver import Driver
 from utils import config
 from tasks import seh
+
+sys.dont_write_bytecode = True
 
 
 def main():
