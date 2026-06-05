@@ -7,7 +7,7 @@
 
 # Windows Environment Modulefiles Installer (WEMI)
 
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit) [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/TaiXeflar/wemi/main.svg)](https://results.pre-commit.ci/latest/github/<username>/<repo>/main)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit) [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/TaiXeflar/wemi/main.svg)](https://results.pre-commit.ci/latest/github/<username>/<repo>/main) [![Version](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/TaiXeflar/wemi/main/version.json&query=$.version&label=version&color=red)](#) ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 
 WEMI is a Experimential, Python based Environment Modules generator and installer, targeting on Windows 10/11 systems to solving enviromnent setups.
 
