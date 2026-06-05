@@ -7,6 +7,7 @@ from .refs import FindSDK
 from utils import config, regedit, message
 from utils.functions import subdirs
 from utils.compare_functions import VERSION
+from tasks import ModulesObject
 
 
 class FindCangjie(FindSDK):
@@ -48,22 +49,25 @@ class FindCangjie(FindSDK):
             message(f'\tLLVM:   {cangjie_llvm_ver}, target {cangjie_llvm_tgt}')
             message(f'\tMinGW:  {cangjie_mingw_ver}')
                             
-            self.add_rule(Module=f"cangjie/{cjc_ver}",
-                            output=f"cangjie/{cjc_ver}",
-                            mode="tcl",
-                            module_whaits=f'Cangjie Language {cjc_ver}',
-                            Include_file="template_cangjie",
-                            Version=cjc_ver,
-                            conflicts=["cangjie"],
-                            root=cjc_dir.resolve().as_posix(),
-                            ENVs={"CANGJIE_HOME": "$root", "CANGJIE_PATH": "$root"},
-                            PATH=[
-                                "$root/bin",
-                                "$root/tools/lib",
-                                "$root/tools/bin",
-                                "$root/lib/windows_x86_64_cjnative",
-                                "$root/runtime/lib/windows_x86_64_cjnative",
-                                "~/.cjpm/bin"
-                        ])
+            self.add_rule(ModulesObject(
+                Module=f"cangjie/{cjc_ver}",
+                output=f"cangjie/{cjc_ver}",
+                mode="tcl",
+                module_whaits=f'Cangjie Language {cjc_ver}',
+                Include_file="template_cangjie",
+                Version=cjc_ver,
+                conflicts=["cangjie"],
+                llvm_conflicts=['llvm', 'amd/hip', 'intel/compiler', 'msvc'],
+                root=cjc_dir.resolve().as_posix(),
+                ENVs={"CANGJIE_HOME": "$root", "CANGJIE_PATH": "$root"},
+                PATH=[
+                    "$root/bin",
+                    "$root/tools/lib",
+                    "$root/tools/bin",
+                    "$root/lib/windows_x86_64_cjnative",
+                    "$root/runtime/lib/windows_x86_64_cjnative",
+                    "~/.cjpm/bin"
+                ]
+            ))
             
                 
