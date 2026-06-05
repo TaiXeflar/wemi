@@ -7,15 +7,17 @@
 
 # Windows Environment Modulefiles Installer (WEMI)
 
-WEMI is a Experimential, Python based Environment Modules generator and installer, targeting on Windows 10/11 PowerShell systems to solving enviromnent setups.
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit) [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/TaiXeflar/wemi/main.svg)](https://results.pre-commit.ci/latest/github/<username>/<repo>/main)
 
-If you have problems like:
- - Many CUDA_PATH_VXXX and dont know how to set it get false CUDA path setups
- - Developer Prompt for Visual Studio is not working
- - Have path management problems ...
- - From macOS/Linux/BSDs Environment Modules develop to Windows
+WEMI is a Experimential, Python based Environment Modules generator and installer, targeting on Windows 10/11 systems to solving enviromnent setups.
 
-Then you can try have a WEMI setup, to make your Windows device have toolchains control like Linux HPC clusters.
+WEMI will scan, compile and install tcl Modulefiles to your Environment Modules system on your device.
+
+## Early State development
+
+As WEMI declared current development status is in Early State development and version is InfDev 0.0.1, WEMI will take several/lot of destructable/refactoring changes, and not recieveng PR requests after a stable release.
+
+Issues and disscutions are open welcomed (Exclude toxic topics).
 
 ## Requirements
  - Python environment, recommends with [Astral UV][] venv.
@@ -24,17 +26,9 @@ Then you can try have a WEMI setup, to make your Windows device have toolchains 
  - [gsudo][]
  - A installed [Environment Modules][] environment
 
-## Limitations
-
-Cygwin/MSYS2 Environment is not available to run wemi with their Python executables are `posix` model, doesn't contain `winreg` in Python Standard Library.
-
-The solution is open a venv with `win32` based Python model, with `uv` is the fastest way to run it. The installation doesn't effected with Python `posix`/`win32` differences, by you can just set a install prefix.
-
-
 ## Usage
 
 1. Clone this repo and build a venv.
-
 - PowerShell / CMD
     ```
     PS X:\> git clone https://github/TaiXeflar/wemi.git --depth=1 wemi
@@ -45,23 +39,25 @@ The solution is open a venv with `win32` based Python model, with `uv` is the fa
 
     PS X:\wemi> .venv/Scripts/Activate.ps1
     ```
-2. Do configuration Steps. Run `wemi.py`, generate a intermediate information/configuration result cache JSON format file named `cache.json`.
+2. Run `wemi.py`. WEMI allows (some) Unix-style flags `-flag`/`--flags`, DOS-style flags `/flags`, and cmake-style cache flags `-DFLAGS...`.
 - PowerShell
     ```
+    # Configure     (generates build/cache.json.)
     (.venv) PS X:\wemi> python ./wemi.py configure --<flags/options> -D<FLAGS/OPTIONS>
-    ```
 
-3. Base on `cache.json`, make WEMI start compile target Tcl Modulefiles.
-- PowerShell
-    ```
+    # Build         (based on build/cache.json.)
     (.venv) PS X:\wemi> python ./wemi.py build
-    ```
 
-4. Install the modulefiles. For system level installation can use gsudo.
-- PowerShell
-    ```
+    # Install       (based on build/cache.json.)
     (.venv) PS X:\wemi> python ./wemi.py install --prefix "C:/Developer/Modules"
     ```
+
+## Limitations
+
+Cygwin/MSYS2 Environment is not available to run wemi with their Python executables are `posix` model, doesn't contain `winreg` in Python Standard Library.
+
+The solution is open a venv with `win32` based Python model, with `uv` is the fastest way to run it. The installation doesn't effected with Python `posix`/`win32` differences, by you can just set a install prefix.
+
 
 ### Caveats
 
@@ -98,3 +94,11 @@ Currently main language will be written in English (US). With after updates, the
 [gsudo]:                                https://github.com/gerardog/gsudo
 
 [Environment Modules]:                  https://github.com/envmodules/modules
+
+### The idea/inventing monent
+This project is based on my collage school lifetime thoughts and with listening [七見斷滅智論抄][Il Dottore] [Prajnaparamidopadesa to Quell Seven Calmites][Il Dottore].
+
+
+
+<!-- links -->
+[Il Dottore]:   https://youtu.be/jBfLW28avYU
