@@ -1,8 +1,10 @@
+<!-- # SPDX-License-Identifier: MIT -->    
+<!-- # Copyright (c) 2026 TaiXeflar  -->
 
+# Project Develop Environment
 
 WEMI is developed on my PC with these working configuration.
-
-# Hardware Device
+## Hardware Device
 
 - ### Hatsune Miku: Powered by AMD/NVIDIA/ROG
     ```
@@ -31,8 +33,18 @@ WEMI is developed on my PC with these working configuration.
     SSD1:   Samsung 970 EVO Plus 2TB TLC NVMe PCIe SSD
     ```
 
-# Software
-Tested SDKs:
+## Develop Environment
+ - ### IDE
+ - Python 3.14.X
+ - Astral UV
+ - VSCode 
+ - ### YT Music
+ - [七見斷滅智論抄 Prajnaparamitopadesa to Quell Seven Calamities][Il Dottore] (HoYo-Mix, 2026)
+ - Upgrade (Slizzy McGuire, 2025)
+ - edamame (bbno$ & Rich Brian, 2021)
+ - There's nothing holding me back (Shawn mendes, 2016)
+
+## Software
 
 | SDK Name              | SDK version   | build type    |
 | :----:                | :----         | :----         |
@@ -93,17 +105,38 @@ Tested SDKs:
 | 
 
 ## Tested Projects
-| Testing Compile Project | Version | Used Profiles |
-| :----: | :----: | :---- |
-| CMake | latest (github) | `vs/2026/BuildTools`, `msvc/v145_14.50.35717/x64`, `cmake/4.2.3`, `ninja/1.12.1`, `ucrt/10.0.26100.0` |
+Projects listed below is the test result of development environment that deployed by wemi generated TclEnvironment Modulefiles.
+| Testing Compile Project | Version | Used Profiles | `__future__` wemi  profile | 
+| :----: | :----: | :---- | :----: |
+| [`Kitware/CMake`][cmake] | latest | `vs/2026/BuildTools`, `msvc/v145_14.50.35717/x64`, `cmake/4.2.3`, `ninja/1.12.1`, `ucrt/10.0.26100.0`| -- |
+| [`NVIDIA/AMGX`][amgx] | latest | `vs/2026/BuildTools`, `msvc/v145_14.50.35717/x64`, `cmake/4.2.3`, `ninja/1.12.1`, `ucrt/10.0.26100.0`| `nvidia/amgx` |
+||| `nvidia/cuda/13.2`, `intel/oneapi`, `intel/mkl/2025.1`|
+| [`NVIDIA/cutlass`][cutlass] | latest | `vs/2026/BuildTools`, `cmake/4.2.3`, `ninja/1.12.1`, | `nvidia/cutlass` |
+||| `msvc/v145_14.50.35717/x64`, `ucrt/10.0.26100.0`, `nvidia/cuda/13.2` | 
 
-## Project Develop Environment
- - ### IDE
- - Python 3.14.X
- - Astral UV
- - VSCode 
- - ### YT Music
- - 七見斷滅智論抄 Prajnaparamitopadesa to Quell Seven Calamities (HoYo-Mix, 2026)
- - Upgrade (Slizzy McGuire, 2025)
- - edamame (bbno$ & Rich Brian, 2021)
- - There's nothing holding me back (Shawn mendes, 2016)
+
+
+## Pending Testing Projects
+| Testing Compile Project | Version | Used Profiles | `__future__` wemi  profile | 
+| :----: | :----: | :---- | :----: |
+| [`ROCm/TheRock`][TheRock] | latest | ??? | `ROCm/TheRock/???` |
+| [`ROCm/aotriton`][aotriton] | latest | ??? | `ROCm/aotriton/???` |
+| [`pytorch/pytorch`][torch] | latest, libtorch, CUDA | ??? | `torch/2.X` |
+| [`pytorch/pytorch`][torch] | latest, libtorch, ROCm | ??? | `torch/2.X` |
+| [`nvidia/cuCollections`][cucollect] | latest | ??? | `nvidia/cucollect` |
+| [`form`][symform] | latest | ??? | `form/???` |
+
+<!-- Links -->
+[cmake]:        https://github.com/kitware/cmake
+[amgx]:         https://github.com/nvidia/amgx
+[symform]:      https://github.com/form-dev/form
+[torch]:        https://github.com/pytorch/pytorch
+
+[TheRock]:      https://github.com/ROCm/TheRock
+[aotriton]:     https://github.com/ROCm/aotriton
+
+[cutlass]:      https://github.com/NVIDIA/cutlass
+[cucollect]:    https://github.com/NVIDIA/cuCollections
+
+
+[Il Dottore]:   https://youtu.be/jBfLW28avYU
