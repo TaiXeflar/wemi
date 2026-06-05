@@ -1,5 +1,5 @@
-
-
+<!-- # SPDX-License-Identifier: MIT -->    
+<!-- # Copyright (c) 2026 TaiXeflar  -->
 
 # Cangjie Language (倉頡編程語言)
 

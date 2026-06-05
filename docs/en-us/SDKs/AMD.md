@@ -1,3 +1,5 @@
+<!-- # SPDX-License-Identifier: MIT -->    
+<!-- # Copyright (c) 2026 TaiXeflar  -->
 
 
 AMD SDKs is supposed to support AMD developer website released HIP SDK and ROCm/TheRock project.

@@ -1,4 +1,5 @@
-
+<!-- # SPDX-License-Identifier: MIT -->    
+<!-- # Copyright (c) 2026 TaiXeflar  -->
 
 # NVIDIA SDK supported list
 
