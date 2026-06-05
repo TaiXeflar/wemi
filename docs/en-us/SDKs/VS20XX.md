@@ -1,4 +1,10 @@
-<!-- # SPDX-License-Identifier: MIT -->    
+SPDX-License-Identifier: MIT
+Copyright (c) 2026-${year} WEMI Contributors
+
+This software is released under the MIT License.
+https://opensource.org/licenses/MIT
+
+<!-- # SPDX-License-Identifier: MIT -->
 <!-- # Copyright (c) 2026 TaiXeflar  -->
 
 # Microsoft Visual Studio Support
@@ -49,8 +55,8 @@ Supported Targets will depend on MSVC version, supported history to generate spe
  - ARM64EC (WEMI will generates a cmake toolchain file and combine it (specify `CMAKE_TOOLCHAIN_FILE`).)
 
 ## MSVC Redistributables
-WEMI will not generate MSVC redistributables modulefiles. 
-  
+WEMI will not generate MSVC redistributables modulefiles.
+
 ## LLVM/Clang
 WEMI will generates LLVM Tcl Modulefile rules with VS20XX pre-load level access.
 
@@ -74,5 +80,3 @@ For example, if you load `msvc/v145_14.50.35717/x64`, you will get options like 
 
  - Disscuss on Roslyn compilers.
  - Disscuss on MSVC redist.
-
-

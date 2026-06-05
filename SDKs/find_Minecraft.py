@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from pathlib import Path
 import subprocess
 
@@ -14,24 +20,24 @@ class FindMinecraft(FindSDK):
         super().__init__()
 
     def __WINDOWS__(self):
-        
+
         minecraft_classic = self.everything('MinecraftLauncher.exe', precise=True)[0]
         minecraft_modern  = self.everything('minecraft.exe', precise=True)[0]
 
-        # 2 assert: 
+        # 2 assert:
         # ASSERT MinecraftLauncher.exe is first in SYSTEM
         # ASSERT minecraft.exe is unique/singleton in SYSTEM
 
         if minecraft_classic:
-            
-            v = subprocess.run(['powershell', 
-                                '-NoProfile', 
-                                '-Command', 
+
+            v = subprocess.run(['powershell',
+                                '-NoProfile',
+                                '-Command',
                                 f'(Get-Item "{minecraft_classic}").VersionInfo.FileVersion'],
                                 capture_output=True,
                                 text=True,
                                 check=True).stdout.strip()
-            
+
             message(f"    Found Classic Minecraft Launcher {v}")
 
             self.add_rule(
@@ -53,6 +59,3 @@ class FindMinecraft(FindSDK):
                 root=Path(minecraft_modern).parent,
                 PATH=['$root'],
             )
-
-
-    

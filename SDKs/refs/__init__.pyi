@@ -27,22 +27,22 @@ class FindSDK(ABC):
 
     # @abstractmethod
     def __BSD__(self): ...
-    
+
     # @abstractmethod
     def __MACOS__(self): ...
-    
+
     # @abstractmethod
     def __AIX__(self): ...
-    
+
     # @abstractmethod
     def __CYGWIN__(self): ...
 
     # @abstractmethod
     def __MSYS2__(self): ...
-    
+
     # @abstractmethod
     def __HARMONY__(self): ...
-    
+
     @property
     def version(self): ...
 
@@ -50,7 +50,7 @@ class FindSDK(ABC):
     def rules(self) -> list[ModulesObject]: ...
 
     def where(self, *args:str): ...
-    
+
     @overload
     def everything(self, file: str, /) -> list[Path] | None: ...
     @overload
@@ -61,13 +61,13 @@ class FindSDK(ABC):
     def everything(self, cmd: list[str], /) -> list[Path] | None: ...
     @overload
     def everything(self, *args: str) -> list[str] | None: ...
-    
+
     def __where__(self, *args:str) -> Path | None: ...
-        
+
     def __es__(self, file:str, /, *args:str) -> list[str] | None: ...
 
 
-    
+
     def _find_program(self, *args) -> Path | None: ...
 
     def _find_version(self,
@@ -79,21 +79,21 @@ class FindSDK(ABC):
                       *,
                       input: str = None,
                       pattern: str = None): ...
-    
+
     @overload
     def add_rule(self,
                  *,
                  Module: str = None,
                  output: str = None,
                  mode: Literal["tcl", "cmake"] = "tcl",
-                 Include_file: str = None, 
+                 Include_file: str = None,
                  Version: str | VersionNum = "0.0.0",
                  modules_help:str = ...,
                  module_whaits:str = ...,
                  deps: list[str] = [],
                  conflicts: list[str] = [],
                  vcompare: list[dict[str, Any]] = None,
-                 VARs: dict[str, str] = {}, 
+                 VARs: dict[str, str] = {},
                  ENVs: dict[str, str] = {},
                  root: str,
                  PATH: str | list[Literal["$root/bin", '$root'], str] = [],
@@ -118,5 +118,5 @@ class FindSDK(ABC):
     def add_rule(self, obj:list[dict]): ...
     @overload
     def add_rule(self, obj:dict): ...
-        
+
     def update(self, name:str, info_dict: dict): ...

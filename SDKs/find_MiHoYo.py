@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 import re
 from pathlib import Path
 from typing import Literal, Union
@@ -20,12 +26,12 @@ class FindMiHoYo(FindSDK):
             dict]
 
     def __WINDOWS__(self):
-        
+
         k: MIHOYO_PROJECTS_TYPEHINT
 
         for k, v in mihoyo_app_registry_phonebook.items():
             install_dir = regedit("HKCU", v, key_name="GameInstallPath")
-    
+
             if install_dir is None:
                 continue
             else:

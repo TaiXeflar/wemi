@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from typing import Literal
 from pathlib import Path
 from textwrap import dedent
@@ -12,7 +18,7 @@ from tasks.installer import Installer
 
 
 class Driver():
-    
+
     @staticmethod
     def run(task:Literal["configure", "build", "install"]):
         match task:

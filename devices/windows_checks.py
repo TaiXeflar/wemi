@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 import os, sys, platform
 import subprocess
 import shutil
@@ -14,9 +20,9 @@ from utils import message
 class WindowsCheck:
     pyver = VersionNum(tuple(sys.version_info)[0:2])
     pyitp = platform.python_implementation()
-    
-    def __init__(self): 
-        
+
+    def __init__(self):
+
         message(f' -- The Python Identification is {self.pyitp} {self.pyver}')
         wait(0.3)
         self.check_python_version(self.pyver, '3.11.0', '3.14.15')
@@ -42,15 +48,15 @@ class WindowsCheck:
             message(f'{msg:<60} -- {tgt:<10} -- Failed')
             message('WARNING', dedent(f'''\
                 Warning: WEMI found incompatiable Python version {tgt}. Please select another Python version.
-                
+
                     traceback: Required versions is {ver} <= Version <= {MAX}, but found {tgt}'''))
 
     def check_python_interps(
-            self, 
+            self,
             allow_interps: Sequence[Literal[
                 'CPython', 'PyPy', 'Jython', 'IronPython', 'MicroPython', 'GraalPy', 'RustPython'
             ]] = ['CPython']):
-        
+
         msg = f' -- Checking for Python Interpreter is supported type'
         message(msg)
         wait(0.3)
@@ -70,15 +76,15 @@ class WindowsCheck:
 
         v = os.getenv('VIRTUAL_ENV')
         c = os.getenv('CONDA_PREFIX')
-        
+
         if c:
             message(f'{msg:<74} -- Conda')
-                    
+
         if v:
             with open(Path(v)/'pyvenv.cfg') as f:
-                
+
                 v_content = f.read()
-            
+
             if 'uv' in v_content:
                 message(f'{msg:<74} -- Astral UV')
             else:
@@ -89,12 +95,12 @@ class WindowsCheck:
             else:
                 message('HINT', (Path(sys.executable).parent/'LICENSE.txt'))
 
-    def check_python_winreg(self): 
+    def check_python_winreg(self):
         msg = f' -- Checking for Python Standard Library have winreg module'
         message(msg)
         wait(0.3)
 
-        try: 
+        try:
             import winreg
             message(f'{msg:<74} -- Success')
         except ImportError:
@@ -104,7 +110,7 @@ class WindowsCheck:
                 releases. e.g. Cygwin/MSYS2 etc POSIX dependency required Python is incompatiable.'''))
         finally:
             pass
-        
+
     def check_everything_service(self):
         msg = f' -- Checking for Windows has Everything service'
         message(msg)
@@ -117,7 +123,7 @@ class WindowsCheck:
         else:
             message(f'{msg:<74} -- No')
             raise RuntimeError(f'WEMI requires voidtools Everything service. Please install it.')
-        
+
     def check_everything_cli(self):
         msg = f' -- Checking for Windows has Everything CLI'
         message(msg)
@@ -137,5 +143,3 @@ class WindowsCheck:
                 message(f'{msg:<74} Not Found')
                 raise RuntimeError(dedent(
                     f'WEMI requires voidtools Everything CLI. Please download it and unzip to .deps/ folder.'))
-            
-    

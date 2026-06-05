@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from typing import Literal
 
 CUDA_X_TYPEHINT = Literal[
@@ -72,4 +78,3 @@ cuda_components_phonebook: dict[str, str | None] = {
     "libcudacxx":           r"lib/cmake/libcudacxx/libcudacxx-config-version.cmake",
     "nsight-compute":       "nsight_compute",
 }
-

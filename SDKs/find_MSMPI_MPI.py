@@ -1,7 +1,20 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
-
-
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
 import os
 import subprocess
@@ -24,11 +37,11 @@ class FindMSMPI(FindSDK):
         if os.getenv("PROCESSOR_ARCHITECTURE") not in ("AMD64", "i686"):
             message("WARNING", "Found ARM/ARM64/ARM64EC devices. Disable MSMPI support.")
             return
-        
+
         msmpi_regedit_root = (
-            Path(raw_path) 
-            if (raw_path := regedit("HKLM", r"SOFTWARE\Microsoft\MPI", key_name="InstallRoot")) 
-            else None   
+            Path(raw_path)
+            if (raw_path := regedit("HKLM", r"SOFTWARE\Microsoft\MPI", key_name="InstallRoot"))
+            else None
         )
 
         if not msmpi_regedit_root:
@@ -38,7 +51,7 @@ class FindMSMPI(FindSDK):
         try:
             mpiexec_dir_list = [
                 Path(mpiexec).resolve()
-                for mpiexec in subprocess.run([self.es, r"mpiexec.exe"], 
+                for mpiexec in subprocess.run([self.es, r"mpiexec.exe"],
                                               capture_output=True,
                                               check=True,
                                               text=True).stdout.splitlines()
@@ -53,7 +66,7 @@ class FindMSMPI(FindSDK):
         if not msmpi_mpiexec:
             # message("WARNING", "Warning: Failed to compile MSMPI modulefile object due to no results.")
             return
-        
+
         self.add_rule(Module="microsoft/msmpi/mpiexec",
                       mode="tcl",
                       Include_file="template_msmpi_mpiexec",
@@ -63,5 +76,3 @@ class FindMSMPI(FindSDK):
                         "MSMPI_BIN": (msmpi_regedit_root/"Bin").resolve().as_posix()
                       },
                       PATH=["$env(MSMPI_BIN)"])
-
-

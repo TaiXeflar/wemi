@@ -1,3 +1,9 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from __future__ import annotations
 from collections.abc import Iterable
 from typing import Optional, Union, Literal, Any
@@ -17,9 +23,9 @@ import utils.config as config
 # ... (ColorString class 定義保持不變) ...
 class ColorString:
     def __init__(
-        self, 
-        text: str, 
-        rgb: Optional[tuple[int, int, int]] = None, 
+        self,
+        text: str,
+        rgb: Optional[tuple[int, int, int]] = None,
         bold: Literal["BOLD", None] = None
     ) -> None:
         self.content = text

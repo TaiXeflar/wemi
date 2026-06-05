@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 import sys
 import types
 import traceback
@@ -25,7 +31,7 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
     seh_style = config.SEH_STYLE.lower()
 
     if issubclass(exc_type, KeyboardInterrupt):
-        message("ERROR", 
+        message("ERROR",
                 f'WEMI stopped {config.DEFAULT_TASK.capitalize()} process by recieving user Keyboard Interrupt (Ctrl+C).')
         sys.exit(130)
 
@@ -51,7 +57,7 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
         # 呼叫 Python 最底層的原生彩色輸出
         sys.__excepthook__(exc_type, exc_value, tb)
         return
-    
+
     elif seh_style in ("gcc", "clang"):
         message('')
         message("ERROR", f"Python traceback (most recent call last): {str(exc_value)}")
@@ -63,20 +69,20 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
 
     for i, (frame, fmt_str) in enumerate(zip(frames, formatted_frames)):
         is_last = (i == len(frames) - 1)
-        
+
         filename = Path(frame.filename).resolve().as_posix()
         lineno = frame.lineno
         func_name = frame.name if frame.name != "<module>" else "global scope"
-        
+
         lines = fmt_str.rstrip('\n').split('\n')
         code_line = ""
         caret_line = ""
-        
+
         if len(lines) >= 2:
             code_line = lines[1]
         if len(lines) >= 3:
             caret_line = lines[2]
-            
+
         if code_line.startswith("    "):
             code_line = code_line[4:]
         if caret_line.startswith("    "):
@@ -85,13 +91,13 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
         col = (getattr(frame, 'colno', 0) or 0) + 1
 
         # ==== 準備上色的字串元件 ====
-        
+
         # 決定當前層級的主題色：最後一層(error)用 ERROR，前面呼叫堆疊(note)用 HINT
 
         # 1. 檔案路徑與位置 (粗體)
         file_loc = cstring(f"{filename}:{lineno}:{col}:", )
         file_loc_msvc = cstring(f"{filename}({lineno},{col}):", )
-        
+
         # 2. 標籤與錯誤訊息
         if is_last:
             msg = cstring(f"error: {exc_type.__name__}", "ERROR", "BOLD")
@@ -109,16 +115,16 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
             # 取得波浪號的起點與終點索引
             start_idx = len(caret_line) - len(caret_line.lstrip(' '))
             end_idx = len(caret_line.rstrip(' '))
-            
+
             # 安全防護，避免超出字串長度
             start_idx = min(start_idx, len(code_line))
             end_idx = min(end_idx, len(code_line))
-            
+
             if start_idx < end_idx:
                 before = code_line[:start_idx]
                 target = code_line[start_idx:end_idx]
                 after = code_line[end_idx:]
-                
+
                 # 將目標區塊加上主題色與粗體
                 colored_target = cstring(target, "ERROR", "BOLD")
                 colored_code_line = f"{before}{colored_target}{after}"
@@ -132,7 +138,7 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
 
             print(f"In Python file {colored_file}: In function {colored_func}()")
             print(f"In Python file {file_loc} {msg}")
-            
+
             if code_line:
                 print(f"{lineno:5} | {colored_code_line}")
                 if caret_line:
@@ -152,7 +158,7 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
                 # msg_msvc = f"{tag_msvc} {err_type}: {err_text}"
             else:
                 msg_msvc = f"{tag} called from here"
-                
+
             print(f"{file_loc_msvc} {msg_msvc}")
             if code_line:
                 print(colored_code_line)
@@ -166,9 +172,9 @@ def unwind(exc_type: type[E], exc_value: E, tb: TracebackType):
 
 def setup_excepthook():
     sys.excepthook = unwind
-    
 
-    
+
+
 
 # # =========================================
 # # 測試區塊

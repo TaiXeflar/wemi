@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from pathlib import Path
 
 from .refs import FindSDK
@@ -20,22 +26,22 @@ class FindUCRT(FindSDK):
         super().__WINDOWS__()
 
         # Windows SDK (UCRT)
-        ucrt_root = regedit(r"HKLM", 
-                            r"SOFTWARE\Microsoft\Windows Kits\Installed Roots", 
+        ucrt_root = regedit(r"HKLM",
+                            r"SOFTWARE\Microsoft\Windows Kits\Installed Roots",
                             key_name=r"KitsRoot10")
         if ucrt_root:
             ucrt_root = Path(ucrt_root).resolve()
 
-            ucrt_versions = regedit(r"HKLM", 
+            ucrt_versions = regedit(r"HKLM",
                                     r"SOFTWARE\Microsoft\Windows Kits\Installed Roots")
             for ucrt in ucrt_versions:
                 archs = subdirs(ucrt_root/"Lib"/ucrt/"ucrt", leaf=True)
 
                 message(f'\tUCRT {ucrt}')
-            
+
                 self.add_rule([ModulesObject(
                     Module=f"winsdk/{arch}/ucrt/{ucrt}",
-                    mode="tcl", 
+                    mode="tcl",
                     output=f".deps/winsdk/{arch}/ucrt/{ucrt}",
                     Include_file="template_ucrt",
                     Version=ucrt,
@@ -62,10 +68,9 @@ class FindUCRT(FindSDK):
                         "$root/lib/$UCRT_VERSION/um/$UCRT_ARCH"],
 
                     ) for arch in archs])
-            
+
             for ucrt in ucrt_versions:
                 self.update(f"Windows SDK {ucrt}", {"Path": f"{Path(ucrt_root/ucrt).resolve().as_posix()}"})
-        
+
         else:
             pass
-

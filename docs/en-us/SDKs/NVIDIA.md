@@ -1,4 +1,10 @@
-<!-- # SPDX-License-Identifier: MIT -->    
+SPDX-License-Identifier: MIT
+Copyright (c) 2026-${year} WEMI Contributors
+
+This software is released under the MIT License.
+https://opensource.org/licenses/MIT
+
+<!-- # SPDX-License-Identifier: MIT -->
 <!-- # Copyright (c) 2026 TaiXeflar  -->
 
 # NVIDIA SDK supported list
@@ -22,9 +28,9 @@ Within CUDA Toolkit Version limitation mentioned above, most of cuDNN is support
  - cuDNN 8
  - cuDNN 9
 
-  
+
 ## NVIDIA cuDSS
- - cuDSS 0.X.Y 
+ - cuDSS 0.X.Y
 
 ## NVIDIA cuTENSOR
  - cuTENSOR 1.X

@@ -1,4 +1,10 @@
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from typing import Any
 from pathlib import Path
 import json
@@ -21,18 +27,18 @@ class FindTheRock(RocXParserMixin, FindSDK):
     @property
     def SDK_NAME(self) -> str:
         return "ROCm/TheRock"
-    
+
     def __init__(self):
         super().__init__()
 
     # --- 主流程 ---
     def __WINDOWS__(self):
-        
+
         hip_dirs = [Path(hip) for hip in self.everything('hipcc.exe')]
 
         if not hip_dirs:
             return
-        
+
         hip_dirs_therock = [hip.parent.parent for hip in hip_dirs if self._hip_is_from_therock(hip)]
 
         for dist in hip_dirs_therock:
@@ -62,7 +68,7 @@ class FindTheRock(RocXParserMixin, FindSDK):
                 Warning: skipping ROCm/TheRock {rocm_ver} profile with version cinfigure incorrect.'''))
                 continue
 
-            
+
             self.add_rule(ModulesObject(
                 Module=f"ROCm/TheRock/{rocm_version}",
                 output=f"ROCm/TheRock/{rocm_version}",
@@ -71,6 +77,12 @@ class FindTheRock(RocXParserMixin, FindSDK):
                 Version=rocm_version,
                 deps=["UCRT"],
                 conflicts=['ROCm/TheRock'],
+                llvm_conflicts=['llvm', 'cangjie'],
+                hetero_conflicts=[
+                    'amd/hip', 'intel/ocloc', 'intel/mkl',
+                    'nvidia/cuda', 'nvidia/cudnn', 'nvidia/cudss', 'nvidia/cusparselt', 'nvidia/cutensor',
+                    'nvidia/nvhpc', 'nvidia/nvhpc-byo',
+                ],
                 root=dist.as_posix(),
                 ENVs={"ROCM_HOME": "$root", "ROCM_PATH": "$root", "LLVM_DIR": "$root/lib/llvm"},
                 PATH=["$root/bin", "$root/lib/llvm/bin"],

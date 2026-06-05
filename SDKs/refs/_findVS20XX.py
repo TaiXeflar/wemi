@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 import subprocess
 import json
 from pathlib import Path
@@ -19,7 +25,7 @@ VC_ARCHS = ['x86', 'x64', 'arm', 'arm64', 'arm64ec']
 
 def cpu_host_arch():
     import platform
-    
+
     if platform.machine().strip().lower().startswith(("amd64", "intel64", "em64t", "x86_64", "x86-64")):
         host = "x64"
     elif platform.machine().strip().lower().startswith(("arm64", "aarch64", "armv8")):
@@ -33,7 +39,7 @@ def cpu_host_arch():
 
     return host
 
-def _get_vswhere_install() -> list[dict[Literal["Version", "Edition", "Install"], str]] | None: 
+def _get_vswhere_install() -> list[dict[Literal["Version", "Edition", "Install"], str]] | None:
     vswhere = Path(r"C:/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe").resolve()
     if vswhere.exists():
         try:
@@ -48,11 +54,11 @@ def _get_vswhere_install() -> list[dict[Literal["Version", "Edition", "Install"]
                 # 1. 抓取年份 (例如: 2022)
                 catalog_dict = instance.get("catalog", {})
                 version = catalog_dict.get("productLineVersion", "Unknown")
-                
+
                 # 2. 抓取產品 ID 並取出最後的單字 (例如: Microsoft...Product.BuildTools -> BuildTools)
                 product_id = instance.get("productId", "")
                 edition = product_id.split(".")[-1] if product_id else "Unknown"
-                
+
                 # 3. 抓取安裝路徑
                 install_path = instance.get("installationPath", "Unknown")
 
@@ -62,9 +68,9 @@ def _get_vswhere_install() -> list[dict[Literal["Version", "Edition", "Install"]
                     "Edition": edition,
                     "Install": install_path
                 })
-            
+
             return installations
-        
+
         except subprocess.CalledProcessError as e:
             print(f"Execute vswhere.exe have error: {e}")
             return []
@@ -74,7 +80,7 @@ def _get_vswhere_install() -> list[dict[Literal["Version", "Edition", "Install"]
     else:
         print(f"Not found vswhere program.")
         return []
-    
+
 
 def _vc_ver_parser(vc_ver:str|VersionNum):
     if VERSION(vc_ver, ">=", "14.50"):
@@ -87,7 +93,7 @@ def _vc_ver_parser(vc_ver:str|VersionNum):
         vc_tag = "141"
     else:
         raise Exception(f"WEMI doesn't support MSVC v140 and lower versions.")
-    
+
     return vc_tag
 
 def _vs_ver_parser(vs_ver:str|int):

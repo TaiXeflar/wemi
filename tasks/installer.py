@@ -1,3 +1,9 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 import json
 import shutil
 from pathlib import Path
@@ -8,15 +14,15 @@ from utils import message, config
 
 class Installer:
 
-    def install(self): 
+    def install(self):
 
         dest = config.MODULE_INSTALL_PREFIX
 
-        if not dest:  
+        if not dest:
             raise ValueError(dedent('''\
                 Install prefix cannot be None or empty.
             '''))
-        
+
         dest = self._path_fixer(dest)
 
         install_dir = dest / 'modulefiles'
@@ -25,7 +31,7 @@ class Installer:
 
         if not cache_file.exists():
             raise FileNotFoundError('Cannot find build rules from build/cache.json')
-        
+
 
         cache_data = json.loads(cache_file.read_text(encoding='utf-8'))
         cache = [ModulesObject(obj) for obj in cache_data]
@@ -38,7 +44,7 @@ class Installer:
             try:
                 src_file = Path('build/modulefiles') / obj.output
                 dst_file = install_dir / obj.output
-                
+
                 dst_file.parent.mkdir(parents=True, exist_ok=True)
 
 
@@ -58,7 +64,7 @@ class Installer:
                     Installation to directory {dst_file.parent} has been denied.'''))
 
         message("NOTICE", "\n".join(inst_msg))
-            
+
 
     def _path_fixer(self, pth: Path | str, /) -> Path:
         if isinstance(pth, (Path, str)):

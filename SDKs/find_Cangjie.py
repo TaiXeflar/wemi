@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 import subprocess
 from pathlib import Path
 
@@ -48,7 +54,7 @@ class FindCangjie(FindSDK):
             message(f'\tcjc:    {cjc_ver}')
             message(f'\tLLVM:   {cangjie_llvm_ver}, target {cangjie_llvm_tgt}')
             message(f'\tMinGW:  {cangjie_mingw_ver}')
-                            
+
             self.add_rule(ModulesObject(
                 Module=f"cangjie/{cjc_ver}",
                 output=f"cangjie/{cjc_ver}",
@@ -69,5 +75,3 @@ class FindCangjie(FindSDK):
                     "~/.cjpm/bin"
                 ]
             ))
-            
-                

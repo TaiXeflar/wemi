@@ -1,4 +1,10 @@
 # SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
+# SPDX-License-Identifier: MIT
 # Copyright (c) 2026 TaiXeflar
 
 import sys
@@ -20,6 +26,6 @@ def main():
     seh.setup_excepthook()
     Driver.run(config.DEFAULT_TASK)
 
-    
+
 if __name__ == "__main__":
     main()

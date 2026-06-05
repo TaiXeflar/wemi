@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from abc import ABC, abstractmethod
 import platform
 from pathlib import Path
@@ -13,7 +19,7 @@ import os
 
 from utils.compare_functions import VersionNum
 from utils import message
-from tasks import ModulesObject
+from tasks.objects.modulesobject import ModulesObject, PROFILES_HINT
 
 
 def os_type() -> Literal[
@@ -22,13 +28,13 @@ def os_type() -> Literal[
     "MSYS2/mingw32", "MSYS2/mingw64", "MSYS2/ucrt64", "MSYS2/clang32", "MSYS2/clang64"
 ]:
     msystem = os.getenv("MSYSTEM")
-    
+
     if msystem:
         return f"MSYS2/{msystem.lower()}"
 
     if sys.platform.startswith("cygwin"):
         return "Cygwin"
-    
+
 
     name: str = platform.system()
 
@@ -37,7 +43,7 @@ def os_type() -> Literal[
         if sys.platform.startswith("cygwin"):
             sysname = "Cygwin"
         if msys := os.getenv("MSYSTEM"):
-            sysname = f"MSYS2/{msys}"   
+            sysname = f"MSYS2/{msys}"
     elif name == "Linux":
         sysname = name
         # if D
@@ -109,13 +115,13 @@ class FindSDK(ABC):
         # raise NotImplementedError("WEMI requires '__WINDOWS__' method implementation.")
 
     # @abstractmethod
-    def __LINUX__(self): 
+    def __LINUX__(self):
         message("FATAL_ERROR", "Linux Platform is not supported")
 
     # @abstractmethod
     def __BSD__(self):
         message("FATAL_ERROR", "BSD Platform is not supported")
-    
+
     # @abstractmethod
     def __MACOS__(self):
         message("FATAL_ERROR", "macOS Platform is not supported")
@@ -143,22 +149,22 @@ class FindSDK(ABC):
     @property
     def rules(self) -> list[ModulesObject]:
         return self.info
-    
+
     def __where__(self, *args:str) -> Path | None:
         if not args:
-            return 
+            return
 
         executable = Path(*args)
 
         if executable is None:
-            return 
+            return
 
         _phony = where(str(executable))
         if not _phony:
             return
         return Path(_phony).resolve()
-    
-    def where(self, *args:str): 
+
+    def where(self, *args:str):
         return self.__where__(self, *args)
 
     # 1. 統一的對外接口：負責「解析不同型態的輸入」並組裝成 list
@@ -177,7 +183,7 @@ class FindSDK(ABC):
             if kwargs.get('regex'):
                 cmd_args.append("-r")
                 cmd_args.extend(args)
-                
+
             elif kwargs.get('precise'):
                 cmd_args.append("-r")  # precise 也改用正規表達式模式
                 # 將每一個傳入的字串轉換為嚴格的全字匹配正則表達式
@@ -185,7 +191,7 @@ class FindSDK(ABC):
                 for arg in args:
                     safe_str = re.escape(arg)
                     cmd_args.append(f"^{safe_str}$")
-                    
+
             else:
                 # 一般搜尋或萬用字元
                 cmd_args.extend(args)
@@ -217,19 +223,19 @@ class FindSDK(ABC):
             # 加入 capture_output=True 才能抓到回傳值，text=True 讓回傳值變成字串而非 bytes
             # encoding 建議設為 utf-8 避免中文檔名亂碼
             result = subprocess.run(
-                full_cmd, 
-                capture_output=True, 
-                text=True, 
-                check=True, 
+                full_cmd,
+                capture_output=True,
+                text=True,
+                check=True,
                 encoding='utf-8'
             )
-            
+
             # 將 es.exe 輸出的多行文字，切割成 list 回傳
             if result.stdout:
                 # 移除頭尾空白後以換行符號切割
                 return [Path(pth) for pth in result.stdout.strip().split('\n')]
             return []
-            
+
         except subprocess.CalledProcessError as e:
             # 可以在這裡加入你的 logging
             print(f"Everything 執行錯誤: {e}")
@@ -239,16 +245,16 @@ class FindSDK(ABC):
             return []
 
 
-    
+
     def _find_program(self, *args) -> Path | None:
 
         if not args:
-            return 
+            return
 
         executable = Path(*args)
 
         if executable is None:
-            return 
+            return
 
         _phony = where(str(executable))
         if not _phony:
@@ -292,9 +298,9 @@ class FindSDK(ABC):
         cmd = [str(executable), *args] if args else [str(executable)]
 
         try:
-            result = subprocess.run(cmd, 
-                                    input=input, 
-                                    text=True, 
+            result = subprocess.run(cmd,
+                                    input=input,
+                                    text=True,
                                     encoding='utf-8',
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT,
@@ -328,19 +334,21 @@ class FindSDK(ABC):
             f"Target text was: {search_target[:100]}... \n"
             f"Tried patterns: {candidates}"
         )
-    
+
     def add_rule(self,
                  obj: list[ModulesObject] | ModulesObject | list[dict] | dict = None,
                  /,
                  Module: str = None,
                  output: str = None,
                  mode: Literal["tcl", "cmake"] = "tcl",
-                 Include_file: str = None, 
+                 Include_file: str = None,
                  Version: str | VersionNum = "0.0.0",
                  modules_help:str = "",
                  module_whaits:str = "",
                  deps: list[str] = [],
                  conflicts: list[str] = [],
+                 llvm_conflicts: list[PROFILES_HINT] = [],
+                 hetero_conflicts: list[PROFILES_HINT] = [],
                  vcompare: list[dict[str, Any]] = None,
                  VARs: dict[str, str] = {},
                  ENVs: dict[str, str] = {},
@@ -359,7 +367,7 @@ class FindSDK(ABC):
                  MANPATH: list[str] = [],
                  MODULEPATH: list[str] = [],
                  cmake_file_content: list[str] = [],
-                 **kwargs):         
+                 **kwargs):
 
         if obj is None:
             # 1. 將所有明確定義的參數收集回字典
@@ -373,6 +381,8 @@ class FindSDK(ABC):
                 "module_whaits": module_whaits,
                 "deps": deps,
                 "conflicts": conflicts,
+                "llvm_conflicts": llvm_conflicts,
+                "hetero_conflicts": hetero_conflicts,
                 "vcompare": vcompare,
                 "VARs": VARs,
                 "ENVs": ENVs,
@@ -392,7 +402,7 @@ class FindSDK(ABC):
                 "MODULEPATH": MODULEPATH,
                 "cmake_file_content": cmake_file_content,
             }
-            
+
             # 2. 把剩下的 kwargs (例如 MODULEPATH) 也合併進來
             data.update(kwargs)
 
@@ -412,6 +422,6 @@ class FindSDK(ABC):
 
             elif isinstance(obj, ModulesObject):
                 self.info.append(obj)
-        
+
     def update(self, name:str, info_dict: dict):
         self.stat.update({name: info_dict})

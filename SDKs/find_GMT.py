@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from pathlib import Path
 import re
 
@@ -15,7 +21,7 @@ class FindGMT(FindSDK):
         super().__init__()
 
     def __WINDOWS__(self):
-        
+
         gmt_dir_list = [Path(gmt).parent.parent for gmt in self.everything(regex=r'^gmt.exe$')]
 
         for gmt in gmt_dir_list:
@@ -41,9 +47,9 @@ class FindGMT(FindSDK):
             message(f'    GMT{gmt_major} ({gmt_version})    {gmt.resolve().as_posix()}')
 
 
-    def gmt_ver_extract(self, header: Path | str, /) -> str: 
+    def gmt_ver_extract(self, header: Path | str, /) -> str:
         if not header.exists() or not header.is_file():
-            return 
+            return
 
         try:
             content = header.read_text(encoding="utf-8", errors='ignore')
@@ -62,4 +68,3 @@ class FindGMT(FindSDK):
 
         except Exception as e:
             pass
-        

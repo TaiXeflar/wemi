@@ -1,3 +1,9 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from typing import Literal, List, Optional, Union, Any
 
 from .color_string import cstring
@@ -13,7 +19,7 @@ def regedit(
     *,
     key_name: Optional[
         str
-    ] = None,  
+    ] = None,
 ) -> Union[str, List[str], Any]:  # Any for NOTDEFINED
 
     # 對應 Root Key
@@ -28,19 +34,19 @@ def regedit(
         with winreg.OpenKey(_root, path) as hkey:
 
             if key_name is not None:
-                
+
                 value, _ = winreg.QueryValueEx(hkey, key_name)
                 return str(value) if value else 0 if value == 0 else None
 
             else:
-                
+
                 num_subkeys, _, _ = winreg.QueryInfoKey(hkey)
                 subkeys_list = [winreg.EnumKey(hkey, i) for i in range(num_subkeys)]
                 return subkeys_list
 
     except (FileNotFoundError, OSError) as e:
         return None
-    
+
     except PermissionError:
         print(cstring(f"Hit No enough permission error.", "warn"))
         return None

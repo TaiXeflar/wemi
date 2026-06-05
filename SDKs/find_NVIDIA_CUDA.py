@@ -1,6 +1,12 @@
 
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 import json
 import re
 import os
@@ -31,7 +37,7 @@ class FindCUDA(FindSDK):
         # Exclude SDKs will contain redistributed nvcc
 
     def __WINDOWS__(self):
-        
+
         seen_roots = set()
 
         # Using $env:CUDA_PATH* = <PATH> (O(1) 命中) ---
@@ -51,15 +57,15 @@ class FindCUDA(FindSDK):
         try:
 
             nvccs = self.everything(regex=r'bin\\nvcc\.exe$')
-            
+
             for nvcc in nvccs:
                 # nvcc_path = Path(nvcc.strip())
                 if nvcc.exists():
                     cuda_root = nvcc.parent.parent
                     self._verify_and_register(cuda_root, seen_roots)
-                    
+
         except FileNotFoundError:
-            
+
             pass
         except subprocess.CalledProcessError as e:
             message(f"    [Warning] es.exe execution failed: {e}")
@@ -70,7 +76,7 @@ class FindCUDA(FindSDK):
 
     def _verify_and_register(self, cuda_path: Path, seen_roots: set) -> bool:
         cuda_path = cuda_path.resolve()
-        
+
         # Blacklists
         if cuda_path in seen_roots or self._is_blacklisted(cuda_path.as_posix()):
             return False
@@ -90,20 +96,20 @@ class FindCUDA(FindSDK):
 
         cuda_root_info = cuda_version_json.get("cuda", {})
         full_version = cuda_root_info.get("version", "")
-        
+
         ver_match = re.match(r"^(\d+)\.(\d+)", full_version)
         if not ver_match:
             return False
-            
+
         major, minor = ver_match.groups()
         verstr = f"{major}.{minor}"
         cuda_path_verstr = f"CUDA_PATH_V{major}_{minor}"
 
         seen_roots.add(cuda_path)
         message(f'    NVIDIA CUDA {verstr}:    {cuda_path.as_posix()}')
-        
+
         cudax_stat: dict[CUDA_X_TYPEHINT, Union[str, None]] = { "Path": cuda_path.as_posix() }
-        
+
         for cudaX, vv in cuda_components_phonebook.items():
             cudaX_version = None
             if vv is not None:
@@ -120,19 +126,20 @@ class FindCUDA(FindSDK):
 
             message(f'\t{cudaX:<22} {cudaX_version}')
             cudax_stat[cudaX] = cudaX_version
-            
+
         self.add_rule(ModulesObject(
             Module=f"nvidia/cuda/{verstr}",
             output=f"nvidia/cuda/{verstr}",
             mode='tcl',
             Include_file="template_nvidia_cuda_toolkit",
             Version=verstr,
-            conflicts=["nvidia/cuda"],
-            prereq=['msvc'],
+            conflicts=["nvidia/cuda", "nvidia/nvhpc", 'nvidia/nvhpc-byo'],
+            hetero_conflicts=['amd/hip', 'intel/ocloc'],
+            prereq=['msvc', 'ucrt'],
             deps=[],
             ENVs={
-                "CUDA_HOME": "$root", 
-                "CUDA_PATH": "$root", 
+                "CUDA_HOME": "$root",
+                "CUDA_PATH": "$root",
                 cuda_path_verstr: "$root",
                 "CUDA_VERSION": verstr,
                 "CUDA_MAJOR_VERSION": major,
@@ -140,12 +147,12 @@ class FindCUDA(FindSDK):
             },
             root=cuda_path.as_posix(),
             PATH=[
-                f"$root/bin", 
+                f"$root/bin",
                 f"$root/bin/$env(VSCMD_ARG_TGT_ARCH)",
                 f"$root/nvvm/bin/$env(VSCMD_ARG_TGT_ARCH)"
             ],
             INCLUDE=[
-                "$root/include", 
+                "$root/include",
                 "$root/include/cccl"
             ],
             LIB=[
@@ -153,7 +160,7 @@ class FindCUDA(FindSDK):
                 f"$root/lib/$env(VSCMD_ARG_TGT_ARCH)"
             ],
             LD_LIBRARY_PATH=[
-                f"$root/bin", 
+                f"$root/bin",
                 f"$root/bin/$env(VSCMD_ARG_TGT_ARCH)"
             ],
             MODULEPATH=[

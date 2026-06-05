@@ -1,6 +1,12 @@
 
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 import sys
 import importlib.util
 from pathlib import Path
@@ -23,7 +29,7 @@ class Compiler:
         """
         self.include_dir = Path("include")
         self.output_dir = Path("build/modulefiles/")
-        self._template_cache = {}  
+        self._template_cache = {}
 
     def _load_template_class(self, include_path_str: str):
         """
@@ -34,15 +40,15 @@ class Compiler:
             return self._template_cache[include_path_str]
 
         module_file_path = self.include_dir / f"{include_path_str}.py"
-        
+
         if not module_file_path.exists():
             raise FileNotFoundError(f"Error: Cannot find required include file: {module_file_path}")
 
-        module_name = f"include.{include_path_str.replace('/', '.')}" 
+        module_name = f"include.{include_path_str.replace('/', '.')}"
         spec = importlib.util.spec_from_file_location(module_name, module_file_path)
         module = importlib.util.module_from_spec(spec)
-        
-        sys.modules[module_name] = module 
+
+        sys.modules[module_name] = module
         spec.loader.exec_module(module)
 
         if not hasattr(module, 'ModuleTemplate'):
@@ -70,5 +76,5 @@ class Compiler:
 
         with open(out_path, 'w', encoding='utf-8') as f:
             f.write(tcl_context)
-        
+
         return out_path

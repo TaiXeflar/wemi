@@ -1,3 +1,9 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 import re
 from pathlib import Path
 
@@ -11,12 +17,12 @@ def find_dll_dependencies(file_path: str | Path):
     print(f"Checking for DLL: {target.name} ({target.stat().st_size / 1024 / 1024:.2f} MB)")
 
     try:
-        
+
         with open(target, "rb") as f:
             binary_data = f.read()
 
         pattern = re.compile(rb'[A-Za-z0-9_-]+\.dll', re.IGNORECASE)
-        
+
         matches = set(pattern.findall(binary_data))
 
         dll_list = sorted([m.decode('ascii') for m in matches])

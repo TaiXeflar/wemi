@@ -2,6 +2,12 @@
 
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from pathlib import Path
 from typing import Literal
 
@@ -28,11 +34,11 @@ class FindMATLAB(FindSDK):
         matlab_install_dirs = [
             Path(regedit("HKLM", rf"SOFTWARE\MathWorks\MATLAB\{ver}", key_name="MATLABROOT")).resolve()
             for ver in matlab_versions]
-        
+
         matlab_binary_dirs = [
             Path(regedit("HKLM", rf"SOFTWARE\MathWorks\{ver}\MATLAB", key_name="")).resolve()
             for ver in matlab_versioning]
-        
+
 
         self.add_rule([
             ModulesObject(
@@ -49,7 +55,7 @@ class FindMATLAB(FindSDK):
 
         for ver, pth in zip(matlab_versioning, matlab_install_dirs):
             message(f'\tMATLAB {ver}:   {pth.as_posix()}')
-    
+
 
     def _matlab_version_analyzer(self, version:str):
         ab: Literal["1", "2"]
@@ -65,13 +71,5 @@ class FindMATLAB(FindSDK):
             ab = "b"
         else:
             raise ValueError(f"Unsupported Matlab version with {version} -> R {yr} {ab} where float should be .1/.2")
-        
+
         return f"R{yr}{ab}"
-    
-
-    
-
-
-                
-
-        

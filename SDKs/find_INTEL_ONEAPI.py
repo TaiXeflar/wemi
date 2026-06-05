@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from pathlib import Path
 from textwrap import dedent
 import re, subprocess
@@ -15,8 +21,8 @@ from utils import regedit, subdirs, message, config
 
 
 INTEL_ONEAPI_ROOT = (
-    Path(raw_path) 
-    if (raw_path := regedit('HKLM', r'SOFTWARE\WOW6432Node\Intel\Products\IntelOneAPI', key_name='ProductDir')) 
+    Path(raw_path)
+    if (raw_path := regedit('HKLM', r'SOFTWARE\WOW6432Node\Intel\Products\IntelOneAPI', key_name='ProductDir'))
     else None
 )
 
@@ -25,19 +31,19 @@ INTEL_TARGET_ARCH = intel_target_arch()
 def intel_compiler_version_grepper(compiler: Path | str) -> str:
     if not isinstance(compiler, (Path, str)):
         raise TypeError
-    
+
     compiler = Path(compiler).resolve()
     if not compiler.exists():
         return
-    
-    
-    q = subprocess.run([compiler.as_posix(), '--version'], 
+
+
+    q = subprocess.run([compiler.as_posix(), '--version'],
                     text=True,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT).stdout.splitlines()[0]
-    
+
     match = re.search(r"Version\s+([\d\.]+)", q)
-    
+
     if match:
         return match.group(1)
     else:
@@ -51,7 +57,7 @@ class FindOneAPI(FindSDK):
 
     def __init__(self):
         super().__init__()
-        
+
     def __WINDOWS__(self):
 
         self.add_rule(ModulesObject(
@@ -74,8 +80,8 @@ class FindOneAPI(FindSDK):
         self.add_intel_dnnl(self.ONEAPI_ROOT/'dnnl')
         self.add_intel_mpi(self.ONEAPI_ROOT/'mpi')
         self.add_intel_gdb(self.ONEAPI_ROOT/'debugger')
-    
-    def add_intel_tbb(self, pth:Path) -> list[ModulesObject]: 
+
+    def add_intel_tbb(self, pth:Path) -> list[ModulesObject]:
 
         message(' -- Checking for Intel Thread Building Blocks (TBB) Library')
         tbb_list = []
@@ -119,14 +125,14 @@ class FindOneAPI(FindSDK):
                         '$tbb_root/lib' + f"/{tbb_dist}" if tbb_tree_new else f'$tbb_root/redist/intel64/{tbb_dist}'
                     ]
             ) for tbb_dist in tbb_dist_dirs])
-     
+
         self.add_rule(tbb_list)
 
-    def add_intel_tcm(self, pth:Path) -> list[ModulesObject]: 
+    def add_intel_tcm(self, pth:Path) -> list[ModulesObject]:
 
         message(f' -- Checking for Intel Thread Composability Manager (TCM)')
         tcm_list = []
-        
+
         for tcm in subdirs(pth):
             tcm_list.append(
                 ModulesObject(
@@ -146,7 +152,7 @@ class FindOneAPI(FindSDK):
 
         self.add_rule(tcm_list)
 
-    def add_intel_mpi(self, pth:Path) -> list[ModulesObject]: 
+    def add_intel_mpi(self, pth:Path) -> list[ModulesObject]:
 
         message(f' -- Checking for Intel Message Passing Interface (Intel MPI)')
         mpi_vers = subdirs(pth)
@@ -267,7 +273,7 @@ class FindOneAPI(FindSDK):
                 message(f'\t - icpx        {icpx}')
                 message(f'\t - IntelLLVM   {llvm}')
 
-                
+
 
                 # Not include Intel LLVM
                 compilers.append(ModulesObject(
@@ -276,16 +282,19 @@ class FindOneAPI(FindSDK):
                     mode='tcl',
                     Include_file='template_intel_compiler',
                     Version=ver.name,
+                    prereq=['msvc', 'ucrt'],
                     conflicts=['intel/compiler'],
+                    llvm_conflicts=['amd/hip', 'ROCm/TheRock', 'cangjie', 'nvidia/nvhpc', 'nvidia/nvhpc-byo'],
+                    hetero_conflicts=['amd/hip', 'ROCm/TheRock',],
                     vcompare=None,
                     VARs={
-                        'root':                   self.ONEAPI_ROOT, 
+                        'root':                   self.ONEAPI_ROOT,
                         'compiler_root':          '${root}/compiler/'+ver.name,
                         'intelLLVM_version':      intel_llvm_ver_major,
                         'intel_target_arch':      INTEL_TARGET_ARCH
                     },
                     ENVs={
-                        'ONEAPI_ROOT':            '${root}', 
+                        'ONEAPI_ROOT':            '${root}',
                         'USE_INTEL_LLVM':         0,
                         'ONEAPI_CLANG_VERSION':   '$intelLLVM_version',
                         'INTEL_TARGET_ARCH':      '$intel_target_arch',
@@ -296,7 +305,7 @@ class FindOneAPI(FindSDK):
                         '$compiler_root/windows/bin/$intel_target_arch',                      # $compiler_root/windows/bin\intel64
                         '$compiler_root/redist/windows/${intel_target_arch}_win/compiler',    # $compiler_root/windows/redist/${intel_target_arch}_win\compiler
                         '$compiler_root/lib/ocloc',                                           # $compiler_root/windows/libocloc,
-                    ],                                       
+                    ],
                     INCLUDE=[
                         '$compiler_root/windows/include',
                         '$compiler_root/windows/compiler/include',
@@ -312,7 +321,7 @@ class FindOneAPI(FindSDK):
                         '$compiler_root/opt/lib'
                     ],
                     CMAKE_PREFIX_PATH=['$compiler_root/windows/IntelDPCPP'],
-                    PKG_CONFIG_PATH=['$compiler_root/lib/pkgconfig'],                    
+                    PKG_CONFIG_PATH=['$compiler_root/lib/pkgconfig'],
                 ))
 
                 # Include Intel LLVM
@@ -323,13 +332,15 @@ class FindOneAPI(FindSDK):
                     Include_file='template_intel_compiler',
                     Version=ver.name,
                     conflicts=['intel/compiler'],
+                    llvm_conflicts=['amd/hip', 'ROCm/TheRock', 'cangjie', 'nvidia/nvhpc', 'nvidia/nvhpc-byo'],
+                    hetero_conflicts=['amd/hip', 'ROCm/TheRock',],
                     vcompare=None,
-                    VARs={'root':                   self.ONEAPI_ROOT, 
+                    VARs={'root':                   self.ONEAPI_ROOT,
                           'compiler_root':          '${root}/compiler/'+ver.name,
                           'intelLLVM_version':      intel_llvm_ver_major,
                           'intel_target_arch':      INTEL_TARGET_ARCH
                           },
-                    ENVs={'ONEAPI_ROOT':            '${root}', 
+                    ENVs={'ONEAPI_ROOT':            '${root}',
                           'USE_INTEL_LLVM':         1,
                           'ONEAPI_CLANG_VERSION':   '$intelLLVM_version',
                           'INTEL_TARGET_ARCH':      '$intel_target_arch',
@@ -340,7 +351,7 @@ class FindOneAPI(FindSDK):
                           '$compiler_root/windows/bin/$intel_target_arch',                      # $compiler_root/windows/bin\intel64
                           '$compiler_root/redist/windows/${intel_target_arch}_win/compiler',    # $compiler_root/windows/redist/${intel_target_arch}_win\compiler
                           '$compiler_root/lib/ocloc',                                           # $compiler_root/windows/libocloc,
-                         ],                                       
+                         ],
                     INCLUDE=['$compiler_root/windows/include',
                              '$compiler_root/windows/compiler/include',
                              '$compiler_root/windows/compiler/include/$intel_target_arch'
@@ -354,7 +365,7 @@ class FindOneAPI(FindSDK):
                          '$compiler_root/opt/lib'
                         ],
                     CMAKE_PREFIX_PATH=['$compiler_root/windows/IntelDPCPP'],
-                    PKG_CONFIG_PATH=['$compiler_root/lib/pkgconfig'],                    
+                    PKG_CONFIG_PATH=['$compiler_root/lib/pkgconfig'],
                 ))
 
                 continue
@@ -383,13 +394,15 @@ class FindOneAPI(FindSDK):
                     Include_file='template_intel_compiler',
                     Version=ver.name,
                     conflicts=['intel/compiler'],
+                    llvm_conflicts=['amd/hip', 'ROCm/TheRock', 'cangjie', 'nvidia/nvhpc', 'nvidia/nvhpc-byo'],
+                    hetero_conflicts=['amd/hip', 'ROCm/TheRock',],
                     vcompare=None,
-                    VARs={'root':                   self.ONEAPI_ROOT, 
+                    VARs={'root':                   self.ONEAPI_ROOT,
                           'compiler_root':          f'$root/compiler/{ver.name}',
                           'intelLLVM_version':      intel_llvm_ver_major,
                           'intel_target_arch':      INTEL_TARGET_ARCH,
                           },
-                    ENVs={'ONEAPI_ROOT':            '$root', 
+                    ENVs={'ONEAPI_ROOT':            '$root',
                           'USE_INTEL_LLVM':         0,
                           'ONEAPI_CLANG_VERSION':   '$intelLLVM_version',
                           'INTEL_TARGET_ARCH':      '$intel_target_arch',
@@ -415,13 +428,15 @@ class FindOneAPI(FindSDK):
                     Include_file='template_intel_compiler',
                     Version=ver.name,
                     conflicts=['intel/compiler'],
+                    llvm_conflicts=['amd/hip', 'ROCm/TheRock', 'cangjie', 'nvidia/nvhpc', 'nvidia/nvhpc-byo'],
+                    hetero_conflicts=['amd/hip', 'ROCm/TheRock',],
                     vcompare=None,
-                    VARs={'root':                   self.ONEAPI_ROOT, 
+                    VARs={'root':                   self.ONEAPI_ROOT,
                           'compiler_root':          f'$root/compiler/{ver.name}',
                           'intelLLVM_version':      intel_llvm_ver_major,
                           'intel_target_arch':      INTEL_TARGET_ARCH,
                           },
-                    ENVs={'ONEAPI_ROOT':            '$root', 
+                    ENVs={'ONEAPI_ROOT':            '$root',
                           'USE_INTEL_LLVM':         1,
                           'ONEAPI_CLANG_VERSION':   '$intelLLVM_version',
                           'INTEL_TARGET_ARCH':      '$intel_target_arch',
@@ -442,15 +457,15 @@ class FindOneAPI(FindSDK):
                 ))
 
                 continue
-            
+
             else:
                 raise Exception(dedent(f'''\
                     WEMI configure have an exception runtime error on Intel oneAPI compiler detection.
 
-                     >>> traceback: Neither "windows" or "bin" folder found in Intel compiler search path: 
+                     >>> traceback: Neither "windows" or "bin" folder found in Intel compiler search path:
                                     {ver.resolve().as_posix()}
                     '''))
-            
+
         self.add_rule(compilers)
 
     def add_intel_mkl(self, pth:Path) -> list[ModulesObject]:
@@ -521,18 +536,18 @@ class FindOneAPI(FindSDK):
                 NLSPATH=libdirs,
             ))
 
-    def add_intel_dnnl(self, pth:Path) -> list[ModulesObject]: 
-        
+    def add_intel_dnnl(self, pth:Path) -> list[ModulesObject]:
+
         dnnl_list: list[ModulesObject] = [ ]
         dnnl_dist: dict[str, str] = { }
 
         message(f' -- Checking for Intel Deep Neural Networks Library (oneDNN/DNNL)')
 
         for dnnl in subdirs(pth):
-            
+
             dnnl_ver = dnnl.name
-            
-            # dict: 
+
+            # dict:
             #   {
             #       "2022.1.0.cpu_dpcpp_gpu_dpcpp": "2022.1.0/cpu_dpcpp_gpu_dpcpp",
             #       "2022.1.0.cpu_iomp": "2022.1.0/cpu_iomp"
@@ -552,7 +567,7 @@ class FindOneAPI(FindSDK):
                     Module=f'intel/dnnl/{dnnl_ver}',
                     output=f".deps/intel/oneapi/" + f"intel/dnnl/{dnnl_ver}",
                     mode='tcl',
-                    
+
                     Include_file="template_intel_dnnl",
                     module_whaits=f"Intel oneAPI Deep Neural Network Library (oneDNN/DNNL) -> {dnnl}",
                     conflicts=['intel/dnnl'],
@@ -623,10 +638,10 @@ class FindOneAPI(FindSDK):
 
         self.add_rule(dnnl_list)
 
-    def add_intel_gdb(self, pth:Path) -> list[ModulesObject]: 
+    def add_intel_gdb(self, pth:Path) -> list[ModulesObject]:
 
         message(f' -- Checking for Intel Distribution for GDB')
-        
+
         for gdb in subdirs(pth):
 
             message(f'\tIntel GDB   {gdb.name}')

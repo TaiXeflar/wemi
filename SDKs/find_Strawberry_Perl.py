@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from pathlib import Path
 from utils import message
 import subprocess
@@ -15,17 +21,17 @@ class FindStrawberryPerl(FindSDK):
         super().__init__()
 
     def __WINDOWS__(self):
-        
+
         try:
             perl_lst = [Path(perl).resolve()
-                        for perl in subprocess.run([self.es, r"\perl.exe"], 
-                                                check=True, 
-                                                capture_output=True, 
+                        for perl in subprocess.run([self.es, r"\perl.exe"],
+                                                check=True,
+                                                capture_output=True,
                                                 text=True).stdout.splitlines()
                         if (Path(perl).parent.parent.parent/"README.txt").exists()]
         except:
             return
-        
+
         for perl in perl_lst:
 
             perl_v =        self._find_version(perl, "--version", "X.Y.Z")
@@ -38,7 +44,7 @@ class FindStrawberryPerl(FindSDK):
             message(f'\tGCC             {perl_gcc}, target {perl_gcct}')
             message(f'\tCMake           {perl_cmake}')
             message(f'\tNinja-build     {perl_ninja}')
-            
+
             self.add_rule(ModulesObject(
                 Module=f"strawberry/{perl_v}",
                 output=f"strawberry/{perl_v}",

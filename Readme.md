@@ -1,4 +1,10 @@
-<!-- # SPDX-License-Identifier: MIT -->    
+SPDX-License-Identifier: MIT
+Copyright (c) 2026-${year} WEMI Contributors
+
+This software is released under the MIT License.
+https://opensource.org/licenses/MIT
+
+<!-- # SPDX-License-Identifier: MIT -->
 <!-- # Copyright (c) 2026 TaiXeflar  -->
 
 # Windows Environment Modulefiles Installer (WEMI)
@@ -67,9 +73,9 @@ WEMI have not tested Path with non Latin charcters languages yet:
  - Japanese (JA, Shift-JIS): Japanese uses Kanji, Hiragana and Katakana.
  - Korean (KR).
 
-WEMI strongly not recommend set non Latin characters, full widith characters, half/full width spaces, dots, laft/right slashes as your user name. 
- 
-Instead, PC users should keep their names to English based names, dashes and underscores to avoid any cross-platform program 
+WEMI strongly not recommend set non Latin characters, full widith characters, half/full width spaces, dots, laft/right slashes as your user name.
+
+Instead, PC users should keep their names to English based names, dashes and underscores to avoid any cross-platform program
  have not complete support to it.
 
  For example:
@@ -94,5 +100,3 @@ Currently main language will be written in English (US). With after updates, the
 [gsudo]:                                https://github.com/gerardog/gsudo
 
 [Environment Modules]:                  https://github.com/envmodules/modules
-
-

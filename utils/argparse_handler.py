@@ -1,3 +1,9 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from pathlib import Path
 import argparse
 import sys
@@ -9,7 +15,7 @@ from .functions import *
 def args_update():
     class CustomFormatter(argparse.HelpFormatter):
         def __init__(self, prog):
-            
+
             super().__init__(prog, max_help_position=100, width=150)
 
     parser = argparse.ArgumentParser(
@@ -161,7 +167,7 @@ def args_update():
     help_flags = {"--help", "-help", "-?", "/?", "/help"}
 
     if any(flag in sys.argv for flag in help_flags):
-        
+
         if "--cls" in sys.argv:
             config.CLEAR_HOST = True
 

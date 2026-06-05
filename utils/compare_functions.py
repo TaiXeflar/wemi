@@ -1,3 +1,9 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from __future__ import annotations
 from typing import Iterable, Tuple, Union, Literal, overload
 import re
@@ -277,4 +283,3 @@ def STRMATCH(obj: str, find: str | Iterable[str] | list[str] | Tuple[str]) -> bo
     if isinstance(find, (list, tuple)):
         return any(str(keyword) in target_str for keyword in find)
     return str(find) in target_str
-

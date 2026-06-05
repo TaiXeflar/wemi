@@ -1,6 +1,12 @@
 
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from typing import Literal, get_args, Optional, Any
 from pathlib import Path
 
@@ -170,7 +176,7 @@ _test_phonebook()
 
 class RocXParserMixin:
     """專門用來解析 AMD rocX 元件版本的擴充包"""
-    
+
     def _get_rocx_version(self, rocX: str, value_rule: Optional[str], base_path: Path) -> Optional[Any]:
         if not value_rule:
             return None
@@ -195,22 +201,22 @@ class RocXParserMixin:
                 output="all"
             )
             return query.get("PACKAGE_VERSION")
-        
+
         elif rocX in ("rocgdb", "hipify"):
             # 因為 Mixin 最終會和 FindSDK 結合，所以這裡可以直接呼叫 FindSDK 的方法
             return self._find_version(configure_actual_filename)
-        
+
         elif rocX == "therock":
             with open(configure_actual_filename, "r", encoding="utf-8") as f:
                 return VersionNum(f.read().strip())
-                
+
         return None
-    
+
     def _hip_is_from_therock(self, hipcc: Path | str, /) -> bool:
         hip = Path(hipcc)
         if not hip.exists() or hip is None:
             raise ValueError(f'Unknown error on configure hipcc where value is None.')
-        
+
         hip_bin_dir = hip.parent
         hip_dir = hip.parent.parent
 

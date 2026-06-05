@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from typing import Literal
 from textwrap import dedent
 
@@ -8,12 +14,12 @@ INTEL_ONEAPI_ROOT_REG_ROOT = ...
 
 INTEL_ONEAPI_PROJECTS = (
     "advisor", "compiler", "dal", "dnnl", "debugger", "dev-utilities", "dpcpp-ct", "dpl", "ipp", "ippcp", "mkl",
-    "mpi", "ocloc", "pti", "tbb", "tcm", "umf", "vtune", 
+    "mpi", "ocloc", "pti", "tbb", "tcm", "umf", "vtune",
 )
 
 INTEL_ONEAPI_PROJECTS_TYPEHINT = Literal[
     "advisor", "compiler", "dal", "dnnl", "debugger", "dev-utilities", "dpcpp-ct", "dpl", "ipp", "ippcp", "mkl",
-    "mpi", "ocloc", "pti", "tbb", "tcm", "umf", "vtune", 
+    "mpi", "ocloc", "pti", "tbb", "tcm", "umf", "vtune",
 ]
 
 def intel_target_arch():

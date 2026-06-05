@@ -1,4 +1,10 @@
-<!-- # SPDX-License-Identifier: MIT -->    
+SPDX-License-Identifier: MIT
+Copyright (c) 2026-${year} WEMI Contributors
+
+This software is released under the MIT License.
+https://opensource.org/licenses/MIT
+
+<!-- # SPDX-License-Identifier: MIT -->
 <!-- # Copyright (c) 2026 TaiXeflar  -->
 
 # Intel oneAPI
@@ -34,7 +40,7 @@ With IntelLLVM is available, WEMI generates modulefile will extend a rule with I
 - Intel DNNL 2024.X
 - Intel DNNL 2025.X
 
-## Intel Message Passing Interface (Intel MPI) 
+## Intel Message Passing Interface (Intel MPI)
 
 ## Intel Thread Building Blocks (Intel TBB)
 

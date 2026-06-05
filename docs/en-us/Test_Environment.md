@@ -1,4 +1,10 @@
-<!-- # SPDX-License-Identifier: MIT -->    
+SPDX-License-Identifier: MIT
+Copyright (c) 2026-${year} WEMI Contributors
+
+This software is released under the MIT License.
+https://opensource.org/licenses/MIT
+
+<!-- # SPDX-License-Identifier: MIT -->
 <!-- # Copyright (c) 2026 TaiXeflar  -->
 
 # Project Develop Environment
@@ -37,7 +43,7 @@ WEMI is developed on my PC with these working configuration.
  - ### IDE
  - Python 3.14.X
  - Astral UV
- - VSCode 
+ - VSCode
  - ### YT Music
  - [七見斷滅智論抄 Prajnaparamitopadesa to Quell Seven Calamities][Il Dottore] (HoYo-Mix, 2026)
  - Upgrade (Slizzy McGuire, 2025)
@@ -57,7 +63,7 @@ WEMI is developed on my PC with these working configuration.
 | PowerShell 7          | 7.5.2         | GitHub release Installer
 | Everything            | 1.4.1.1032    | VoidTools website release Installer
 | Everything CLI        | 1.1.0.36      | zip decompress install
-| VSCode                | latest        | 
+| VSCode                | latest        |
 |||
 | AMD HIP SDK           | 7.1           | Installer     |
 | ROCm/TheRock          | 7.12          | `-DCMAKE_BUILD_TYPE=Release` |
@@ -73,9 +79,9 @@ WEMI is developed on my PC with these working configuration.
 |                       | 9.9.0 (cuda 12.9, cuda11.8) | Installer
 | NVIDIA cuDNN SDK      | 9.20.0 (cuda 13.2, cuda12.9) | Installer
 | NVIDIA cuDSS SDK      | 0.6.0 (cuda12) | zip decompress install
-|                       | 0.7.1 (cuda12, cuda13) | Installer 
+|                       | 0.7.1 (cuda12, cuda13) | Installer
 | NVIDIA cuTENSOR SDK   | 2.3.1 (cuda12) | zip compress
-|                       | 2.5.0 (cuda12, cuda13) | Installer 
+|                       | 2.5.0 (cuda12, cuda13) | Installer
 |                       | 2.6.0 (cuda12, cuda13) | Installer
 | NVIDIA cuSPARSELt SDK | 0.8.1 (cuda12) | zip decompress install
 | NVIDIA cutlass        | 4.4.1         | `-DCMAKE_BUILD_TYPE=Release` `-DCMAKE_OBJECT_PATH_MAX=320` |
@@ -102,22 +108,22 @@ WEMI is developed on my PC with these working configuration.
 | Cangjie Lang          | 1.0.3         | zip decompress install
 |                       | 1.0.5         | zip decompress install
 |                       | 1.1.0         | zip decompress install
-| 
+|
 
 ## Tested Projects
 Projects listed below is the test result of development environment that deployed by wemi generated TclEnvironment Modulefiles.
-| Testing Compile Project | Version | Used Profiles | `__future__` wemi  profile | 
+| Testing Compile Project | Version | Used Profiles | `__future__` wemi  profile |
 | :----: | :----: | :---- | :----: |
 | [`Kitware/CMake`][cmake] | latest | `vs/2026/BuildTools`, `msvc/v145_14.50.35717/x64`, `cmake/4.2.3`, `ninja/1.12.1`, `ucrt/10.0.26100.0`| -- |
 | [`NVIDIA/AMGX`][amgx] | latest | `vs/2026/BuildTools`, `msvc/v145_14.50.35717/x64`, `cmake/4.2.3`, `ninja/1.12.1`, `ucrt/10.0.26100.0`| `nvidia/amgx` |
 ||| `nvidia/cuda/13.2`, `intel/oneapi`, `intel/mkl/2025.1`|
 | [`NVIDIA/cutlass`][cutlass] | latest | `vs/2026/BuildTools`, `cmake/4.2.3`, `ninja/1.12.1`, | `nvidia/cutlass` |
-||| `msvc/v145_14.50.35717/x64`, `ucrt/10.0.26100.0`, `nvidia/cuda/13.2` | 
+||| `msvc/v145_14.50.35717/x64`, `ucrt/10.0.26100.0`, `nvidia/cuda/13.2` |
 
 
 
 ## Pending Testing Projects
-| Testing Compile Project | Version | Used Profiles | `__future__` wemi  profile | 
+| Testing Compile Project | Version | Used Profiles | `__future__` wemi  profile |
 | :----: | :----: | :---- | :----: |
 | [`ROCm/TheRock`][TheRock] | latest | ??? | `ROCm/TheRock/???` |
 | [`ROCm/aotriton`][aotriton] | latest | ??? | `ROCm/aotriton/???` |

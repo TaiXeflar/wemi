@@ -1,4 +1,10 @@
-<!-- # SPDX-License-Identifier: MIT -->    
+SPDX-License-Identifier: MIT
+Copyright (c) 2026-${year} WEMI Contributors
+
+This software is released under the MIT License.
+https://opensource.org/licenses/MIT
+
+<!-- # SPDX-License-Identifier: MIT -->
 <!-- # Copyright (c) 2026 TaiXeflar  -->
 
 
@@ -18,7 +24,7 @@ WEMI follows environment variable `HIP_PATH*` to find possiable HIP SDK installa
 
 ## ROCm/TheRock
 
-ROCm/TheRock is a lightweight "The HIP Environment and ROCm Kit" build system for Windows/Linux x64/gfx target. 
+ROCm/TheRock is a lightweight "The HIP Environment and ROCm Kit" build system for Windows/Linux x64/gfx target.
 
 WEMI finds the installation configuration on `hipcc.exe` that different then AMD HIP SDK.
 

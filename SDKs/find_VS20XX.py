@@ -1,4 +1,10 @@
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from pathlib import Path
 import subprocess
 from textwrap import dedent
@@ -63,7 +69,7 @@ class FindVS20XX(FindSDK):
                               f".deps/{vs_deps_name}",
                           ]
             )
-            
+
 
             # MSVC compilers
             vc_root = Path(vs_dir/"VC/Tools/MSVC")
@@ -90,14 +96,14 @@ class FindVS20XX(FindSDK):
                             "VCVersion": vc,
                             "VSCMD_ARG_TGT_ARCH": arch,
                             "VSCMD_ARG_HOST_ARCH": vc_host_name,
-                            "CMAKE_TOOLCHAIN_FILE": f"msvc_{vc_tag}_arm64ec.cmake" 
+                            "CMAKE_TOOLCHAIN_FILE": f"msvc_{vc_tag}_arm64ec.cmake"
                                 if arch == "arm64ec" else ""
                         },
                     root=Path(vc_root/vc).resolve().as_posix(),
                     PATH=[f"$root/bin/{vc_host_name}/{arch}"],
                     INCLUDE=["$root/include", "$root/ATLMFC/include"],
                     LIB=[
-                        f"$root/lib/{arch}", 
+                        f"$root/lib/{arch}",
                         f"$root/ATLMFC/lib/{arch}" if arch in ("arm64", "arm64ec") else f"$root/ATLMFC/lib/{arch}"],
                     MODULEPATH=[
                         f'.deps/winsdk/{arch}/',
@@ -113,11 +119,11 @@ class FindVS20XX(FindSDK):
                     cmakefile_content=dedent(f'''\
                         set(CMAKE_C_FLAGS_INIT "/arm64EC /W3")
                         set(CMAKE_CXX_FLAGS_INIT "/arm64EC /W3 /EHsc")
-                        
+
                         set(CMAKE_EXE_LINKER_FLAGS_INIT "/machine:arm64EC")
                         set(CMAKE_SHARED_LINKER_FLAGS_INIT "/machine:arm64EC")
                         set(CMAKE_STATIC_LINKER_FLAGS_INIT "/machine:arm64EC")
-                        
+
                         set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
                         set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
                         set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
@@ -138,7 +144,7 @@ class FindVS20XX(FindSDK):
             #     deps=[vs_deps_name],
             #     ENVs={ },
             #     root=Path(vc_root/"Redist/MSVC"/vc).resolve().as_posix(),
-            #     PATH=[f"$root/$env(VSCMD_ARG_TGT_ARCH)/Microsoft.VC{_vc_ver_parser(vc)}.{f}" 
+            #     PATH=[f"$root/$env(VSCMD_ARG_TGT_ARCH)/Microsoft.VC{_vc_ver_parser(vc)}.{f}"
             #           for f in ["CRT", "CXXAMP", "MFC", "MFCLOC", "OpenMP"]]
             # ) for vc in vc_redist_versions])
 
@@ -154,7 +160,7 @@ class FindVS20XX(FindSDK):
                 ll_root = Path(vs_dir/"VC/Tools/Llvm")
             else: # cpu_host == "arm64":
                 ll_root = Path(vs_dir/"VC/Tools/Llvm/arm64")
-            
+
 
             # LLVM/Clang
             if (ll_root/"bin/clang.exe").exists():
@@ -163,7 +169,7 @@ class FindVS20XX(FindSDK):
                                                   capture_output=True,
                                                   text=True,
                                                   check=True).stdout.strip()
-                
+
                 ll_fmt = f'LLVM/Clang {llvm_version},'
                 message(f'\t{ll_fmt:<30}target: {ll_target_triple}')
 
@@ -178,7 +184,7 @@ class FindVS20XX(FindSDK):
                               PATH=["$root/bin"],
                               INCLUDE=["$root/include"],
                               LIB=["$root/lib"],
-                              CMAKE_PREFIX_PATH=["$root"]) 
+                              CMAKE_PREFIX_PATH=["$root"])
             else:
                 llvm_version = None
 
@@ -225,7 +231,7 @@ class FindVS20XX(FindSDK):
                 msbuild_bin_suffix = "Bin"
             elif cpu_host == "arm64":
                 msbuild_bin_suffix = "Bin/arm64"
-            
+
             msbuild_exe = (msbuild_dir/msbuild_bin_suffix/"MSBuild.exe").resolve()
             msbuild_ver = None
 
@@ -242,7 +248,3 @@ class FindVS20XX(FindSDK):
                               conflicts=["MSBuild"],
                               root=msbuild_dir.resolve().as_posix(),
                               PATH=[f"$root/{msbuild_bin_suffix}"])
-                
-
-
-    

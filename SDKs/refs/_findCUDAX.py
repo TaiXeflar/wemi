@@ -1,6 +1,12 @@
 
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 import os
 import re
 from pathlib import Path
@@ -24,7 +30,7 @@ class NVIDIA_CUDAX_EXTENSION:
         ```
         """
         if not dll_path.exists() or not dll_path.is_file():
-            return 
+            return
 
         try:
             # 以二進位模式讀取 DLL，依賴現代作業系統與 Python 的記憶體管理
@@ -172,7 +178,7 @@ class NVIDIA_CUDAX_EXTENSION:
         提取 CUDNN_MAJOR, CUDNN_MINOR, CUDNN_PATCHLEVEL 並組合為標準版本號。
         """
         if not header_path.exists() or not header_path.is_file():
-            return 
+            return
 
         try:
             content = header_path.read_text(encoding="utf-8", errors='ignore')
@@ -195,7 +201,7 @@ class NVIDIA_CUDAX_EXTENSION:
     @staticmethod
     def cutlass_ver_extract(header_path: Path, /):
         if not header_path.exists() or not header_path.is_file():
-            return 
+            return
 
         try:
             content = header_path.read_text(encoding="utf-8", errors='ignore')

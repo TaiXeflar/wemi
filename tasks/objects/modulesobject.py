@@ -1,6 +1,12 @@
 
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from pathlib import Path
 from typing import Any, Literal, Union
 from textwrap import dedent
@@ -11,7 +17,7 @@ from utils.compare_functions import VersionNum
 PROFILES_HINT = Literal[
     "amd/hip", 'ROCm/TheRock',
     'intel', 'intel/oneapi', 'intel/compiler', 'intel/dnnl', 'intel/ocloc', 'intel/mkl',
-    'nvidia', 'nvidia/cuda', 'nvidia/cudnn', 'nvidia/cudss', 'nvidia/cutensor', 
+    'nvidia', 'nvidia/cuda', 'nvidia/cudnn', 'nvidia/cudss', 'nvidia/cutensor',
     'nvidia/cusparselt', 'nvidia/tensorrt', 'nvidia/cutlass',
     'nvidia/nvhpc', 'nvidia/nvhpc-byo', 'nvidia/cuquantum', 'nvidia/cupqc', 'nvidia/'
     'cangjie',
@@ -84,44 +90,44 @@ class ModulesObject:
     @property
     def MODULENAME(self) -> str:
         return self._raw_data.get("Module")
-    
+
     @property
     def objtype(self) -> str:
         o: str = self._raw_data.get("mode")
         return o.capitalize()
-    
+
     @property
     def modules_help(self) -> list[str]:
         return self._raw_data.get("modules_help", "")
-    
+
     @property
     def module_whatis(self) -> str:
         return self._raw_data.get("module_whatis", "")
-    
+
     @property
     def include_file(self) -> str:
         return self._raw_data.get("Include_file") or self._raw_data.get("Include_File")
-    
+
     @property
     def output(self) -> str:
         return self._raw_data.get("output")
-    
+
     @property
     def VERSION(self) -> str:
         return self._raw_data.get("Version")
-    
+
     @property
     def deps(self) -> list[str]:
         return self._raw_data.get("deps", [])
-    
+
     @property
     def prereq(self) -> list[str]:
         return self._raw_data.get("prereq", [])
-    
+
     @property
     def conflicts(self) -> list[str]:
         return self._raw_data.get("conflicts", [])
-    
+
     @property
     def conflicts_llvm(self) -> list[str]:
         return self._raw_data.get('conflicts_llvm', []) if config.LLVM_CONFLICT else []
@@ -129,48 +135,48 @@ class ModulesObject:
     @property
     def conflicts_hetero(self) -> list[str]:
         return self._raw_data.get('conflicts_hetero', []) if config.HETERO_CONFLICT else []
-    
+
     @property
     def vcompare(self) -> list[dict[Literal["env", "compare", "ver"], Union[VersionNum, str]]]:
         return self._raw_data.get("vcompare")
-    
+
     @property
     def VARs(self) -> dict[str, str]:
         return self._raw_data.get("VARs", {})
-    
+
     @property
     def ENVs(self) -> dict[str, str]:
         return self._raw_data.get("ENVs", {})
-    
+
     @property
     def root(self) -> list[str]:
         return self._raw_data.get("root")
-    
+
     @property
     def PATH(self) -> list[str]:
         path: list[str] | str = self._raw_data.get("PATH", [])
         return path.split(";") if isinstance(path, str) else path
-    
+
     @property
     def INCLUDE(self) -> list[str]:
         path: list[str] | str = self._raw_data.get("INCLUDE", [])
         return path.split(";") if isinstance(path, str) else path
-    
+
     @property
     def LIB(self) -> list[str]:
         path: list[str] | str = self._raw_data.get("LIB", [])
         return path.split(";") if isinstance(path, str) else path
-    
+
     @property
     def LD_LIBRARY_PATH(self) -> list[str]:
         path: list[str] | str = self._raw_data.get("LD_LIBRARY_PATH", [])
         return path.split(";") if isinstance(path, str) else path
-    
+
     @property
     def RPATH(self) -> list[str]:
         path: list[str] | str = self._raw_data.get("RPATH", [])
         return path.split(";") if isinstance(path, str) else path
-    
+
     @property
     def CPATH(self) -> list[str]:
         path: list[str] | str = self._raw_data.get("CPATH", [])
@@ -180,49 +186,49 @@ class ModulesObject:
     def C_INCLUDE_PATH(self) -> list[str]:
         path: list[str] | str = self._raw_data.get("C_INCLUDE_PATH", [])
         return path.split(";") if isinstance(path, str) else path
-    
+
     @property
     def CPLUS_INCLUDE_PATH(self) -> list[str]:
         path: list[str] | str = self._raw_data.get("CPLUS_INCLUDE_PATH", [])
         return path.split(";") if isinstance(path, str) else path
-    
+
     @property
     def MANPATH(self) -> list[str]:
         path: list[str] | str = self._raw_data.get("MANPATH", [])
         return path.split(";") if isinstance(path, str) else path
-    
+
     @property
     def MODULEPATH(self) -> list[str]:
         path: list[str] | str = self._raw_data.get("MODULEPATH", [])
         return path.split(";") if isinstance(path, str) else path
-    
+
     @property
     def CMAKE_PREFIX_PATH(self) -> list[str]:
         path: list[str] | str = self._raw_data.get("CMAKE_PREFIX_PATH", [])
         return path.split(";") if isinstance(path, str) else path
-    
+
     @property
     def PKG_CONFIG_PATH(self) -> list[str]:
         path: list[str] | str = self._raw_data.get("PKG_CONFIG_PATH", [])
         return path.split(";") if isinstance(path, str) else path
-    
+
     @property
     def NLSPATH(self) -> list[str]:
         path: list[str] | str = self._raw_data.get("NLSPATH", [])
         return path.split(";") if isinstance(path, str) else path
-    
+
 
 def modules_object_json_encoder(obj:VersionNum|ModulesObject|Path):
 
     if type(obj).__name__ == 'ModulesObject':
         return obj._raw_data
-        
+
     if type(obj).__name__ == 'VersionNum':
         return str(obj)
-    
+
     if type(obj).__name__ == 'Path' or type(obj).__name__ == 'WindowsPath':
         return obj.resolve().as_posix()
-        
+
     raise TypeError(dedent(f"""\
             Object of type {obj.__class__.__name__} is not JSON serializable.
              >>> Debug: object is {obj} """))

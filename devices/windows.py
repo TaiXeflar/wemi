@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from pathlib import Path
 from pprint import pprint
 import json
@@ -15,8 +21,8 @@ from utils import message, tic_toc, config
 from tasks import seh, ModulesObject, modules_object_json_encoder
 from .windows_checks import WindowsCheck
 
-class WindowsNT(): 
-    
+class WindowsNT():
+
     _SDK_REGISTRY: dict[str, FindSDK] = {
             "TheRock":      FindTheRock,
             "HIP":          FindHIPSDK,
@@ -44,7 +50,7 @@ class WindowsNT():
         WindowsCheck()
 
         self.info: dict[str, FindSDK] = {}
-        
+
         raw_target_sdks = getattr(config, 'ENABLE_SDKS', [])
         registry_lower = {k.lower(): v for k, v in self._SDK_REGISTRY.items()}
 
@@ -80,7 +86,7 @@ class WindowsNT():
         try:
             with cache.open('w', encoding='utf-8') as f:
                 f.write(json.dumps(self.rules, default=modules_object_json_encoder, indent=4))
-            
+
         except PermissionError:
             raise PermissionError(dedent(f'''\
                 WEMI cannot export build rules with Permission error occured.

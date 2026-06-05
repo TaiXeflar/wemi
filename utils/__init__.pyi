@@ -8,23 +8,23 @@ from typing import List, Union, Iterable, overload
 from typing_extensions import Literal
 
 @overload
-def cstring(text: Union[str, ColorString], 
-            color: Literal["SUCCESS", "WARNING", "ERROR", "HINT"], 
+def cstring(text: Union[str, ColorString],
+            color: Literal["SUCCESS", "WARNING", "ERROR", "HINT"],
             bold: Literal["BOLD", None] = None,
             /, ) -> ColorString: ...
 
 
 @overload
 def cstring(text: Union[str, ColorString],
-            color: Union[Iterable[int], str], 
+            color: Union[Iterable[int], str],
             bold: Literal["BOLD", None] = None,
             /, ) -> ColorString: ...
 
 
 @overload
-def cstring(text: Union[str, ColorString], 
-            color: None = None, 
-            bold: Literal["BOLD", None] = None, 
+def cstring(text: Union[str, ColorString],
+            color: None = None,
+            bold: Literal["BOLD", None] = None,
             /, ) -> str: ...
 
 

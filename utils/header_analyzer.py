@@ -1,5 +1,11 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 import re
 from pathlib import Path
 from typing import Iterable, Union, Any
@@ -9,9 +15,9 @@ def header_variable_finder(
     hint: str | Iterable[str],  # 修正：支援單一字串或字串的 Iterable (例如 list, set)
     output: str | Iterable[str],
 ) -> dict[str, Any]:
-    
+
     file_path = Path(file).resolve()
-    
+
     # 1. 處理 hint 並轉為 set 以提升比對效率
     if isinstance(hint, str):
         hint_set = {hint}
@@ -45,7 +51,7 @@ def header_variable_finder(
 
     content = file_path.read_text(encoding="utf-8")
 
-    # 建立正則表達式來尋找 Header 中的變數 
+    # 建立正則表達式來尋找 Header 中的變數
     # (此處以 C/C++ 的 #define 為例，若你的 Header 是其他語言可再調整)
     define_pattern = re.compile(r'^\s*#define\s+([A-Za-z0-9_]+)\s+(.*)$', re.MULTILINE)
 

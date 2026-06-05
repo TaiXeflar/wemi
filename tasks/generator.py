@@ -1,6 +1,12 @@
 
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+#
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 import sys
 import json
 import time
@@ -22,7 +28,7 @@ class Generator():
         self.scheduler = self.schedule()
 
     def schedule(self):
-        try: 
+        try:
             build_cache_list: list[ModulesObject] = [
                 ModulesObject(tgt) for tgt in json.loads(Path("build/cache.json").read_text())]
             build_schedule_dict: dict[str, ModulesObject] = {
@@ -30,7 +36,7 @@ class Generator():
             }
         except FileNotFoundError:
             raise FileNotFoundError(f'Cannot Found generated build/cache.json')
-        
+
         except json.JSONDecodeError:
             raise json.JSONDecodeError(f'Cannot analyze build/cache.json with decode error')
 
@@ -50,11 +56,11 @@ class Generator():
                 sys.stdout.flush()
 
             elif config.GENERATOR_STYLE == "make":
-                per = math.floor((idx/total* 100)) 
+                per = math.floor((idx/total* 100))
                 compile_tgt_disp = f"[{per:>4}%] Building {tgt.objtype} Modulefile Object {tgt.output}"
                 sys.stdout.write(f"{compile_tgt_disp:<120}\n")
                 sys.stdout.flush()
-                
+
 
             try:
                 time.sleep(0.05)
@@ -67,7 +73,7 @@ class Generator():
                 message("NOTICE", dedent(f"{fail_hint}: build/{tgt.MODULENAME}"))
 
                 seh.unwind(type(e), e, e.__traceback__)
-                
+
                 # Linux/UNIX sigint 130
                 sys.exit(130)
 
@@ -76,37 +82,34 @@ class Generator():
                 fail_hint = cstring("FAILED", (255, 0, 0), "BOLD")
                 message("NOTICE", dedent(f"{fail_hint}: build/{tgt.MODULENAME}"))
                 message("ERROR", dedent(f'{str(e)}'))
-                
+
                 if not config.TOO_LONG_DIDNT_READ:
                     seh.unwind(type(e), e, e.__traceback__)
-                
+
                 if config.NO_COMPILE_FAIL_STOP:
                     message("ERROR", dedent(f"""\
-                        Warning: Modules Object {tgt.MODULENAME} compile failed with Python raised {e.__class__.__name__}, 
+                        Warning: Modules Object {tgt.MODULENAME} compile failed with Python raised {e.__class__.__name__},
                         but wemi generator will continue with flag NO_COMPILE_FAIL_STOP is true.
                         """))
                     failed += 1
                     continue
                 else:
                     sys.exit(1)
-        
+
         # FORCE_COMPILE_CONTINUE
         if failed:
             message("")
             message("ERROR", dedent(f"""\
-                                    
-                WEMI generator have {failed} compilation errors while generating targeted Tcl Modulefiles. 
+
+                WEMI generator have {failed} compilation errors while generating targeted Tcl Modulefiles.
                 Please check on these information:
                  > The reported error type
                  > Your system have the correct SDK, Toolchain installation
-                
-                """))                            
+
+                """))
 
     def stop(self, e:Exception=None):
         import sys
         message("ERROR", f"Progress Terminated.")
-        
-        raise e if e else sys.exit(1)
 
-            
-    
+        raise e if e else sys.exit(1)

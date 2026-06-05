@@ -8,7 +8,7 @@ from tasks import ModulesObject
 from tasks.objects.modulesobject import ModulesObject
 
 class BaseModuleTemplate:
-    def __init__(self, module_obj:ModulesObject): 
+    def __init__(self, module_obj:ModulesObject):
 
         self.module: ModulesObject
 
@@ -29,9 +29,9 @@ class BaseModuleTemplate:
     def set_env(self, **env_dict): ...
 
     @overload
-    def prepend_path(self, 
+    def prepend_path(self,
                      var_name: Literal[
-                        "PATH", 
+                        "PATH",
                         "INCLUDE",
                         "LIB",
                         "LD_LIBRARY_PATH",
@@ -46,9 +46,9 @@ class BaseModuleTemplate:
                      *paths: str): ...
 
     @overload
-    def append_path(self, 
+    def append_path(self,
                     var_name: Literal[
-                        "PATH", 
+                        "PATH",
                         "INCLUDE",
                         "LIB",
                         "LD_LIBRARY_PATH",

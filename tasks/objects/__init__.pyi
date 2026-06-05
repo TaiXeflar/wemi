@@ -10,39 +10,39 @@ class ModulesObject:
     __slots__ = ('_raw_data',)
 
     def __new__(cls, *args, **kwargs): ...
-    
+
     # ==========================================
     # Type Hint Overloads
     # ==========================================
 
     @overload
     def __init__(
-        self, 
+        self,
         obj:str = ...,
         /,
-        *, 
+        *,
         Module:str = ...,
         output:str = ...,
         mode:Literal['tcl', 'cmake'] = ...,
         Include_file:str = ...,
         modules_help:str = ...,
         module_whaits:str = ...,
-        Version: str | VersionNum = ..., 
+        Version: str | VersionNum = ...,
         prereq: list[PROFILES_HINT] = ...,
-        deps: list[PROFILES_HINT] = ..., 
+        deps: list[PROFILES_HINT] = ...,
         conflicts: list[PROFILES_HINT] = ...,
         llvm_conflicts:list[PROFILES_HINT] = ...,
         hetero_conflicts:list[PROFILES_HINT] = ...,
         # dict 的語法正確，因為 dict 需要 Key 和 Value 兩個型別
         vcompare: list[dict[Literal['env', 'compare', 'ver'], Union[VersionNum | str]]] = ...,
-        VARs: dict[str, str] = ..., 
+        VARs: dict[str, str] = ...,
         ENVs: dict[str, str] = ...,
         root: str = ...,
-        
-        PATH: list[Literal['$root/bin']] = ..., 
-        INCLUDE: list[Literal['$root/include']] = ..., 
-        LIB: list[Literal['$root/lib']] = ..., 
-        LD_LIBRARY_PATH: list[Literal['$root/bin', '$root/lib']] = ..., 
+
+        PATH: list[Literal['$root/bin']] = ...,
+        INCLUDE: list[Literal['$root/include']] = ...,
+        LIB: list[Literal['$root/lib']] = ...,
+        LD_LIBRARY_PATH: list[Literal['$root/bin', '$root/lib']] = ...,
         RPATH: list[str] | None = ...,
         CPATH: list[Literal['$root/include']] = ...,
         C_INCLUDE_PATH: list[Literal['$root/include']] = ...,
@@ -84,25 +84,25 @@ class ModulesObject:
 
     @property
     def modules_help(self) -> list[str]: ...
-    
+
     @property
     def module_whatis(self) -> str: ...
-    
+
     @property
     def include_file(self) -> str: ...
-    
+
     @property
     def output(self) -> str: ...
-    
+
     @property
     def VERSION(self) -> str: ...
-    
+
     @property
     def deps(self) -> list[str]: ...
 
     @property
     def prereq(self) -> list[str]: ...
-    
+
     @property
     def conflicts(self) -> list[str]: ...
 
@@ -111,34 +111,34 @@ class ModulesObject:
 
     @property
     def conflicts_hetero(self) -> list[str]: ...
-    
+
     @property
     def vcompare(self) -> list[dict[Literal['env', 'compare', 'ver'], Union[VersionNum, str]]]: ...
-    
+
     @property
     def VARs(self) -> dict[str, str]: ...
-    
+
     @property
     def ENVs(self) -> dict[str, str]: ...
-    
+
     @property
     def root(self) -> list[str]: ...
-    
+
     @property
     def PATH(self) -> list[str]: ...
-    
+
     @property
     def INCLUDE(self) -> list[str]: ...
-    
+
     @property
     def LIB(self) -> list[str]: ...
-    
+
     @property
     def LD_LIBRARY_PATH(self) -> list[str]: ...
-    
+
     @property
     def RPATH(self) -> list[str]: ...
-    
+
     @property
     def CPATH(self) -> list[str]: ...
 
@@ -147,13 +147,13 @@ class ModulesObject:
 
     @property
     def CPLUS_INCLUDE_PATH(self) -> list[str]: ...
-    
+
     @property
     def MANPATH(self) -> list[str]: ...
 
     @property
     def NLSPATH(self) -> list[str]: ...
-    
+
     @property
     def MODULEPATH(self) -> list[str]: ...
 
