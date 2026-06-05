@@ -5,7 +5,7 @@
  This software is released under the MIT License.
  https://opensource.org/licenses/MIT -->
 
-# Windows Environment Modulefiles Installer (WEMI)
+# WEMI (Windows Environment Modulefiles Installer)
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 ![version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FTaiXeflar%2FWEMI%2Fmaster%2Fversion.json&query=%24.version&label=version&color=orange)
@@ -18,7 +18,7 @@ WEMI will scan, compile and install tcl Modulefiles to your Environment Modules 
 
 ## Early State development
 
-As WEMI declared current development status is in Early State development and version is InfDev 0.0.1, WEMI will take several/lot of destructable/refactoring changes, and not recieveng PR requests after a stable release.
+As WEMI declared current development status is in Early State development and version is InfDev status, WEMI will take several/lot of rolling destructable/refactoring changes, and not recieveng PR requests before a future stable release.
 
 Issues and disscutions are open welcomed (Exclude toxic topics).
 
