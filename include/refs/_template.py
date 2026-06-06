@@ -5,6 +5,7 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
+import json
 from textwrap import dedent
 from typing import Literal, Union
 
@@ -12,11 +13,9 @@ from utils import config
 from utils.compare_functions import VersionNum
 from tasks import ModulesObject
 
-with open("version", "r", encoding="utf-8") as f:
-    v = f.read().strip()
-
+with open("version.json", "r", encoding="utf-8") as f:
+    v = json.loads(f.read().strip())
 WEMI_VERSION = v
-
 
 class BaseModuleTemplate:
     def __init__(self, module_obj: ModulesObject):
