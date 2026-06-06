@@ -5,15 +5,15 @@
 # https://opensource.org/licenses/MIT
 
 import sys
-from utils.argparse_handler import args_update
-from tasks.driver import Driver
-from utils import config
-from tasks import seh
-
 sys.dont_write_bytecode = True
 
-
 def main():
+
+    from utils.argparse_handler import args_update
+    from tasks.driver import Driver
+    from utils import config
+    from tasks import seh
+
     args_update()
     seh.setup_excepthook()
     Driver.run(config.DEFAULT_TASK)
