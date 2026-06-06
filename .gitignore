@@ -6,4 +6,8 @@
 build/
 test*.py
 
+# sys.dont_write_bytecode
+__pycache__/
+
+# Making pictures pptx is ignored
 docs/*.pptx
