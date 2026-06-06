@@ -168,9 +168,57 @@ class WindowsCheck:
             if es2.exists():
                 message(f"{msg:<74} -- Found")
             else:
-                message(f"{msg:<74} Not Found")
+                message(f"{msg:<74} -- Not Found")
                 raise RuntimeError(
                     dedent(
                         "WEMI requires voidtools Everything CLI. Please download it and unzip to .deps/ folder."
                     )
                 )
+
+    def check_tclsh_install(self):
+        msg = ' -- Checking for Tclsh executable'
+        try:
+            tcl_ver = VersionNum(subprocess.run(
+                ['echo puts [info patchlevel] | tclsh'],
+                shell=True,
+                capture_output=True,
+                text=True).stdout)
+            if VERSION(tcl_ver, ">=", '8.6'):
+                message(f'{msg:<74} -- {tcl_ver} -- Success')
+            else:
+                message(f'{msg:<74} -- {tcl_ver} -- Failed')
+                message('WARNING', dedent(f'''\
+                    Environment Modules requires Tclsh version at least 8.6. Please set a Tclsh
+                    version >= 8.6 or >= 9.0 versions at system level PATH.'''))
+        except Exception as e:
+            message(f'{msg:<74} -- {tcl_ver} -- Failed')
+            message('WARNING', dedent(f'''\
+                    Cannot found tclsh.exe with error {str(e)}.
+                    Environment Modules requires a Tclsh installation with its version at least 8.6.
+                    Please install it to make sure modules can work properly.'''))
+
+    def check_envmodule(self):
+        msg = ' -- Checking for device have Environment Modules installed'
+        message(msg)
+        modules_home = Path(p) if (p:=os.getenv("MODULESHOME", None)) else None
+        modules_path = Path(p) if (p:=os.getenv("MODULEPATH",  None)) else None
+
+        if modules_home and modules_path:
+            files = [
+                'bin/envml.cmd',
+                'bin/ml.cmd',
+                'bin/module.cmd',
+                'init/cmd.cmd',
+                'init/pwsh.ps1',
+                'libexec/modulecmd.tcl'
+            ]
+
+            if all((modules_home/f).exists() for f in files):
+                message(f'{msg:<74} -- {modules_home.as_posix()} -- Success')
+                return
+        message(f'{msg:<74} -- {modules_home} -- Failed')
+        message(dedent(f'''\
+                Cannot found Local machine have modules installed.
+                You can visit https://github.com/envmodule/modules to get Windows specific release
+                    zip package and do decompress setup.
+                '''))
