@@ -4,6 +4,8 @@
 # https://opensource.org/licenses/MIT
 
 from pathlib import Path
+import ctypes
+import sys
 
 from .refs import FindSDK
 from .refs._findCUDAX import NVIDIA_CUDAX_EXTENSION
@@ -26,6 +28,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
         self.add_nvidia_cutlass()
 
         self.add_nvidia_tensorrt()
+        self.add_nvidia_amgx()
 
         # self.add_nvidia_cutile()
 
@@ -318,10 +321,65 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 f"    NVIDIA TensorRT {nvinfer_ver_major:<4}(cuda{cuda_deps_ver})    {tensorrt_dir.resolve().as_posix()}"
             )
 
+    def add_nvidia_amgx(self):
+        message(" -- Checking for NVIDIA AmgX")
+        dlls = [Path(dll) for dll in self.everything(regex=r'^amgxsh.dll$')]
+
+        for dll in dlls:
+            # print(dll.as_posix())
+            cuda_deps_ver = self.cudaX_cuda_deps(dll)
+            req_cublas_dll = self.everything(f'cublas64_{cuda_deps_ver}.dll')[0]
+            sys.path.append(req_cublas_dll.parent)
+
+            if (dll.parent/'CMakeCache.txt').exists():
+                continue
+
+            try:
+                amgxsh = ctypes.CDLL(dll, winmode=0)
+                ver_ptr = ctypes.c_char_p()
+                date_ptr = ctypes.c_char_p()
+                time_ptr = ctypes.c_char_p()
+
+                rc_build = amgxsh.AMGX_get_build_info_strings(
+                    ctypes.byref(ver_ptr),
+                    ctypes.byref(date_ptr),
+                    ctypes.byref(time_ptr))
+                if rc_build == 0:
+                    version_str = ver_ptr.value.decode('utf-8') if ver_ptr.value else None
+                else:
+                    version_str = None
+
+            except Exception as e:
+                print(f'Fucked with {str(e)}')
+
+            if version_str:
+                message(f'    NVIDIA AmgX {version_str} (CUDA {cuda_deps_ver}) {dll.as_posix()}')
+                self.add_rule(ModulesObject(
+                    Module=f'nvidia/amgx/{version_str}',
+                    output=f'.deps/nvidia/cuda/{cuda_deps_ver}/nvidia/amgx/{version_str}',
+                    mode='tcl',
+                    Include_file='template_nvidia_amgx',
+                    module_whaits=f'NVIDIA AmgX {version_str}',
+                    prereq='nvidia/cuda',
+                    conflicts=['nvidia/amgx'],
+                    root=dll.parent.parent.resolve().as_posix(),
+                    PATH=['$root/lib'],
+                    INCLUDE=['$root/include'],
+                    LIB=['$root/lib'],
+                    LD_LIBRARY_PATH=['$root/lib'],
+                ))
+
+            else:
+                continue
+
+
     # CUDA Tile IR C/C++ Library doesn't contain binary or include header version information
     def add_nvidia_cutile(self): ...
 
-    # Experimental
+    # Experimental, Identity items
     def add_nvidia_cuquantum(self): ...
     def add_nvidia_cupqc(self): ...
     def add_nvidia_cudagdb(self): ...
+    def add_nvidia_matx(self): ...
+    def add_nvidia_nvtx(self): ...
+    def add_nvidia_stdexec(self): ...
