@@ -17,15 +17,15 @@ class ModuleTemplate(BaseModuleTemplate):
         self.add_llvm_conflict("amd/hip", "")
 
         self.add_content(
-            "if { [info exists env(VSCMD_ARG_TGT_ARCH)] } {",
-            '    if { $env(VSCMD_ARG_TGT_ARCH) ne "x64" } {',
-            '        puts stderr "\[Error\] Architecture mismatch for Intel Compiler."',
-            '        puts stderr "  Intel oneAPI compiler requires MSVC target architecture to be x64."',
-            '        puts stderr "  But your current VSCMD_ARG_TGT_ARCH is: $env(VSCMD_ARG_TGT_ARCH)"',
-            '        puts stderr "  Please load a compatible MSVC (x64) environment first."',
-            "        break",
-            "    }",
-            "}",
+            r"if { [info exists env(VSCMD_ARG_TGT_ARCH)] } {",
+            r'    if { $env(VSCMD_ARG_TGT_ARCH) ne "x64" } {',
+            r'        puts stderr "  Error Architecture mismatch for Intel Compiler."',
+            r'        puts stderr "  Intel oneAPI compiler requires MSVC target architecture to be x64."',
+            r'        puts stderr "  But your current VSCMD_ARG_TGT_ARCH is: $env(VSCMD_ARG_TGT_ARCH)"',
+            r'        puts stderr "  Please load a compatible MSVC (x64) environment first."',
+            r"        break",
+            r"    }",
+            r"}",
         )
         self.add_deps(*self.module.deps)
         self.set_root(self.module.root)
