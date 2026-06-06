@@ -378,6 +378,7 @@ class FindOneAPI(FindSDK):
                         mode="tcl",
                         Include_file="template_intel_compiler",
                         Version=ver.name,
+                        prereq=["msvc", "ucrt"],
                         conflicts=["intel/compiler"],
                         llvm_conflicts=[
                             "amd/hip",
@@ -463,6 +464,7 @@ class FindOneAPI(FindSDK):
                         mode="tcl",
                         Include_file="template_intel_compiler",
                         Version=ver.name,
+                        prereq=["msvc", "ucrt"],
                         conflicts=["intel/compiler"],
                         llvm_conflicts=[
                             "amd/hip",
@@ -510,6 +512,7 @@ class FindOneAPI(FindSDK):
                         mode="tcl",
                         Include_file="template_intel_compiler",
                         Version=ver.name,
+                        prereq=["msvc", "ucrt"],
                         conflicts=["intel/compiler"],
                         llvm_conflicts=[
                             "amd/hip",
@@ -769,7 +772,7 @@ class FindOneAPI(FindSDK):
     def add_intel_dpl(self, pth: Path) -> list[ModulesObject]: ...
     def add_intel_ipp(self, pth: Path) -> list[ModulesObject]: ...
     def add_intel_ippcp(self, pth: Path) -> list[ModulesObject]: ...
-    # Intel oneAPI toolkit linking tool
+    # Intel oneAPI toolkit linking tool (tlt)
     def add_intel_tlt(self, pth: Path) -> list[ModulesObject]: ...
     def add_intel_ocloc(self, pth: Path) -> list[ModulesObject]: ...
     def add_intel_pti(self, pth: Path) -> list[ModulesObject]: ...
