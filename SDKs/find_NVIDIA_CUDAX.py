@@ -5,7 +5,7 @@
 
 from pathlib import Path
 import ctypes
-import sys
+import os
 
 from .refs import FindSDK
 from .refs._findCUDAX import NVIDIA_CUDAX_EXTENSION
@@ -29,6 +29,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
 
         self.add_nvidia_tensorrt()
         self.add_nvidia_amgx()
+        self.add_nvidia_libmathdx()
 
         # self.add_nvidia_cutile()
 
@@ -36,6 +37,10 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
         # self.add_nvidia_cudagdb()
         # self.add_nvidia_cuquantum()
         # self.add_nvidia_cupqc()
+        # self.add_nvidia_nvtx()
+        # self.add_nvidia_matx()
+        # self.add_nvidia_stdexec()
+        # self.add_nvidia_cucollect()
 
     def add_nvidia_cudnn(self) -> None:
         message(" -- Checking for NVIDIA cuDNN SDK/backend library")
@@ -325,17 +330,30 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
         message(" -- Checking for NVIDIA AmgX")
         dlls = [Path(dll) for dll in self.everything(regex=r'^amgxsh.dll$')]
 
+        host = cpu_host_arch()
+
         for dll in dlls:
             # print(dll.as_posix())
             cuda_deps_ver = self.cudaX_cuda_deps(dll)
             req_cublas_dll = self.everything(f'cublas64_{cuda_deps_ver}.dll')[0]
-            sys.path.append(req_cublas_dll.parent)
+            req_vcruntime140_1_dll = self.everything(f'vcruntime140_1.dll')[0]
+
+            deps_dll_paths: list[Path] = [
+                req_cublas_dll.parent.resolve(),
+                req_vcruntime140_1_dll.parent.resolve(),
+                Path(f'C:/Windows/system32/downlevel'),
+                Path(f'C:/Program Files (x86)/Windows Kits/10/Redist/ucrt/DLLs/{host}'),
+                Path(rf'C:/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit')
+            ]
+
+            for d in deps_dll_paths:
+                os.add_dll_directory(str(d))
 
             if (dll.parent/'CMakeCache.txt').exists():
                 continue
 
             try:
-                amgxsh = ctypes.CDLL(dll, winmode=0)
+                amgxsh = ctypes.CDLL(dll.as_posix())
                 ver_ptr = ctypes.c_char_p()
                 date_ptr = ctypes.c_char_p()
                 time_ptr = ctypes.c_char_p()
@@ -350,7 +368,8 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                     version_str = None
 
             except Exception as e:
-                print(f'Fucked with {str(e)}')
+                print(e)
+                return
 
             if version_str:
                 message(f'    NVIDIA AmgX {version_str} (CUDA {cuda_deps_ver}) {dll.as_posix()}')
@@ -359,7 +378,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                     output=f'.deps/nvidia/cuda/{cuda_deps_ver}/nvidia/amgx/{version_str}',
                     mode='tcl',
                     Include_file='template_nvidia_amgx',
-                    module_whaits=f'NVIDIA AmgX {version_str}',
+                    module_whaits=f'NVIDIA Algebraic Multigrid Solver Library',
                     prereq='nvidia/cuda',
                     conflicts=['nvidia/amgx'],
                     root=dll.parent.parent.resolve().as_posix(),
@@ -372,8 +391,35 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
             else:
                 continue
 
+    def add_nvidia_libmathdx(self):
+        message(' -- Checking for NVIDIA LibMathDx')
+        dlls = [dll for dll in self.everything(regex=r'^mathdx64\_\d+.dll')]
 
-    # CUDA Tile IR C/C++ Library doesn't contain binary or include header version information
+        if not dlls:
+            return
+
+        for dll in dlls:
+            root = dll.parent.parent
+            cuda_dep = self.cudaX_cuda_deps(dll)
+            ver = self.libmathdx_ver_extract(root/'include/libmathdx.h')
+
+            message(f'    NVIDIA libmathdx {ver} (CUDA {cuda_dep})')
+            self.add_rule(ModulesObject(
+                Module=f'nvidia/libmathdx/{ver}',
+                output=f'.deps/nvidia/cuda/{cuda_dep}/nvidia/libmathdx/{ver}',
+                mode='tcl',
+                Include_file='template_nvidia_libmathdx',
+                module_whaits=f'NVIDIA LibMathDx Library',
+                prereq=f'nvidia/cuda/{cuda_dep}',
+                conflicts='nvidia/libmathdx',
+                root=root,
+                PATH=['$root/bin'],
+                INCLUDE=['$root/include'],
+                LIB=['$root/lib/$env(VSCMD_ARG_TGT_ARCH)'],
+            ))
+
+
+    # CUDA Tile IR C/C++ Library doesn't contain binary or include header version information and cmake modules
     def add_nvidia_cutile(self): ...
 
     # Experimental, Identity items
@@ -381,5 +427,6 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
     def add_nvidia_cupqc(self): ...
     def add_nvidia_cudagdb(self): ...
     def add_nvidia_matx(self): ...
+    def add_nvidia_cucollect(self): ...
     def add_nvidia_nvtx(self): ...
     def add_nvidia_stdexec(self): ...
