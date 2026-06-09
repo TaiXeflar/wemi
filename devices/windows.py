@@ -28,15 +28,15 @@ class WindowsNT:
         "oneAPI": FindOneAPI,
         "VS20XX": FindVS20XX,
         "UCRT": FindUCRT,
-        "MSMPI": FindMSMPI,
-        "MPISDK": FindMSMPISDK,
+        # "MSMPI": FindMSMPI,
+        # "MPISDK": FindMSMPISDK,
         "Cangjie": FindCangjie,
         "GMT": FindGMT,
         "MATLAB": FindMATLAB,
         "Strawberry": FindStrawberryPerl,
         # Experimential
         "MiHoYo": FindMiHoYo,
-        "Minecraft": FindMinecraft,
+        # "Minecraft": FindMinecraft,
     }
 
     @tic_toc("Configuring Done")
@@ -90,3 +90,5 @@ class WindowsNT:
                 WEMI cannot export build rules with Permission error occured.
                 """)
             )
+        except Exception as e:
+            print(e)
