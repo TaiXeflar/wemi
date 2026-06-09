@@ -29,10 +29,10 @@
  - [NVIDIA cuTENSOR](./SDKs/NVIDIA.md/#nvidia-cuda-toolkit)
  - [NVIDIA cuSPARSELt](./SDKs/NVIDIA.md/#nvidia-cuda-toolkit)
  - [NVIDIA cutlass](./SDKs/NVIDIA.md/#nvidia-cuda-toolkit)
- - Cangjie
+ - [Cangjie](./SDKs/Cangjie-Lang.md)
  - MATLAB
  - Generic Mapping Tools
- - Visual Studio (2017~2026, MSVC, LLVM/Clang)
+ - [Visual Studio](./SDKs/VS20XX.md) (2017~2026, MSVC, LLVM/Clang)
  - Strawberry Perl
 
 # Experimential SDKs
