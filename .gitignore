@@ -11,3 +11,6 @@ __pycache__/
 
 # Making pictures pptx is ignored
 docs/*.pptx
+
+# self use hack_scripts
+hack_scripts/
