@@ -30,6 +30,7 @@ from .functions import (
 )
 
 from . import config
+from . import const
 
 __all__ = [
     "VersionNum",
@@ -50,4 +51,5 @@ __all__ = [
     "tic_toc",
     "clear",
     "config",
+    'const',
 ]
