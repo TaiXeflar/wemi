@@ -1,0 +1,17 @@
+
+
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
+from .refs import BaseModuleTemplate
+
+class ModuleTemplate(BaseModuleTemplate):
+    def build(self):
+        self.add_module_whatis(self.module.module_whatis)
+        self.set_root(self.module.root)
+        self.prepend_path('PATH', *self.module.LIB)
+        self.prepend_path('INCLUDE', *self.module.INCLUDE)
+        self.prepend_path("LIB", *self.module.LIB)
+        self.prepend_path('LD_LIBRARY_PATH', *self.module.LIB)
