@@ -23,7 +23,7 @@ MIHOYO_PROJECTS_TYPEHINT = Literal[
     "HKSR",
     "ZZZ",
     "HNA",
-    "PPT",
+    "PTPT",
     "Varzapura",
 ]
 
@@ -40,7 +40,7 @@ mihoyo_app_registry_phonebook = {
     "HKSR": r"Software\Cognosphere\HYP\1_0\hkrpg_global",
     "ZZZ": r"Software\Cognosphere\HYP\1_0\nap_global",
     "HNA": None,
-    "PPT": None,
+    "PTPT": None,
     "Varzapura": None,
 }
 
@@ -53,7 +53,7 @@ mihoyo_cn_app_registry_phonebook = {
     "HKSR": r"Software\Cognosphere\HYP\1_0\hkrpg_cn",
     "ZZZ": r"Software\Cognosphere\HYP\1_0\nap_cn",
     "HNA": None,
-    "PPT": None,
+    "PTPT": None,
     "Varzapura": None,
 }
 
@@ -71,6 +71,6 @@ mihoyo_app_include_file_dict = {
     "HKSR": r"template_mhy_starrail",
     "ZZZ": r"template_mhy_zzz",
     "HNA": r"template_mhy_nexusanima",
-    "PPT": r'template_mhy_petitplanet',
+    "PTPT": r'template_mhy_petitplanet',
     "Varzapura": r"template_mhy_varsapura",
 }
