@@ -107,8 +107,11 @@ WEMI is developed on my PC with these working configuration.
 |                       | 1.1.0         | zip decompress install
 |
 
-## Tested Projects
-Projects listed below is the test result of development environment that deployed by wemi generated TclEnvironment Modulefiles.
+## Tested compile Projects
+
+To test the stability of wemi generated profiles, WEMI uses project compilation success records.
+Projects listed below is the test result.
+
 | Testing Compile Project | Version | Used Profiles | `__future__` wemi  profile |
 | :----: | :----: | :---- | :----: |
 | [`Kitware/CMake`][cmake] | latest | `vs/2026/BuildTools`, `msvc/v145_14.50.35717/x64`, `cmake/4.2.3`, `ninja/1.12.1`, `ucrt/10.0.26100.0`| -- |
@@ -119,7 +122,7 @@ Projects listed below is the test result of development environment that deploye
 
 
 
-## Pending Testing Projects
+## Pending Testing compile Projects
 | Testing Compile Project | Version | Used Profiles | `__future__` wemi  profile |
 | :----: | :----: | :---- | :----: |
 | [`ROCm/TheRock`][TheRock] | latest | ??? | `ROCm/TheRock/???` |
@@ -128,12 +131,20 @@ Projects listed below is the test result of development environment that deploye
 | [`pytorch/pytorch`][torch] | latest, libtorch, ROCm | ??? | `torch/2.X` |
 | [`nvidia/cuCollections`][cucollect] | latest | ??? | `nvidia/cucollect` |
 | [`form`][symform] | latest | ??? | `form/???` |
+| [`tcc`][tcc] | ??? | ??? | ??? |
+| [`triton-windows`][triton] | latest, CUDA | ??? | ??? |
+| [`llvm`][llvm] | latest or any fork | ??? | ??? |
+| [`codon`][codon] | 0.17.0 | ??? | exaloop/codon/<VERSION> |
 
 <!-- Links -->
 [cmake]:        https://github.com/kitware/cmake
 [amgx]:         https://github.com/nvidia/amgx
 [symform]:      https://github.com/form-dev/form
 [torch]:        https://github.com/pytorch/pytorch
+[triton]:       https://github.com/triton-lang/triton-windows
+[tcc]:          https://github.com/tinycc/tinycc
+[llvm]:         https://github.com/llvm/llvm-project
+[codon]:        https://github.com/exaloop/codon
 
 [TheRock]:      https://github.com/ROCm/TheRock
 [aotriton]:     https://github.com/ROCm/aotriton
