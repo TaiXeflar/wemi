@@ -17,11 +17,13 @@ from textwrap import dedent
 
 from utils.compare_functions import VersionNum, VERSION, VERSION_IN_RANGE
 from utils import message
+from utils import const
 
 
 class WindowsCheck:
     pyver = VersionNum(tuple(sys.version_info)[0:2])
     pyitp = platform.python_implementation()
+    wemiv = const.WEMI_VERSION
 
     def __init__(self):
         message(f" -- The Python Identification is {self.pyitp} {self.pyver}")
@@ -36,6 +38,12 @@ class WindowsCheck:
         self.check_python_winreg()
         self.check_everything_service()
         self.check_everything_cli()
+        self.check_wemi_version()
+
+    def check_wemi_version(self):
+        message('')
+        message(f' -- WEMI version: {const.WEMI_VERSION}')
+        ...
 
     def check_python_version(
         self,
