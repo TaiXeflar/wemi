@@ -13,4 +13,4 @@ __pycache__/
 docs/*.pptx
 
 # self use hack_scripts
-hack_scripts/
+hack_scripts
