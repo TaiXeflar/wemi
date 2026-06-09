@@ -222,3 +222,27 @@ class NVIDIA_CUDAX_EXTENSION:
 
         except Exception:
             pass
+
+
+    @staticmethod
+    def libmathdx_ver_extract(header_path: Path, /):
+        if not header_path.exists() or not header_path.is_file():
+            return
+
+        try:
+            content = header_path.read_text(encoding="utf-8", errors="ignore")
+
+            # 分別匹配 Major, Minor, Patch
+            major_match = re.search(r"#define\s+LIBMATHDX_VER_MAJOR\s+(\d+)", content)
+            minor_match = re.search(r"#define\s+LIBMATHDX_VER_MINOR\s+(\d+)", content)
+            patch_match = re.search(r"#define\s+LIBMATHDX_VER_PATCH\s+(\d+)", content)
+
+            # Major 與 Minor 是必須的，Patch 若無則預設為 0
+            if major_match and minor_match:
+                major = major_match.group(1)
+                minor = minor_match.group(1)
+                patch = patch_match.group(1) if patch_match else "0"
+                return f"{major}.{minor}.{patch}"
+
+        except Exception:
+            pass
