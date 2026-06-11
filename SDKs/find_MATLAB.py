@@ -83,4 +83,4 @@ class FindMATLAB(FindSDK):
                 f"Unsupported Matlab version with {version} -> R {yr} {ab} where float should be .1/.2"
             )
 
-        return f"R{yr}{ab}"
+        return f"r{yr}{ab}"
