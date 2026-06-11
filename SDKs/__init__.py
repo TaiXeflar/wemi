@@ -21,7 +21,6 @@ from .find_GMT import FindGMT
 from .find_MATLAB import FindMATLAB
 
 from .find_MiHoYo import FindMiHoYo
-from .find_Minecraft import FindMinecraft
 
 __all__ = [
     "FindHIPSDK",
@@ -38,5 +37,4 @@ __all__ = [
     "FindStrawberryPerl",
     "FindOneAPI",
     "FindMiHoYo",
-    "FindMinecraft",
 ]

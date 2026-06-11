@@ -34,9 +34,9 @@ class WindowsNT:
         "GMT": FindGMT,
         "MATLAB": FindMATLAB,
         "Strawberry": FindStrawberryPerl,
+
         # Experimential
         "MiHoYo": FindMiHoYo,
-        # "Minecraft": FindMinecraft,
     }
 
     @tic_toc("Configuring Done")
