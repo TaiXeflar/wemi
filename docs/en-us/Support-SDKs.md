@@ -22,7 +22,7 @@
 
  - [AMD HIP SDK](./SDKs/AMD.md)
  - [ROCm/TheRock](./SDKs/AMD.md)
- - [Intel oneAPI][] (compiler, mkl, tbb, mpi, dnnl, tcm)
+ - [Intel oneAPI](./SDKs/Intel.md) (compiler, mkl, tbb, mpi, dnnl, tcm)
  - [NVIDIA CUDA Toolkit](./SDKs/NVIDIA.md/#nvidia-cuda-toolkit)
  - [NVIDIA cuDNN](./SDKs/NVIDIA.md/#nvidia-cuda-toolkit)
  - [NVIDIA cuDSS](./SDKs/NVIDIA.md/#nvidia-cuda-toolkit)
