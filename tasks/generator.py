@@ -64,7 +64,10 @@ class Generator:
 
             try:
                 time.sleep(0.05)
-                compiler.compile(tgt)
+                if tgt.objtype == 'file':
+                    compiler.copy(tgt)
+                else:
+                    compiler.compile(tgt)
 
             except KeyboardInterrupt as e:
                 # Ctrl + C
