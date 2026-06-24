@@ -7,7 +7,38 @@ from pathlib import Path
 from typing import Any, Literal, Union, overload
 from utils.compare_functions import VersionNum
 
-from modulesobject import PROFILES_HINT
+PROFILES_HINT = Literal[
+    'modules',
+    "amd/hip",
+    "ROCm/TheRock",
+    "intel",
+    "intel/oneapi",
+    "intel/compiler",
+    "intel/dnnl",
+    "intel/ocloc",
+    "intel/mkl",
+    "nvidia",
+    "nvidia/cuda",
+    "nvidia/cudnn",
+    "nvidia/cudss",
+    "nvidia/cutensor",
+    "nvidia/cusparselt",
+    "nvidia/tensorrt",
+    "nvidia/cutlass",
+    "nvidia/nvhpc",
+    "nvidia/nvhpc-byo",
+    "nvidia/cuquantum",
+    "nvidia/cupqc",
+    "nvidia/" "cangjie",
+    "borland",
+    "matlab",
+    "gmt",
+    "vs",
+    "msvc",
+    "ucrt",
+    "llvm",
+    "gcc",
+]
 
 class ModulesObject:
     __slots__ = ("_raw_data",)
@@ -26,7 +57,7 @@ class ModulesObject:
         *,
         Module: str = ...,
         output: str = ...,
-        mode: Literal["tcl", "cmake"] = ...,
+        mode: Literal["tcl", "cmake", 'file'] = ...,
         Include_file: str = ...,
         modules_help: str = ...,
         module_whaits: str = ...,
@@ -86,6 +117,8 @@ class ModulesObject:
     @property
     def output(self) -> str: ...
     @property
+    def objtype(self) -> Literal['tcl', 'cmake', 'file']: ...
+    @property
     def VERSION(self) -> str: ...
     @property
     def deps(self) -> list[str]: ...
@@ -135,3 +168,37 @@ class ModulesObject:
     def PKG_CONFIG_PATH(self) -> list[str]: ...
 
 def modules_object_json_encoder(obj: VersionNum | ModulesObject | Path): ...
+
+
+_HASH_TYPE = Literal[
+    'MD5', 'CRC32', 'CRC64',
+    'SHA1', 'SHA224', 'SHA256', 'SHA384', 'SHA512',
+    'SHA3_128', 'SHA3_224', 'SHA3_256', 'SHA3_384', 'SHA3_512',]
+
+_VERLIST = Literal[
+    '5.0.0', '5.0.1',
+    '5.1.0', '5.1.1',
+    '5.2.0',
+    '5.3.0',
+    '5.4.0',
+    '5.5.0',
+    '5.6.0', '5.6.1',
+    'latest']
+
+class ModulesZip:
+    def __init__(self, version:_VERLIST=..., /): ...
+    def ziphash(self, algorithm:_HASH_TYPE=..., /): ...
+    def versions_list(self): ...
+    def download(self, /): ...
+    def examine(self, hash_type:_HASH_TYPE=..., chunk_size:Literal[65535]|int=65536): ...
+    def unzip(self, dest:str=...): ...
+
+    @property
+    def version(self) -> _VERLIST: ...
+    @property
+    def zipname(self) -> str: ...
+    @property
+    def zipurl(self) -> str: ...
+
+    @property
+    def foldername(self) -> str: ...

@@ -3,6 +3,8 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
+from .add_Modules import AddModules
+
 from .find_AMD_HIP import FindHIPSDK
 from .find_AMD_ROCm import FindTheRock
 from .find_NVIDIA_CUDA import FindCUDA
@@ -23,6 +25,7 @@ from .find_MATLAB import FindMATLAB
 from .find_MiHoYo import FindMiHoYo
 
 __all__ = [
+    'AddModules',
     "FindHIPSDK",
     "FindTheRock",
     "FindCUDA",

@@ -3,7 +3,7 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-from .objects import ModulesObject, modules_object_json_encoder
+from .objects import ModulesZip, ModulesObject, modules_object_json_encoder
 from .compiler import Compiler
 from .generator import Generator
 from .driver import Driver
@@ -16,4 +16,5 @@ __all__ = [
     "Compiler",
     "Generator",
     "unwind",
+    'ModulesZip'
 ]

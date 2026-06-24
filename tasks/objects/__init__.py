@@ -4,5 +4,6 @@
 # https://opensource.org/licenses/MIT
 
 from .modulesobject import ModulesObject, modules_object_json_encoder
+from .moduleszip import ModulesZip
 
-__all__ = ["ModulesObject", "modules_object_json_encoder"]
+__all__ = ["ModulesObject", "modules_object_json_encoder", 'ModulesZip']
