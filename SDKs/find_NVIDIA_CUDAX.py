@@ -419,10 +419,11 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
             ))
 
 
-    # CUDA Tile IR C/C++ Library doesn't contain binary or include header version information and cmake modules
+    # CUDA Tile IR C/C++ Library doesn't contain binary or include header version information
+    #   and cmake modules
     def add_nvidia_cutile(self): ...
 
-    # Experimental, Identity items
+    # Experimental, Identity layer items
     def add_nvidia_cuquantum(self): ...
     def add_nvidia_cupqc(self): ...
     def add_nvidia_cudagdb(self): ...
