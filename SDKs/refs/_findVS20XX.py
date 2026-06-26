@@ -53,6 +53,7 @@ def _get_vswhere_install() -> (
         try:
             vsquery = subprocess.run(
                 [vswhere, "-all", "-prerelease", "-products", "*", "-format", "json"],
+                errors='ignore',
                 capture_output=True,
                 text=True,
                 check=True,
