@@ -17,15 +17,15 @@ class Installer:
         dest = config.MODULE_INSTALL_PREFIX
 
         if not dest:
-            raise ValueError(
-                dedent("""\
-                Install prefix cannot be None or empty.
-            """)
-            )
+            dest = r'build/install'
+
+            # raise ValueError(
+            #     dedent("""\
+            #     Install prefix cannot be None or empty.
+            # """)
+            # )
 
         dest = self._path_fixer(dest)
-
-        install_dir = dest / "modulefiles"
 
         cache_file = Path("build/cache.json")
 
@@ -36,12 +36,19 @@ class Installer:
         cache = [ModulesObject(obj) for obj in cache_data]
         cache_n = len(cache)
 
-        message("[1/1] Install build Tcl Modulefiles ...")
+        message('')
+        message("[1/1] Installing built files ...")
 
         inst_msg = []
         for i, obj in enumerate(cache):
             try:
                 src_file = Path("build/modulefiles") / obj.output
+
+                if obj.objtype == 'File':
+                    install_dir = dest
+                else:
+                    install_dir = dest/"modulefiles"
+
                 dst_file = install_dir / obj.output
 
                 dst_file.parent.mkdir(parents=True, exist_ok=True)
