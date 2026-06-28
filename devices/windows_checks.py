@@ -28,22 +28,31 @@ class WindowsCheck:
     def __init__(self):
         message(f" -- The Python Identification is {self.pyitp} {self.pyver}")
         wait(0.3)
-        self.check_python_version(self.pyver, "3.11.0", "3.14.15")
-        self.check_python_interps(
-            allow_interps=[
-                "CPython",
-            ]
-        )
-        self.check_python_environ()
-        self.check_python_winreg()
-        self.check_everything_service()
-        self.check_everything_cli()
-        self.check_wemi_version()
+        check_stat = {
+            "Python Version":       self.check_python_version(self.pyver, "3.11.0", "3.15.15"),
+            "Python Interps":       self.check_python_interps(allow_interps=["CPython",]),
+            "Python Environ":       self.check_python_environ(),
+            "Python winreg":        self.check_python_winreg(),
+            "Tclsh Install":        self.check_tclsh_install(),
+            "Code Page":            self.check_device_chcp(),
+            "Everything Service":   self.check_everything_service(),
+            "Everything CLI":       self.check_everything_cli(),
+            "Envmodule version":    self.check_envmodule(),
+            "wemi version":         self.check_wemi_version(),
+        }
+
+    def check_device_chcp(self):
+        msg = ' -- Checking for Terminal current code page:'
+        message(msg)
+        c = subprocess.run('chcp', shell=True, capture_output=True, text=True, errors='ignore').stdout.strip().split(':')[-1].replace(' ', '')
+        message(f'{msg:<74} -- {c}')
 
     def check_wemi_version(self):
+        v = const.WEMI_VERSION
         message('')
-        message(f' -- WEMI version: {const.WEMI_VERSION}')
-        ...
+        message(f' -- WEMI version: {v}')
+
+        return v
 
     def check_python_version(
         self,
@@ -62,6 +71,7 @@ class WindowsCheck:
 
         if _v:
             message(f"{msg:<60} -- {tgt:<10} -- Success")
+            return True
         else:
             message(f"{msg:<60} -- {tgt:<10} -- Failed")
             message(
@@ -98,6 +108,7 @@ class WindowsCheck:
                     traceback: Required Python type: {allow_interps}""")
             )
         message(f"{msg:<60} -- {self.pyitp:<10} -- Success")
+        return True
 
     def check_python_environ(self):
         msg = " -- Checking for Python executable environment type"
@@ -133,6 +144,7 @@ class WindowsCheck:
             import winreg
 
             message(f"{msg:<74} -- Success")
+            return True
         except ImportError:
             message(f"{msg:<74} -- Failed")
             raise ImportError(
@@ -145,65 +157,146 @@ class WindowsCheck:
 
     def check_everything_service(self):
         msg = " -- Checking for Windows has Everything service"
+        _1st_try = None
         message(msg)
         wait(0.3)
 
-        q = subprocess.run(
-            ["cmd.exe", "/C", "sc query everything"], capture_output=True, text=True
-        )
+        q = subprocess.run(["cmd.exe", "/C", "sc query everything"], capture_output=True, text=True)
 
         if q.returncode == 0 and "RUNNING" in q.stdout:
             message(f"{msg:<74} -- Running")
+            _1st_try = True
         else:
             message(f"{msg:<74} -- No")
-            raise RuntimeError(
-                "WEMI requires voidtools Everything service. Please install it."
-            )
+            _1st_try = False
+
+        if not _1st_try:
+            message('WARNING', '[Warning] Try to install Everything service')
+
+            # Deploy voidtools Everything
+            try:
+                sub_q = subprocess.run(['winget', 'install', 'voidtools.Everything'],
+                                       capture_output=True, text=True)
+            except PermissionError as e:
+                raise PermissionError(dedent(f'''\
+                        WEMI failed to install VoidTools Everything service.
+                        Stop.'''))
+            except Exception as e:
+                raise e
+
+            try:
+                sub_r = subprocess.run(['C:/Program Files/Everything/everything.exe', '-start-service'])
+            except Exception as e:
+                raise e
+
+            else:
+                q = subprocess.run(["cmd.exe", "/C", "sc query everything"], capture_output=True, text=True)
+                if sub_q == 0 or 2316632107:
+                    message('Install complete')
+                else:
+                    message(dedent(f'''\
+                        Install with exit code {sub_q.returncode}
+                        {sub_q.stdout}
+                        {sub_q.stderr}
+                    '''))
+            finally:
+                if not (q.returncode == 0 and "RUNNING" in q.stdout):
+                    message(f"{msg:<74} -- Running")
+                else:
+                    raise RuntimeError('WEMI failed to install VoidTools Everything service. Abort.')
+        return True
 
     def check_everything_cli(self):
         msg = " -- Checking for Windows has Everything CLI"
         message(msg)
         wait(0.3)
 
-        es1 = Path(shutil.which("es.exe"))
-        es2 = Path(".deps/es.exe")
-        if es1.exists():
+        _1st_try = None
+
+        es1 = shutil.which("es.exe")
+        if es1:
             message(f"{msg:<74} -- Found")
+            _1st_try = True
         else:
             message(f"{msg:<74} -- Failed")
-            msg = " -- Checking for WEMI .deps/es.exe exists\t"
-            message(msg)
-            if es2.exists():
-                message(f"{msg:<74} -- Found")
+            _1st_try = False
+
+        if not _1st_try:
+            message('WARNING', '[Warning] Try to install Everything CLI')
+            try:
+                sub_q = subprocess.run(['winget', 'install', 'voidtools.Everything.Cli'],
+                                       capture_output=True, text=True)
+            except PermissionError as e:
+                raise PermissionError(dedent(f'''\
+                        WEMI failed to install VoidTools Everything-CLI.
+                        Stop.'''))
+            except Exception as e:
+                raise e
             else:
-                message(f"{msg:<74} -- Not Found")
-                raise RuntimeError(
-                    dedent(
-                        "WEMI requires voidtools Everything CLI. Please download it and unzip to .deps/ folder."
-                    )
-                )
+                q = subprocess.run(["cmd.exe", "/C", "sc query everything"], capture_output=True, text=True)
+                if sub_q == 0 or 2316632107:
+                    message('Install complete')
+                else:
+                    message(dedent(f'''\
+                        Install with exit code {sub_q.returncode}
+                        {sub_q.stdout}
+                        {sub_q.stderr}
+                    '''))
+            finally:
+                if not (q.returncode == 0 and "RUNNING" in q.stdout):
+                    message(f"{msg:<74} -- Running")
+                else:
+                    raise RuntimeError('WEMI failed to install VoidTools Everything service. Abort.')
+        return True
 
     def check_tclsh_install(self):
         msg = ' -- Checking for Tclsh executable'
-        try:
-            tcl_ver = VersionNum(subprocess.run(
-                ['echo puts [info patchlevel] | tclsh'],
+
+        _1st_try = None
+        tcl_ver = None
+
+        if shutil.which('tclsh.exe'):
+
+            tcl_ver = tcl_ver = VersionNum(subprocess.run(
+                'echo puts [info patchlevel] | tclsh',
                 shell=True,
                 capture_output=True,
                 text=True).stdout)
-            if VERSION(tcl_ver, ">=", '8.6'):
-                message(f'{msg:<74} -- {tcl_ver} -- Success')
+
+            _1st_try = True
+
+        _1st_check = "Found" if _1st_try else "Failed"
+        message(f"{msg:<74} -- {tcl_ver} -- {_1st_check}")
+
+
+        if not _1st_try:
+            message('WARNING', 'Try to install Magicsplat Tcl/Tk ...')
+            try:
+                sub_q = subprocess.run(['winget', 'install', 'Magicsplat.TclTk', '--force'],
+                                       capture_output=True, text=True)
+            except PermissionError as e:
+                raise PermissionError(dedent(f'''\
+                        WEMI failed to install Magicsplat Tcl/Tk.
+                        Stop.'''))
+            except Exception as e:
+                raise e
             else:
-                message(f'{msg:<74} -- {tcl_ver} -- Failed')
-                message('WARNING', dedent(f'''\
-                    Environment Modules requires Tclsh version at least 8.6. Please set a Tclsh
-                    version >= 8.6 or >= 9.0 versions at system level PATH.'''))
-        except Exception as e:
-            message(f'{msg:<74} -- {tcl_ver} -- Failed')
-            message('WARNING', dedent(f'''\
-                    Cannot found tclsh.exe with error {str(e)}.
-                    Environment Modules requires a Tclsh installation with its version at least 8.6.
-                    Please install it to make sure modules can work properly.'''))
+
+                if sub_q.returncode == 0 or 2316632107:
+                    message('Install complete')
+                elif sub_q.returncode == 1063:
+                    raise RuntimeError(dedent(f'''\
+                        Install Magicsplat Tcl/Tk with exit code {sub_q.returncode}.
+                        Please check if your device have broken Magicsplat Tcl/Tk install and clean it.
+                    '''))
+                else:
+                    raise RuntimeError(dedent(f'''\
+                        Install with exit code {sub_q.returncode}
+                        {sub_q.stdout}
+                        {sub_q.stderr}
+                    '''))
+
+        return True
 
     def check_envmodule(self):
         msg = ' -- Checking for device have Environment Modules installed'
@@ -223,10 +316,10 @@ class WindowsCheck:
 
             if all((modules_home/f).exists() for f in files):
                 message(f'{msg:<74} -- {modules_home.as_posix()} -- Success')
-                return
+                return True
         message(f'{msg:<74} -- {modules_home} -- Failed')
-        message(dedent(f'''\
-                Cannot found Local machine have modules installed.
-                You can visit https://github.com/envmodule/modules to get Windows specific release
-                    zip package and do decompress setup.
-                '''))
+        # message(dedent(f'''\
+        #         Cannot found Local machine have modules installed.
+        #         You can visit https://github.com/envmodule/modules to get Windows specific release
+        #             zip package and do decompress setup.
+        #         '''))
