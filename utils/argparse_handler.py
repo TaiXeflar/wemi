@@ -24,6 +24,7 @@ def args_update():
 
     options_general = parser.add_argument_group("General options")
     options_config = parser.add_argument_group("Configure options")
+
     options_build = parser.add_argument_group("Build options")
     options_install = parser.add_argument_group("Install options")
     options_exprmnt = parser.add_argument_group("Experiment options")
@@ -81,6 +82,19 @@ def args_update():
         help="Disable ANSI escape coded colot string output",
     )
     options_config.add_argument(
+        '--hash',
+        '-hash',
+        '/hash',
+        '-DMODULE_ZIP_HASH',
+        type=str,
+        choices=['SHA1', 'SHA224', 'SHA256', 'SHA384', 'SHA512',
+                 'SHA3_128', 'SHA3_224', 'SHA3_256', 'SHA3_384', 'SHA3_512',
+                 'MD5', 'CRC32'],
+        dest='MODULE_ZIP_HASH_TYPE',
+        default='SHA256',
+        help='Examine Downloaded Modules zipfile hash'
+    )
+    options_config.add_argument(
         "--sdks",
         "-sdks",
         "--projects",
@@ -129,6 +143,14 @@ def args_update():
         dest="ENABLE_TCL_EXTENSION",
         help="Enable Modulefiles forcing with tclsh file extension (*.tcl)",
     )
+    options_config.add_argument(
+        '--aio',
+        '--all-in-one',
+        '-D_ALL_IN_ONE',
+        action='store_true',
+        dest='ALL_IN_ONE',
+        help='All in one process'
+    )
 
     options_build.add_argument(
         "-G",
@@ -151,13 +173,43 @@ def args_update():
         dest="MODULE_INSTALL_PREFIX",
         help="Moulefiles install directory",
     )
-
+    # options_exprmnt.add_argument(
+    #     "--exp-cygwin-as-windows",
+    #     "-DEXP_CYGWIN_AS_WINDOWS",
+    #     action="store_true",
+    #     dest="EXPERIMENTIAL_CYGWIN_AS_WINDOWS",
+    #     help="Enable Modulefiles forcing with tclsh file extension (*.tcl)",
+    # )
     options_exprmnt.add_argument(
-        "--exp-cygwin-as-windows",
-        "-DEXP_CYGWIN_AS_WINDOWS",
+        "--exp-mihoyo-sdk",
+        "-DEXP_MIHOYO_SDK",
         action="store_true",
-        dest="EXPERIMENTIAL_CYGWIN_AS_WINDOWS",
-        help="Enable Modulefiles forcing with tclsh file extension (*.tcl)",
+        dest="EXP_MIHOYO_SDK",
+        help="Enable Experimential MiHoYo/HoYoVerse SDK",
+    )
+
+
+    modules_enable_exclusive_group = options_config.add_mutually_exclusive_group()
+    # 2. 將新增模組的 flag 加入互斥群組
+    modules_enable_exclusive_group.add_argument(
+        "--add-modules",
+        "-D_ADD_MODULES",
+        nargs="+",
+        type=str,
+        dest="ADD_MODULES",
+        default=[],
+        help="Specify modules to explicitly add. Cannot be used with --no-modules.",
+    )
+
+    # 3. 將排除模組的 flag 加入同一個互斥群組
+    modules_enable_exclusive_group.add_argument(
+        "--no-modules",
+        "-DNO_MODULES",
+        nargs="+",
+        type=str,
+        dest="NO_MODULES",
+        default=[],
+        help="Specify modules to explicitly exclude. Cannot be used with --add-modules.",
     )
 
     help_flags = {"--help", "-help", "-?", "/?", "/help"}
