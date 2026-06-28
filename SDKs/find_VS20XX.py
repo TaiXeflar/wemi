@@ -183,6 +183,7 @@ class FindVS20XX(FindSDK):
                 )
                 ll_target_triple = subprocess.run(
                     [(ll_root / "bin/clang.exe"), "-dumpmachine"],
+                    errors='ignore',
                     capture_output=True,
                     text=True,
                     check=True,

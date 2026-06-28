@@ -16,7 +16,7 @@ import os
 
 from utils.compare_functions import VersionNum
 from utils import message
-from tasks.objects.modulesobject import ModulesObject, PROFILES_HINT
+from tasks.objects.modulesobject import ModulesObject
 
 
 def os_type() -> (
@@ -300,12 +300,11 @@ class FindSDK(ABC):
         try:
             result = subprocess.run(
                 cmd,
+                errors='ignore',
                 input=input,
                 text=True,
-                encoding="utf-8",
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
-                errors="ignore",
             )
             query_run = result.stdout.strip()
         except subprocess.SubprocessError as e:
@@ -352,8 +351,8 @@ class FindSDK(ABC):
         module_whaits: str = "",
         deps: list[str] = [],
         conflicts: list[str] = [],
-        llvm_conflicts: list[PROFILES_HINT] = [],
-        hetero_conflicts: list[PROFILES_HINT] = [],
+        llvm_conflicts: list[str] = [],
+        hetero_conflicts: list[str] = [],
         vcompare: list[dict[str, Any]] = None,
         VARs: dict[str, str] = {},
         ENVs: dict[str, str] = {},
