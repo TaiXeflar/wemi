@@ -28,7 +28,15 @@ GENERATOR_STYLE: Literal["ninja", "make"] = "ninja"
 LOCALE: Literal["local", "global", "en", "tw"] = "global"
 
 MODULE_INSTALL_PREFIX: Path | str = None
+MODULE_ZIP_HASH_TYPE: Literal['SHA1', 'SHA224','SHA256', 'SHA384', 'SHA512',
+                              'SHA3_128', 'SHA3_224','SHA3_256', 'SHA3_384', 'SHA3_512',
+                              'MD5', 'CRC32', 'CRC64'] = 'SHA256'
+MODULE_ZIP_VERSION = 'latest'
 
 
 if SEH_STYLE.lower() not in ("default", "python", "gcc", "clang", "msvc"):
     SEH_STYLE = "default"
+
+
+EXP_MIHOYO_SDK = False
+ALL_IN_ONE = False
