@@ -7,6 +7,7 @@ from typing import Literal
 from pathlib import Path
 from textwrap import dedent
 
+from utils import config
 from utils.functions import clear
 from utils.color_string import message
 from devices.windows import WindowsNT
@@ -31,7 +32,9 @@ class Driver:
                         WEMI driver program recieved unspecified task {task}.
                         """)
                 )
-
+        if config.ALL_IN_ONE:
+            generate()
+            install()
 
 def configure():
     clear()
@@ -39,8 +42,10 @@ def configure():
     try:
         device = WindowsNT()
         device.export()
-    except:
-        ...
+    except Exception as e:
+        from tasks import seh
+        # 把被吞掉的錯誤交給你的錯誤處理器印出來
+        seh.unwind(type(e), e, e.__traceback__)
     else:
         message(
             f' -- Build files have been written to: {Path('build').resolve().as_posix()}'
