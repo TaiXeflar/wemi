@@ -34,9 +34,6 @@ class WindowsNT:
         "GMT": FindGMT,
         "MATLAB": FindMATLAB,
         "Strawberry": FindStrawberryPerl,
-
-        # Experimential
-        "MiHoYo": FindMiHoYo,
     }
 
     @tic_toc("Configuring Done")
@@ -56,11 +53,19 @@ class WindowsNT:
             message(f" -- WEMI Selected SDKs: {target_sdks}")
 
         for sdk_name in target_sdks:
+
             sdk_class = registry_lower.get(sdk_name.lower())
             if sdk_class:
                 self.info[sdk_name] = sdk_class()
             else:
                 message(f"[Warning] Cannot Find SDK type'{sdk_name}'.")
+
+        # Experimential
+        if config.EXP_MIHOYO_SDK:
+            self.info["MiHoYo"] = FindMiHoYo()
+
+        if config.ADD_MODULES or not config.NO_MODULES:
+            self.info['Modules'] = AddModules(config.MODULE_ZIP_VERSION)
 
         self.rules: list[ModulesObject] = []
         try:
