@@ -5,6 +5,7 @@
 
 import sys
 import importlib.util
+import shutil
 from pathlib import Path
 from textwrap import dedent
 
@@ -79,3 +80,13 @@ class Compiler:
             f.write(tcl_context)
 
         return out_path
+
+    def copy(self, module_obj: ModulesObject):
+
+        filename =  module_obj.MODULENAME
+        output =    module_obj.output
+        src =       module_obj._raw_data.get('src')
+
+        srcfile = Path(src, filename)
+
+        shutil.copyfile(src=srcfile, dst=Path(self.output_dir, output))
