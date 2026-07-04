@@ -72,6 +72,7 @@ class ModulesZip:
             req = request.Request(self.zipurl)
 
             try:
+                Path('.deps').mkdir(exist_ok=True)
                 with request.urlopen(req) as response, open(download_zip, 'wb') as z:
                     z.write(response.read())
                 message(f'{msg:<74} -- Download complete')
