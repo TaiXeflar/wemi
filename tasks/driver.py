@@ -40,7 +40,7 @@ def configure():
     clear()
 
     try:
-        device = WindowsNT()
+        device = WindowsNT(config.MODULES_ONLY)
         device.export()
     except Exception as e:
         from tasks import seh

@@ -107,6 +107,14 @@ def args_update():
         help="Specify which SDKs to configure. If empty, configure all.",
     )
     options_config.add_argument(
+        '--modules-only',
+        '-DMODULES_ONLY',
+        action='store_true',
+        dest='MODULES_ONLY',
+        default=argparse.SUPPRESS,
+        help='Set Modules only'
+    )
+    options_config.add_argument(
         "--tldr",
         "-tldr",
         "/tldr",

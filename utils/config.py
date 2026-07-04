@@ -40,3 +40,7 @@ if SEH_STYLE.lower() not in ("default", "python", "gcc", "clang", "msvc"):
 
 EXP_MIHOYO_SDK = False
 ALL_IN_ONE = False
+
+ADD_MODULES = True
+NO_MODULES = False
+MODULES_ONLY = False
