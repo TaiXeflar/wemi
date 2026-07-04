@@ -30,7 +30,7 @@ class ModulesObject:
 
         obj_type = self._raw_data.get("mode", "tcl")
 
-        if obj_type.low not in ("tcl", "cmake", 'file'):
+        if obj_type not in ("tcl", "cmake", 'file'):
             raise ValueError(f"Cannot compile {obj_type} type object")
 
         self._raw_data.update(
