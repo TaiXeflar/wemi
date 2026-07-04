@@ -1,0 +1,80 @@
+name: Modules AIO Install Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: powershell
+
+jobs:
+  modules-aio:
+    name: Modules-only AIO on Windows
+    runs-on: windows-2025
+    timeout-minutes: 30
+
+    env:
+      PYTHONUTF8: "1"
+      INSTALL_PREFIX: ${{ github.workspace }}\build\install
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Show runner environment
+        run: |
+          Write-Host "Windows:"
+          Get-ComputerInfo |
+            Select-Object WindowsProductName, WindowsVersion, OsBuildNumber |
+            Format-List
+
+          Write-Host "PowerShell:"
+          $PSVersionTable
+
+          Write-Host "uv:"
+          uv --version
+
+      - name: Install Everything, Everything CLI, and Tcl/Tk
+        run: .\.ci\setup-wemi-deps.ps1
+
+      - name: Create uv virtual environment
+        run: |
+          uv venv .venv --python 3.13.2 --seed
+          .\.venv\Scripts\python.exe --version
+
+      - name: Run WEMI Modules-only AIO installation
+        run: |
+          .\.venv\Scripts\python.exe .\wemi.py configure `
+            -DMODULES_ONLY `
+            --prefix "$env:INSTALL_PREFIX" `
+            --aio
+
+      - name: Test installed Modules in CMD and Windows PowerShell 5.1
+        run: |
+          .\.ci\test-modules-install.ps1 `
+            -InstallPath "$env:INSTALL_PREFIX"
+
+      - name: Upload build outputs when failing
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: modules-aio-failure-artifacts
+          path: |
+            build/cache.json
+            build/modulefiles
+            build/install
+          if-no-files-found: warn
