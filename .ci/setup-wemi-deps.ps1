@@ -97,4 +97,4 @@ Write-Host "Everything CLI:"
 & es.exe -version
 
 Write-Host "Tcl:"
-& tclsh.exe <<< "puts [info patchlevel]"
+echo 'puts [info patchlevel]' | tclsh.exe
