@@ -8,4 +8,8 @@
 from .refs import BaseModuleTemplate
 
 class ModuleTemplate(BaseModuleTemplate):
-    def build(self): ...
+    def __init__(self, module_obj):
+        self.module_obj = module_obj
+
+    def build(self):
+        None
