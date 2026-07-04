@@ -82,11 +82,12 @@ class Compiler:
         return out_path
 
     def copy(self, module_obj: ModulesObject):
+        output = module_obj.output
+        src = module_obj._raw_data.get("src")
 
-        filename =  module_obj.MODULENAME
-        output =    module_obj.output
-        src =       module_obj._raw_data.get('src')
+        srcfile = Path(src)
+        out_path = self.output_dir / output
+        out_path.parent.mkdir(parents=True, exist_ok=True)
 
-        srcfile = Path(src, filename)
-
-        shutil.copyfile(src=srcfile, dst=Path(self.output_dir, output))
+        shutil.copyfile(src=srcfile, dst=out_path)
+        return out_path
