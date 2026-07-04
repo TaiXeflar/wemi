@@ -29,7 +29,7 @@ class AddModules(FindSDK):
         super().__init__()
 
     def __WINDOWS__(self):
-        self.add_module_zip()
+        self.z = self.add_module_zip()
         self.add_module_scripts()
 
     def add_module_zip(self):
@@ -37,6 +37,7 @@ class AddModules(FindSDK):
         z.download()
         z.examine(hash_type='SHA256', chunk_size=65535)
         z.unzip('.deps')
+        return z
 
     def add_module_scripts(self):
         print(' -- Generating Modules rules')
@@ -56,7 +57,7 @@ class AddModules(FindSDK):
             'doc/CONTRIBUTING.txt',
             'doc/COPYING.GPLv2',
             'doc/envml.txt',
-            'doc/INSTALL-win.rst',
+            'doc/INSTALL-win.txt',
             'doc/MIGRATING.txt',
             'doc/ml.txt',
             'doc/module.txt',
@@ -74,7 +75,7 @@ class AddModules(FindSDK):
             output=f,
             mode='file',
             Include_file='template_modulefile',
-            src='.deps'
+            src=f'.deps/{self.z.foldername}/{f}'
         ) for f in modules_dir_files])
 
         self.add_rule([ModulesObject(
@@ -82,7 +83,5 @@ class AddModules(FindSDK):
             output='test/'+f,
             mode='file',
             Include_file='template_modulefile',
-            src='.deps'
+            src=f'.deps/{self.z.foldername}/{f}'
         ) for f in modules_test_files])
-
-        print(' -- Generating Modules rules')
