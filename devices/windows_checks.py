@@ -10,6 +10,7 @@ import sys
 import platform
 import subprocess
 import shutil
+import json
 from pathlib import Path
 from time import sleep as wait
 from typing import Literal, Sequence
@@ -17,13 +18,12 @@ from textwrap import dedent
 
 from utils.compare_functions import VersionNum, VERSION, VERSION_IN_RANGE
 from utils import message
-from utils import const
 
 
 class WindowsCheck:
     pyver = VersionNum(tuple(sys.version_info)[0:2])
     pyitp = platform.python_implementation()
-    wemiv = const.WEMI_VERSION
+    wemiv = json.loads(Path('version.json').open('r', errors='ignore').read()).get('version')
 
     def __init__(self):
         message(f" -- The Python Identification is {self.pyitp} {self.pyver}")
@@ -48,7 +48,7 @@ class WindowsCheck:
         message(f'{msg:<74} -- {c}')
 
     def check_wemi_version(self):
-        v = const.WEMI_VERSION
+        v = self.wemiv
         message('')
         message(f' -- WEMI version: {v}')
 

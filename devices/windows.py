@@ -37,7 +37,7 @@ class WindowsNT:
     }
 
     @tic_toc("Configuring Done")
-    def __init__(self):
+    def __init__(self, modules_only:bool=None, /):
         WindowsCheck()
 
         self.info: dict[str, FindSDK] = {}
@@ -45,24 +45,26 @@ class WindowsNT:
         raw_target_sdks = getattr(config, "ENABLE_SDKS", [])
         registry_lower = {k.lower(): v for k, v in self._SDK_REGISTRY.items()}
 
-        if not raw_target_sdks:
-            target_sdks = list(self._SDK_REGISTRY.keys())
-            message(" -- WEMI Enabled All SDK scanning.")
-        else:
-            target_sdks = raw_target_sdks
-            message(f" -- WEMI Selected SDKs: {target_sdks}")
 
-        for sdk_name in target_sdks:
-
-            sdk_class = registry_lower.get(sdk_name.lower())
-            if sdk_class:
-                self.info[sdk_name] = sdk_class()
+        if not modules_only:
+            if not raw_target_sdks:
+                target_sdks = list(self._SDK_REGISTRY.keys())
+                message(" -- WEMI Enabled All SDK scanning.")
             else:
-                message(f"[Warning] Cannot Find SDK type'{sdk_name}'.")
+                target_sdks = raw_target_sdks
+                message(f" -- WEMI Selected SDKs: {target_sdks}")
 
-        # Experimential
-        if config.EXP_MIHOYO_SDK:
-            self.info["MiHoYo"] = FindMiHoYo()
+            for sdk_name in target_sdks:
+
+                sdk_class = registry_lower.get(sdk_name.lower())
+                if sdk_class:
+                    self.info[sdk_name] = sdk_class()
+                else:
+                    message(f"[Warning] Cannot Find SDK type'{sdk_name}'.")
+
+            # Experimential
+            if config.EXP_MIHOYO_SDK:
+                self.info["MiHoYo"] = FindMiHoYo()
 
         if config.ADD_MODULES or not config.NO_MODULES:
             self.info['Modules'] = AddModules(config.MODULE_ZIP_VERSION)
