@@ -49,22 +49,24 @@ class Generator:
             idx = int(idx)
             compiler = Compiler()
 
-            if config.GENERATOR_STYLE == "ninja":
-                compile_tgt_disp = f"[{idx}/{total}] Building {tgt.objtype} Modulefile Object {tgt.output}"
-                sys.stdout.write(dedent(f"""\r{compile_tgt_disp:<150}"""))
+            if tgt.objtype == 'File':
+                f_disp = f'Copying {tgt.MODULENAME}'
+            else:
+                f_disp = f'Building {tgt.objtype} Modulefile Object {tgt.output}'
+
+            if config.GENERATOR_STYLE == 'ninja':
+                g_disp = f'[{idx}/{total}] {f_disp}'
+                sys.stdout.write(dedent(f"""\r{g_disp:<150}"""))
+                sys.stdout.flush()
+            elif config.GENERATOR_STYLE == 'make':
+                g_disp = f'[{math.floor((idx / total * 100)):>4}%]  {f_disp}'
+                sys.stdout.write(f"{g_disp:<120}\n")
                 sys.stdout.flush()
 
-            elif config.GENERATOR_STYLE == "make":
-                per = math.floor((idx / total * 100))
-                compile_tgt_disp = (
-                    f"[{per:>4}%] Building {tgt.objtype} Modulefile Object {tgt.output}"
-                )
-                sys.stdout.write(f"{compile_tgt_disp:<120}\n")
-                sys.stdout.flush()
 
             try:
                 time.sleep(0.05)
-                if tgt.objtype == 'file':
+                if tgt.objtype == 'File':
                     compiler.copy(tgt)
                 else:
                     compiler.compile(tgt)
