@@ -10,38 +10,6 @@ from textwrap import dedent
 from utils import config
 from utils.compare_functions import VersionNum
 
-PROFILES_HINT = Literal[
-    "amd/hip",
-    "ROCm/TheRock",
-    "intel",
-    "intel/oneapi",
-    "intel/compiler",
-    "intel/dnnl",
-    "intel/ocloc",
-    "intel/mkl",
-    "nvidia",
-    "nvidia/cuda",
-    "nvidia/cudnn",
-    "nvidia/cudss",
-    "nvidia/cutensor",
-    "nvidia/cusparselt",
-    "nvidia/tensorrt",
-    "nvidia/cutlass",
-    "nvidia/nvhpc",
-    "nvidia/nvhpc-byo",
-    "nvidia/cuquantum",
-    "nvidia/cupqc",
-    "nvidia/" "cangjie",
-    "borland",
-    "matlab",
-    "gmt",
-    "vs",
-    "msvc",
-    "ucrt",
-    "llvm",
-    "gcc",
-]
-
 
 class ModulesObject:
     __slots__ = ("_raw_data",)
@@ -62,7 +30,7 @@ class ModulesObject:
 
         obj_type = self._raw_data.get("mode", "tcl")
 
-        if obj_type not in ("tcl", "cmake"):
+        if obj_type.low not in ("tcl", "cmake", 'file'):
             raise ValueError(f"Cannot compile {obj_type} type object")
 
         self._raw_data.update(
