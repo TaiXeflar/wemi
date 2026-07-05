@@ -12,10 +12,16 @@
 ![License](https://img.shields.io/badge/License-MIT-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 
+| CI Stats | |
+| :----: | :----: |
+| Modules Only, AIO | [![Modules AIO Install Test](https://github.com/TaiXeflar/wemi/actions/workflows/modules-aio.yml/badge.svg?branch=master)](https://github.com/TaiXeflar/wemi/actions/workflows/modules-aio.yml)
+
+
 WEMI is a Experimential, Python based Environment Modules generator and installer, targeting on Windows 10/11 systems to solving enviromnent setups.
 
 WEMI will scan, compile and install tcl Modulefiles to your Environment Modules system on your device.
 
+<!-- SDK profiles -->
 <div align="left">
   <a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/oneapi-toolkit.html" target="_blank">
     <img src="https://intel-corporation.gallerycdn.vsassets.io/extensions/intel-corporation/oneapi-samples/0.0.65/1777041053250/Microsoft.VisualStudio.Services.Icons.Default" height="50" alt="Intel oneAPI" title="Intel oneAPI" /></a> &nbsp;
@@ -36,13 +42,10 @@ WEMI will scan, compile and install tcl Modulefiles to your Environment Modules 
     height="50" alt="VS2026" title="VS2026" /></a> &nbsp;
   <a href="https://mathworks.com/products/matlab.html" target="_blank">
     <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Matlab_Logo.png" height="50" alt="MATLAB" title="MATLAB" /></a> &nbsp;
-  <a href="https://cmake.org/" target="_blank">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Cmake.svg" height="50" alt="CMake" title="CMake" /></a> &nbsp;
   <a href="https://github.com/StrawberryPerl/Perl-Dist-Strawberry" target="_blank">
     <img src="https://images.emojiterra.com/google/noto-emoji/unicode-17.0/color/1024px/1f353.png" height="50" alt="Strawberry Perl" title="Strawberry Perl" /></a> &nbsp;
   <a href="https://cangjie-lang.cn/en" target="_blank">
     <img src="https://ide-innovation-lab.gallerycdn.vsassets.io/extensions/ide-innovation-lab/cangjie/1.1.0/1776234936844/Microsoft.VisualStudio.Services.Icons.Default" height="50" alt="Cangjie-Lang" title="Cangjie-Lang" /></a> &nbsp;
-
 
   <br>
   <a href="https://benghuai.com/" target="_blank">
@@ -67,6 +70,7 @@ WEMI will scan, compile and install tcl Modulefiles to your Environment Modules 
     height="50" alt="Petit Planet" title="Petit Planet" />
   </a>
 </div>
+<!-- SDK profiles -->
 
 ## Early State development
 
@@ -106,6 +110,10 @@ Issues and disscutions are open welcomed.
     # Install       (based on build/cache.json.)
     (.venv) PS X:\wemi> python ./wemi.py install --prefix "C:/Developer/Modules"
     ```
+    ```
+    # Configure All-In-One command     (generates build/cache.json.)
+    (.venv) PS X:\wemi> python ./wemi.py configure --aio/-D_ALL_IN_ONE --<flags/options> -D<FLAGS/OPTIONS>
+    ```
 
 ## Limitations
 
@@ -122,15 +130,13 @@ WEMI have not tested Path with non Latin charcters languages yet:
  - Japanese (JA, Shift-JIS): Japanese uses Kanji, Hiragana and Katakana.
  - Korean (KR).
 
-WEMI strongly not recommend set non Latin characters, full widith characters, half/full width spaces, dots, laft/right slashes as your user name.
+WEMI strongly not recommend set non Latin characters, full widith characters, half/full width spaces, dots, laft/right slashes as your user name. This is not WEMI cases because most development toolchains are prefer English environment, include full english charcters path.
 
-Instead, PC users should keep their names to English based names, dashes and underscores to avoid any cross-platform program
- have not complete support to it.
+Instead, PC users should keep their names to English based names, dashes and underscores to avoid any cross-platform program have not complete support to it.
 
  For example:
  - Avoid names like `C:/Users/三月七`, `C:/Users/琪亞娜　卡斯蘭娜`.
  - Recommend user names: `C:/Users/SilverWolf999`, `C:/Users/Miku39`, `C:/Users/OMNI_1206` etc.
-
 
 WEMI have not tested on Cygwin/MSYS2 environment yet. I will do later tests by trying compile several projects.
 
