@@ -14,7 +14,7 @@ permissions:
 
 defaults:
   run:
-    shell: powershell
+    shell: pwsh
 
 jobs:
   modules-aio:
@@ -42,14 +42,35 @@ jobs:
             Select-Object WindowsProductName, WindowsVersion, OsBuildNumber |
             Format-List
 
-          Write-Host "PowerShell:"
+          Write-Host "PowerShell 7:"
+          pwsh --version
           $PSVersionTable
 
           Write-Host "uv:"
           uv --version
 
-      - name: Install Everything, Everything CLI, and Tcl/Tk
-        run: .\.ci\setup-wemi-deps.ps1
+      - name: Install WEMI prerequisites
+        run: |
+          .\.ci\setup-wemi-deps.ps1
+
+      - name: Verify prerequisite commands
+        run: |
+          Get-Command pwsh.exe
+          Get-Command tclsh.exe
+          Get-Command es.exe
+
+          Write-Host "PowerShell:"
+          pwsh --version
+
+          Write-Host "Tcl:"
+          tclsh.exe <<< 'puts [info patchlevel]'
+
+          Write-Host "Everything CLI:"
+          es.exe -version
+
+      - name: Prepare dependency directory
+        run: |
+          New-Item -ItemType Directory -Force .deps | Out-Null
 
       - name: Create uv virtual environment
         run: |
@@ -63,10 +84,59 @@ jobs:
             --prefix "$env:INSTALL_PREFIX" `
             --aio
 
-      - name: Test installed Modules in CMD and Windows PowerShell 5.1
+      - name: Verify installed Modules files
         run: |
-          .\.ci\test-modules-install.ps1 `
-            -InstallPath "$env:INSTALL_PREFIX"
+          $requiredFiles = @(
+            "bin\module.cmd",
+            "bin\ml.cmd",
+            "bin\envml.cmd",
+            "init\cmd.cmd",
+            "init\pwsh.ps1",
+            "libexec\modulecmd.tcl",
+            "modulefiles\null",
+            "test\TESTINSTALL.bat",
+            "test\TESTINSTALL_PWSH.ps1"
+          )
+
+          foreach ($relativePath in $requiredFiles) {
+            $path = Join-Path $env:INSTALL_PREFIX $relativePath
+
+            if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+              throw "Missing installed file: $relativePath"
+            }
+
+            Write-Host "Found: $relativePath"
+          }
+
+      - name: Test installed Modules in CMD
+        shell: cmd
+        run: |
+          set "PATH=%INSTALL_PREFIX%\bin;%PATH%"
+          cd /d "%INSTALL_PREFIX%\test"
+          call TESTINSTALL.bat "%INSTALL_PREFIX%"
+
+      - name: Test installed Modules in PowerShell 7
+        shell: pwsh
+        run: |
+          $env:Path = "$env:INSTALL_PREFIX\bin;$env:Path"
+
+          Push-Location "$env:INSTALL_PREFIX\test"
+          try {
+            pwsh.exe `
+              -NoLogo `
+              -NoProfile `
+              -NonInteractive `
+              -ExecutionPolicy Bypass `
+              -File .\TESTINSTALL_PWSH.ps1 `
+              -installpath "$env:INSTALL_PREFIX"
+
+            if ($LASTEXITCODE -ne 0) {
+              throw "TESTINSTALL_PWSH.ps1 failed. Exit code: $LASTEXITCODE"
+            }
+          }
+          finally {
+            Pop-Location
+          }
 
       - name: Upload build outputs when failing
         if: failure()
