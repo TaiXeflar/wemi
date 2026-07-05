@@ -14,7 +14,7 @@
 
 | CI Stats | Status |
 | :-- | :-- |
-| Modules Only, AIO | [![Modules AIO Install Test](https://github.com/TaiXeflar/wemi/actions/workflows/modules-aio.yml/badge.svg?branch=master)](https://github.com/TaiXeflar/wemi/actions/workflows/modules-only-aio.yml) |
+| Modules Only, AIO | [![Modules AIO Install Test](https://github.com/TaiXeflar/wemi/actions/workflows/modules-only-aio.yml/badge.svg?branch=master)](https://github.com/TaiXeflar/wemi/actions/workflows/modules-only-aio.yml) |
 
 WEMI is a Experimential, Python based Environment Modules generator and installer, targeting on Windows 10/11 systems to solving enviromnent setups.
 
