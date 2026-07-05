@@ -63,7 +63,7 @@ jobs:
           pwsh --version
 
           Write-Host "Tcl:"
-          tclsh.exe <<< 'puts [info patchlevel]'
+          'puts [info patchlevel]' | tclsh.exe
 
           Write-Host "Everything CLI:"
           es.exe -version
