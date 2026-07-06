@@ -14,7 +14,7 @@
 
 | CI Stats | Status |
 | :-- | :-- |
-| [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit) | [![Pre-commit](https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg?branch=master)](https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml)|
+| [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit) | [![Pre-commit](https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg?branch=master)](https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg?branch=master&event=push)|
 | Modules Only, AIO | [![Modules AIO Install Test](https://github.com/TaiXeflar/wemi/actions/workflows/modules-only-aio.yaml/badge.svg?branch=master&event=push)](https://github.com/TaiXeflar/wemi/actions/workflows/modules-only-aio.yaml) |
 
 WEMI is a Experimential, Python based Environment Modules generator and installer, targeting on Windows 10/11 systems to solving enviromnent setups.
