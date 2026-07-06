@@ -1,4 +1,4 @@
-name: Modules AIO Install Test
+name: Modules only AIO Install Test
 
 on:
   push:
@@ -35,106 +35,36 @@ jobs:
 
       - name: Show runner environment
         run: |
-          Write-Host "Windows:"
           Get-ComputerInfo |
             Select-Object WindowsProductName, WindowsVersion, OsBuildNumber |
             Format-List
 
-          Write-Host "PowerShell 7:"
-          pwsh --version
-          $PSVersionTable
-
-          Write-Host "uv:"
+          pwsh.exe --version
           uv --version
 
       - name: Install WEMI prerequisites
         run: |
-          .\.ci\setup-wemi-deps.ps1
+          .\.ci\modules-only-aio\setup-prerequisites.ps1
 
-      - name: Verify prerequisite commands
+      - name: Verify prerequisites
         run: |
-          Get-Command pwsh.exe
-          Get-Command tclsh.exe
-          Get-Command es.exe
+          .\.ci\modules-only-aio\verify-prerequisites.ps1
 
-          Write-Host "PowerShell:"
-          pwsh --version
-
-          Write-Host "Tcl:"
-          'puts [info patchlevel]' | tclsh.exe
-
-          Write-Host "Everything CLI:"
-          es.exe -version
-
-      - name: Prepare dependency directory
+      - name: Prepare workspace
         run: |
-          New-Item -ItemType Directory -Force .deps | Out-Null
-
-      - name: Create uv virtual environment
-        run: |
-          uv venv .venv --python 3.13.2 --seed
-          .\.venv\Scripts\python.exe --version
+          .\.ci\modules-only-aio\prepare-workspace.ps1 `
+            -RepositoryRoot "${{ github.workspace }}"
 
       - name: Run WEMI Modules-only AIO installation
         run: |
-          .\.venv\Scripts\python.exe .\wemi.py configure `
-            -DMODULES_ONLY `
-            --prefix "$env:INSTALL_PREFIX" `
-            --aio
+          .\.ci\modules-only-aio\run-install.ps1 `
+            -RepositoryRoot "${{ github.workspace }}" `
+            -InstallPrefix "$env:INSTALL_PREFIX"
 
-      - name: Verify installed Modules files
+      - name: Test installed Modules
         run: |
-          $requiredFiles = @(
-            "bin\module.cmd",
-            "bin\ml.cmd",
-            "bin\envml.cmd",
-            "init\cmd.cmd",
-            "init\pwsh.ps1",
-            "libexec\modulecmd.tcl",
-            "modulefiles\null",
-            "test\TESTINSTALL.bat",
-            "test\TESTINSTALL_PWSH.ps1"
-          )
-
-          foreach ($relativePath in $requiredFiles) {
-            $path = Join-Path $env:INSTALL_PREFIX $relativePath
-
-            if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
-              throw "Missing installed file: $relativePath"
-            }
-
-            Write-Host "Found: $relativePath"
-          }
-
-      - name: Test installed Modules in CMD
-        shell: cmd
-        run: |
-          set "PATH=%INSTALL_PREFIX%\bin;%PATH%"
-          cd /d "%INSTALL_PREFIX%\test"
-          call TESTINSTALL.bat "%INSTALL_PREFIX%"
-
-      - name: Test installed Modules in PowerShell 7
-        shell: pwsh
-        run: |
-          $env:Path = "$env:INSTALL_PREFIX\bin;$env:Path"
-
-          Push-Location "$env:INSTALL_PREFIX\test"
-          try {
-            pwsh.exe `
-              -NoLogo `
-              -NoProfile `
-              -NonInteractive `
-              -ExecutionPolicy Bypass `
-              -File .\TESTINSTALL_PWSH.ps1 `
-              -installpath "$env:INSTALL_PREFIX"
-
-            if ($LASTEXITCODE -ne 0) {
-              throw "TESTINSTALL_PWSH.ps1 failed. Exit code: $LASTEXITCODE"
-            }
-          }
-          finally {
-            Pop-Location
-          }
+          .\.ci\modules-only-aio\test-install.ps1 `
+            -InstallPrefix "$env:INSTALL_PREFIX"
 
       - name: Upload build outputs when failing
         if: failure()
