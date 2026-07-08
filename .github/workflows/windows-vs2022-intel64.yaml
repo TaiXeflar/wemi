@@ -19,7 +19,7 @@ defaults:
 jobs:
   intel-oneapi-hpc:
     name: Intel oneAPI HPC on Windows
-    runs-on: windows-2022
+    runs-on: windows-2025
     timeout-minutes: 90
 
     env:
