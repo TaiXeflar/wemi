@@ -1,0 +1,65 @@
+name: Intel oneAPI HPC Smoke Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  intel-oneapi-hpc:
+    name: Intel oneAPI HPC on Windows
+    runs-on: windows-2022
+    timeout-minutes: 90
+
+    env:
+      PYTHONUTF8: "1"
+      INSTALL_PREFIX: ${{ github.workspace }}\build\install
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install winget
+        uses: Cyberboss/install-winget@v1
+
+      - name: Install Intel oneAPI HPC Toolkit
+        run: .\.ci\intel-oneapi-hpc\install-oneapi-hpc.ps1
+
+      - name: Verify Intel oneAPI
+        run: .\.ci\intel-oneapi-hpc\verify-oneapi.ps1
+
+      - name: Install WEMI prerequisites
+        run: .\.ci\vs2022-msvc\setup-prerequisites.ps1
+
+      - name: Prepare uv virtual environment
+        run: |
+          .\.ci\common\prepare-uv-venv.ps1 `
+            -RepositoryRoot "${{ github.workspace }}"
+
+      - name: Run WEMI AIO
+        run: |
+          .\.ci\intel-oneapi-hpc\run-wemi-install.ps1 `
+            -RepositoryRoot "${{ github.workspace }}" `
+            -InstallPrefix "$env:INSTALL_PREFIX"
+
+      - name: Test installed Modules
+        run: |
+          .\.ci\vs2022-msvc\test-modules.ps1 `
+            -InstallPrefix "$env:INSTALL_PREFIX"
+
+      - name: Test icx compile
+        run: |
+          .\.ci\intel-oneapi-hpc\test-icx-compile.ps1 `
+            -InstallPrefix "$env:INSTALL_PREFIX"
+
+      - name: Test ifx compile
+        run: |
+          .\.ci\intel-oneapi-hpc\test-ifx-compile.ps1 `
+            -InstallPrefix "$env:INSTALL_PREFIX"
