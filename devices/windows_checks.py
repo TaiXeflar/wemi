@@ -115,25 +115,28 @@ class WindowsCheck:
         message(msg)
         wait(0.3)
 
-        v = os.getenv("VIRTUAL_ENV")
-        c = os.getenv("CONDA_PREFIX")
+        conda_prefix = os.getenv("CONDA_PREFIX")
+        virtual_env = os.getenv("VIRTUAL_ENV")
 
-        if c:
+        if conda_prefix:
             message(f"{msg:<74} -- Conda")
+            return
 
-        if v:
-            with open(Path(v) / "pyvenv.cfg") as f:
-                v_content = f.read()
+        if sys.prefix != sys.base_prefix:
+            pyvenv_cfg = Path(sys.prefix) / "pyvenv.cfg"
 
-            if "uv" in v_content:
-                message(f"{msg:<74} -- Astral UV")
+            if pyvenv_cfg.exists():
+                content = pyvenv_cfg.read_text(encoding="utf-8", errors="ignore")
+
+                if "uv" in content.lower():
+                    message(f"{msg:<74} -- Astral UV")
+                else:
+                    message(f"{msg:<74} -- Python VENV")
             else:
                 message(f"{msg:<74} -- Python VENV")
-        else:
-            if (Path(sys.executable).parent / "LICENSE.txt").exists():
-                message(f"{msg:<74} -- Global ENV")
-            else:
-                message("HINT", (Path(sys.executable).parent / "LICENSE.txt"))
+            return
+
+        message(f"{msg:<74} -- Global ENV")
 
     def check_python_winreg(self):
         msg = " -- Checking for Python Standard Library have winreg module"
