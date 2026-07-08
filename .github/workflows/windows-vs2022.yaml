@@ -64,6 +64,14 @@ jobs:
           .\.ci\vs2022-msvc\test-modules.ps1 `
             -InstallPrefix "$env:INSTALL_PREFIX"
 
+      - name: Test MSVC compile smoke
+        run: |
+          .\.ci\vs2022-msvc\test-msvc-compile.ps1 `
+            -InstallPrefix "$env:INSTALL_PREFIX" `
+            -VsModule "vs/2022/Enterprise" `
+            -MsvcModule "msvc/v143_14.44.35207/x64" `
+            -UcrtModule "ucrt/10.0.26100.0"
+
       - name: Upload build outputs when failing
         if: failure()
         uses: actions/upload-artifact@v4
