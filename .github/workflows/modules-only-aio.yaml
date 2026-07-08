@@ -1,4 +1,4 @@
-name: Modules only AIO Install Test
+name: VS2022 MSVC AIO Smoke Test
 
 on:
   push:
@@ -17,10 +17,10 @@ defaults:
     shell: pwsh
 
 jobs:
-  modules-aio:
-    name: Modules-only AIO on Windows
-    runs-on: windows-2025
-    timeout-minutes: 30
+  vs2022-msvc:
+    name: VS2022 MSVC AIO on Windows
+    runs-on: windows-2022
+    timeout-minutes: 45
 
     env:
       PYTHONUTF8: "1"
@@ -35,42 +35,37 @@ jobs:
 
       - name: Show runner environment
         run: |
-          Get-ComputerInfo |
-            Select-Object WindowsProductName, WindowsVersion, OsBuildNumber |
-            Format-List
-
-          pwsh.exe --version
-          uv --version
+          .\.ci\common\show-runner.ps1
 
       - name: Install WEMI prerequisites
         run: |
-          .\.ci\modules-only-aio\setup-prerequisites.ps1
+          .\.ci\vs2022-msvc\setup-prerequisites.ps1
 
       - name: Verify prerequisites
         run: |
-          .\.ci\modules-only-aio\verify-prerequisites.ps1
+          .\.ci\vs2022-msvc\verify-prerequisites.ps1
 
-      - name: Prepare workspace
+      - name: Prepare uv virtual environment
         run: |
-          .\.ci\modules-only-aio\prepare-workspace.ps1 `
+          .\.ci\common\prepare-uv-venv.ps1 `
             -RepositoryRoot "${{ github.workspace }}"
 
-      - name: Run WEMI Modules-only AIO installation
+      - name: Run WEMI VS2022/MSVC AIO installation
         run: |
-          .\.ci\modules-only-aio\run-install.ps1 `
+          .\.ci\vs2022-msvc\run-install.ps1 `
             -RepositoryRoot "${{ github.workspace }}" `
             -InstallPrefix "$env:INSTALL_PREFIX"
 
       - name: Test installed Modules
         run: |
-          .\.ci\modules-only-aio\test-install.ps1 `
+          .\.ci\vs2022-msvc\test-modules.ps1 `
             -InstallPrefix "$env:INSTALL_PREFIX"
 
       - name: Upload build outputs when failing
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: modules-aio-failure-artifacts
+          name: vs2022-msvc-aio-failure-artifacts
           path: |
             build/cache.json
             build/modulefiles

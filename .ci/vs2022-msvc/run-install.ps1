@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 WEMI Contributors
+# Copyright (c) 2026-${year} WEMI Contributors
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
 
 [CmdletBinding()]
 param(
@@ -21,10 +23,10 @@ if (-not (Test-Path -LiteralPath $python -PathType Leaf)) {
 }
 
 & $python ".\wemi.py" configure `
-    -DMODULES_ONLY `
+    --sdk="vs20xx" `
     --prefix $InstallPrefix `
     --aio
 
 if ($LASTEXITCODE -ne 0) {
-    throw "WEMI Modules-only AIO installation failed. Exit code: $LASTEXITCODE"
+    throw "WEMI VS2022/MSVC AIO installation failed. Exit code: $LASTEXITCODE"
 }
