@@ -1,59 +1,66 @@
 # SPDX-License-Identifier: MIT
+# Copyright (c) 2026 WEMI Contributors
 
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)]
     [string]$InstallPrefix,
+
+    [Parameter(Mandatory)]
+    [string]$VsModule,
+
+    [Parameter(Mandatory)]
+    [string]$MsvcModule,
+
+    [Parameter(Mandatory)]
+    [string]$UcrtModule
 )
 
 $ErrorActionPreference = "Stop"
 
 $installRoot = (Resolve-Path -LiteralPath $InstallPrefix).Path
+$tclsh = Get-Command tclsh.exe -ErrorAction Stop
+$tclBin = Split-Path -Path $tclsh.Source -Parent
 
-# Ensure WEMI-installed Modules is used first.
-$env:Path = "$installRoot\bin;$env:Path"
+$env:Path = "$installRoot\bin;$tclBin;$env:Path"
 
-# Avoid polluted module environment.
 Remove-Item Env:MODULES_CMD -ErrorAction SilentlyContinue
 Remove-Item Env:MODULESHOME -ErrorAction SilentlyContinue
 Remove-Item Env:MODULEPATH -ErrorAction SilentlyContinue
 Remove-Item Env:LOADEDMODULES -ErrorAction SilentlyContinue
 
-Write-Host "Initializing Environment Modules from: $installRoot"
 . "$installRoot\init\pwsh.ps1"
 
-Write-Host "Available modules:"
-envmodule avail
+Write-Host "Available modulefiles:"
+module avail
 
-envmodule load vs/2022/Enterprise
-envmodule load msvc/v143_14.44.35207/x64
-envmodule load ucrt/10.0.22621.0
+Write-Host "Loading Visual Studio profile: $VsModule"
+module load $VsModule
 
+Write-Host "Loading MSVC compiler profile: $MsvcModule"
+module load $MsvcModule
+
+Write-Host "Loading UCRT profile: $UcrtModule"
+module load $UcrtModule
 
 Write-Host "Loaded modules:"
-envmodule list
+module list
 
-Write-Host "Checking compiler commands..."
-Get-Command cl.exe
-Get-Command link.exe
 
-Write-Host "MSVC version:"
-cl.exe /Bv
-
-$workDir = Join-Path $PWD "build\msvc-compile-smoke"
+$workDir = Join-Path $PWD "msvc-compile-smoke-work"
 New-Item -ItemType Directory -Force $workDir | Out-Null
 Set-Location $workDir
 
 @'
 #include <stdio.h>
+#include <windows.h>
 
 int main(void) {
     puts("hello from msvc");
-    return 0;
+    return GetVersion() == 0 ? 1 : 0;
 }
 '@ | Set-Content -LiteralPath ".\hello.c" -Encoding ASCII
 
-Write-Host "Compiling hello.c..."
 cl.exe .\hello.c /nologo
 
 if ($LASTEXITCODE -ne 0) {
@@ -64,7 +71,6 @@ if (-not (Test-Path -LiteralPath ".\hello.exe" -PathType Leaf)) {
     throw "hello.exe was not created."
 }
 
-Write-Host "Running hello.exe..."
 .\hello.exe
 
 if ($LASTEXITCODE -ne 0) {
