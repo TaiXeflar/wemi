@@ -23,7 +23,7 @@ if (-not (Test-Path -LiteralPath $python -PathType Leaf)) {
 }
 
 & $python ".\wemi.py" configure `
-    --sdk vs20xx, ucrt `
+    --sdk "VS20XX;UCRT" `
     --prefix $InstallPrefix `
     --aio
 
