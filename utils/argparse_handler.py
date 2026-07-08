@@ -95,7 +95,9 @@ def args_update():
         help='Examine Downloaded Modules zipfile hash'
     )
     options_config.add_argument(
+        "--sdk",
         "--sdks",
+        "-sdk",
         "-sdks",
         "--projects",
         "--project",
@@ -240,3 +242,16 @@ def args_update():
     for key, value in vars(args).items():
         if value is not None:
             setattr(config, key, value)
+
+    def normalize_semicolon_list(values: list[str]) -> list[str]:
+        result: list[str] = []
+
+        for value in values:
+            for item in value.replace(",", ";").split(";"):
+                item = item.strip()
+                if item:
+                    result.append(item)
+
+        return result
+
+    config.ENABLE_SDKS = normalize_semicolon_list(config.ENABLE_SDKS)
