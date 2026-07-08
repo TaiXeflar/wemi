@@ -37,6 +37,7 @@ function Install-WingetPackage {
     & winget install `
         --id $Id `
         --exact `
+        --source winget `
         --silent `
         --disable-interactivity `
         --accept-package-agreements `
