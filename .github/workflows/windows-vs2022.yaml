@@ -37,6 +37,9 @@ jobs:
         run: |
           .\.ci\common\show-runner.ps1
 
+      - name: Install winget
+        uses: Cyberboss/install-winget@v1
+
       - name: Install WEMI prerequisites
         run: |
           .\.ci\vs2022-msvc\setup-prerequisites.ps1
