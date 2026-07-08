@@ -36,10 +36,10 @@ jobs:
         uses: Cyberboss/install-winget@v1
 
       - name: Install Intel oneAPI HPC Toolkit
-        run: .\.ci\intel-oneapi-hpc\install-oneapi-hpc.ps1
+        run: .\.ci\vs2022-msvc-intel-hpc\install-oneapi-hpc.ps1
 
       - name: Verify Intel oneAPI
-        run: .\.ci\intel-oneapi-hpc\verify-oneapi.ps1
+        run: .\.ci\vs2022-msvc-intel-hpc\verify-oneapi.ps1
 
       - name: Install WEMI prerequisites
         run: .\.ci\vs2022-msvc\setup-prerequisites.ps1
@@ -62,10 +62,10 @@ jobs:
 
       - name: Test icx compile
         run: |
-          .\.ci\intel-oneapi-hpc\test-icx-compile.ps1 `
+          .\.ci\vs2022-msvc-intel-hpc\test-icx-compile.ps1 `
             -InstallPrefix "$env:INSTALL_PREFIX"
 
       - name: Test ifx compile
         run: |
-          .\.ci\intel-oneapi-hpc\test-ifx-compile.ps1 `
+          .\.ci\vs2022-msvc-intel-hpc\test-ifx-compile.ps1 `
             -InstallPrefix "$env:INSTALL_PREFIX"
