@@ -32,19 +32,28 @@ Remove-Item Env:LOADEDMODULES -ErrorAction SilentlyContinue
 . "$installRoot\init\pwsh.ps1"
 
 Write-Host "Available modulefiles:"
-module avail
+envmodule avail
 
 Write-Host "Loading Visual Studio profile: $VsModule"
-module load $VsModule
+envmodule load $VsModule
+
+# Check VS/2022/Enterprise is working, and unlock MSVC
+Write-Host "Available modulefiles:"
+envmodule avail
 
 Write-Host "Loading MSVC compiler profile: $MsvcModule"
-module load $MsvcModule
+envmodule load $MsvcModule
+
+
+# Check msvc/v14X/<arch> is working, and ucrt
+Write-Host "Available modulefiles:"
+envmodule avail
 
 Write-Host "Loading UCRT profile: $UcrtModule"
-module load $UcrtModule
+envmodule load $UcrtModule
 
 Write-Host "Loaded modules:"
-module list
+envmodule list
 
 
 $workDir = Join-Path $PWD "msvc-compile-smoke-work"
