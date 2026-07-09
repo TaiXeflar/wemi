@@ -9,48 +9,15 @@ import re
 import subprocess
 
 from .refs import FindSDK
-from .refs._findIntel import intel_target_arch
+from .refs._findIntel import intel_guess_dir, intel_target_arch, intel_compiler_version_grepper
 
 from tasks import ModulesObject
-from utils import regedit, subdirs, message
+from utils import subdirs, message
 
 
-INTEL_ONEAPI_ROOT = (
-    Path(raw_path)
-    if (
-        raw_path := regedit(
-            "HKLM",
-            r"SOFTWARE\WOW6432Node\Intel\Products\IntelOneAPI",
-            key_name="ProductDir",
-        )
-    )
-    else None
-)
+INTEL_ONEAPI_ROOT = intel_guess_dir()
 
 INTEL_TARGET_ARCH = intel_target_arch()
-
-
-def intel_compiler_version_grepper(compiler: Path | str) -> str:
-    if not isinstance(compiler, (Path, str)):
-        raise TypeError
-
-    compiler = Path(compiler).resolve()
-    if not compiler.exists():
-        return
-
-    q = subprocess.run(
-        [compiler.as_posix(), "--version"],
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-    ).stdout.splitlines()[0]
-
-    match = re.search(r"Version\s+([\d\.]+)", q)
-
-    if match:
-        return match.group(1)
-    else:
-        return
 
 
 class FindOneAPI(FindSDK):
@@ -63,6 +30,10 @@ class FindOneAPI(FindSDK):
         super().__init__()
 
     def __WINDOWS__(self):
+
+        if not self.ONEAPI_ROOT:
+            return
+
         self.add_rule(
             ModulesObject(
                 Module="intel/oneapi",

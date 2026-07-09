@@ -4,7 +4,13 @@
 # https://opensource.org/licenses/MIT
 
 from typing import Literal
+from pathlib import Path
 from textwrap import dedent
+
+import re
+import subprocess
+
+from utils import regedit
 
 
 INTEL_ONEAPI_ROOT_REG_ROOT = ...
@@ -70,3 +76,42 @@ def intel_target_arch():
             Found Archtecture:  {vc_tgt_arch}
             """)
         )
+
+def intel_guess_dir() -> Path | None:
+    raw_paths = (
+        regedit(
+            "HKLM",
+            r"SOFTWARE\WOW6432Node\Intel\Products\IntelOneAPI",
+            key_name="ProductDir",
+        ),
+        r"C:\Program Files (x86)\Intel\oneAPI",
+        r"C:\Program Files\Intel\oneAPI",
+    )
+
+    for raw_path in raw_paths:
+        if raw_path and (path := Path(raw_path) / "compiler").exists():
+            return path.parent
+
+    return None
+
+def intel_compiler_version_grepper(compiler: Path | str) -> str:
+    if not isinstance(compiler, (Path, str)):
+        raise TypeError
+
+    compiler = Path(compiler).resolve()
+    if not compiler.exists():
+        return
+
+    q = subprocess.run(
+        [compiler.as_posix(), "--version"],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    ).stdout.splitlines()[0]
+
+    match = re.search(r"Version\s+([\d\.]+)", q)
+
+    if match:
+        return match.group(1)
+    else:
+        return
