@@ -55,7 +55,7 @@ jobs:
 
       - name: Run WEMI AIO
         run: |
-          .\.ci\intel-oneapi-hpc\run-wemi-install.ps1 `
+          .\.ci\vs2022-msvc-intel-hpc\run-wemi-install.ps1 `
             -RepositoryRoot "${{ github.workspace }}" `
             -InstallPrefix "$env:INSTALL_PREFIX"
 
