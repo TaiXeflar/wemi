@@ -31,6 +31,8 @@ envmodule load $MsvcModule
 Write-Host "Loading UCRT profile: $UcrtModule"
 envmodule load $UcrtModule
 
+envmodule load intel/oneapi
+
 Write-Host "Loading Intel compiler profile: $IntelCompilerModule"
 envmodule load $IntelCompilerModule
 
