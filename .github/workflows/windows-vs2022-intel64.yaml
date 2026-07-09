@@ -1,16 +1,17 @@
 name: Intel oneAPI HPC Smoke Test
+run-name: Intel oneAPI HPC smoke by @${{ github.actor }}
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
   workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 1"
 
 permissions:
   contents: read
+
+concurrency:
+  group: intel-oneapi-hpc-${{ github.ref }}
+  cancel-in-progress: true
 
 defaults:
   run:

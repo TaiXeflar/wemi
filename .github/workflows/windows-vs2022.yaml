@@ -1,16 +1,43 @@
 name: VS2022 MSVC AIO Smoke Test
+run-name: VS2022 MSVC smoke for ${{ github.ref_name }}
 
 on:
-  # push:
-  #   branches:
-  #     - master
-  # pull_request:
-  #   branches:
-  #     - master
+  push:
+    branches:
+      - master
+    paths:
+      - "SDKs/**"
+      - "devices/**"
+      - "tasks/**"
+      - "utils/**"
+      - "include/**"
+      - ".ci/**"
+      - ".github/workflows/windows-vs2022.yaml"
+      - "wemi.py"
+      - "version.json"
+
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "SDKs/**"
+      - "devices/**"
+      - "tasks/**"
+      - "utils/**"
+      - "include/**"
+      - ".ci/**"
+      - ".github/workflows/windows-vs2022.yaml"
+      - "wemi.py"
+      - "version.json"
+
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: windows-vs2022-${{ github.ref }}
+  cancel-in-progress: true
 
 defaults:
   run:
