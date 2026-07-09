@@ -13,7 +13,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-. ".\.ci\common\initialize-envmodules.ps1" `
+. ".\.ci\common\modules-init.ps1" `
     -InstallPrefix $InstallPrefix
 
 Write-Host "Available modulefiles:"
