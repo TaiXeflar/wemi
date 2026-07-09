@@ -43,7 +43,7 @@ jobs:
         run: .\.ci\vs2022-msvc-intel-hpc\install-oneapi-hpc.ps1
 
       - name: Verify Intel oneAPI
-        run: .\.ci\vs2022-msvc-intel-hpc\verify-oneapi.ps1
+        run: .\.ci\vs2022-msvc-intel-hpc\verify-oneapi-hpc.ps1
 
       - name: Install WEMI prerequisites
         run: .\.ci\vs2022-msvc\setup-prerequisites.ps1
