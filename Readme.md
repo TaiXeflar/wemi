@@ -7,37 +7,9 @@
 
 # WΣMI (Windows Environment Modulefiles Installer)
 
-
+[![pre-commit][badge-pre-commit]][link-pre-commit]
 ![version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FTaiXeflar%2FWEMI%2Fmaster%2Fversion.json&query=%24.version&label=version&color=orange)
 ![License](https://img.shields.io/badge/License-MIT-blue)
-
-| Platform Support Status |
-| :--: |
-| ![Windows AMD64][badge-windows-amd64] |
-| ![Windows ARM64][badge-windows-arm64] |
-
-| CI Stats | Status |
-| :-- | :-- |
-| [![pre-commit][badge-pre-commit]][link-pre-commit] | [![CI][badge-ci-pre-commit]][link-ci-pre-commit] |
-| Modules Only, AIO | [![AIO][badge-ci-modules-aio]][link-ci-modules-aio] |
-
-<!-- CI badges -->
-
-  <!-- platform -->
-  [badge-windows-amd64]: https://img.shields.io/badge/Windows%20AMD64-Enabled-blue?logo=windows11&logoColor=white&labelColor=555
-  [badge-windows-arm64]: https://img.shields.io/badge/Windows%20ARM64-Disabled-black?logo=windows11&logoColor=white&labelColor=555
-
-  <!-- pre-commit -->
-  [badge-pre-commit]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit
-  [link-pre-commit]: https://github.com/pre-commit/pre-commit
-
-  [badge-ci-pre-commit]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg?branch=master
-  [link-ci-pre-commit]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml?query=branch%3Amaster+event%3Apush
-
-  <!-- CI -->
-  [badge-ci-modules-aio]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022.yaml/badge.svg?branch=master&event=push
-  [link-ci-modules-aio]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022.yaml
-
 
 WEMI is a Experimential, Python based Environment Modules generator and installer, targeting on Windows 10/11 systems to solving enviromnent setups.
 
@@ -68,7 +40,6 @@ WEMI will scan, compile and install tcl Modulefiles to your Environment Modules 
     <img src="https://images.emojiterra.com/google/noto-emoji/unicode-17.0/color/1024px/1f353.png" height="50" alt="Strawberry Perl" title="Strawberry Perl" /></a> &nbsp;
   <a href="https://cangjie-lang.cn/en" target="_blank">
     <img src="https://ide-innovation-lab.gallerycdn.vsassets.io/extensions/ide-innovation-lab/cangjie/1.1.0/1776234936844/Microsoft.VisualStudio.Services.Icons.Default" height="50" alt="Cangjie-Lang" title="Cangjie-Lang" /></a> &nbsp;
-
   <br>
   <!-- <a href="https://benghuai.com/" target="_blank">
     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJgg8ThQup4mhDjvwv8WE7dE7Yd316UrrtEOxWxUkxow&s=10" height="50" alt="GGZ" title="GGZ" /></a> &nbsp; -->
@@ -93,6 +64,40 @@ WEMI will scan, compile and install tcl Modulefiles to your Environment Modules 
   </a>
 </div>
 <!-- SDK profiles -->
+
+## Support Status, CI test status
+
+| Platform Support Status |
+| :--: |
+| ![Windows AMD64][badge-windows-amd64] |
+| ![Windows ARM64][badge-windows-arm64] |
+
+| CI Stats | Status |
+| :-- | :-- |
+| Pre-Commit | [![CI][badge-ci-pre-commit]][link-ci-pre-commit] |
+| VS2022, MSVC x64 | [![AIO][badge-ci-modules-aio]][link-ci-modules-aio] |
+| Intel oneAPI | [![AIO][badge-ci-intel]][link-ci-intel]
+
+<!-- CI badges -->
+
+  <!-- platform -->
+  [badge-windows-amd64]: https://img.shields.io/badge/Windows%20AMD64-Enabled-blue?logo=windows11&logoColor=white&labelColor=555
+  [badge-windows-arm64]: https://img.shields.io/badge/Windows%20ARM64-Disabled-black?logo=windows11&logoColor=white&labelColor=555
+
+  <!-- pre-commit -->
+  [badge-pre-commit]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit
+  [link-pre-commit]: https://github.com/pre-commit/pre-commit
+
+  [badge-ci-pre-commit]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg?branch=master
+  [link-ci-pre-commit]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml?query=branch%3Amaster+event%3Apush
+
+  <!-- CI: VS2022 -->
+  [badge-ci-modules-aio]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022.yaml/badge.svg?branch=master&event=push
+  [link-ci-modules-aio]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022.yaml
+
+  <!-- CI: Intel oneAPI -->
+  [badge-ci-intel]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022-intel64.yaml/badge.svg?branch=master&event=push
+  [link-ci-intel]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022-intel64.yaml
 
 ## Early State development
 
