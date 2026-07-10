@@ -20,7 +20,7 @@ if (-not (Test-Path -LiteralPath $python -PathType Leaf)) {
 }
 
 & $python ".\wemi.py" configure `
-    --sdk="VS20XX;UCRT;NVIDIA_CUDA" `
+    --sdk="VS20XX;UCRT;CUDA" `
     --prefix $InstallPrefix `
     --aio
 
