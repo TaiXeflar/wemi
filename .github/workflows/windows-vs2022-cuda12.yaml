@@ -2,15 +2,9 @@ name: NVIDIA CUDA 12.6 Smoke Test
 run-name: NVIDIA CUDA VS2022 smoke by @${{ github.actor }}
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
   workflow_dispatch:
-#   schedule:
-#     - cron: "0 18 * * 1"
+  schedule:
+    - cron: "0 0 * * 1"
 
 permissions:
   contents: read
