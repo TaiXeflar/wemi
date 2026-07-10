@@ -1,0 +1,105 @@
+name: NVIDIA CUDA 12.6 Smoke Test
+run-name: NVIDIA CUDA VS2022 smoke by @${{ github.actor }}
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+#   schedule:
+#     - cron: "0 18 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nvidia-cuda-vs2022-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  nvidia-cuda-vs2022:
+    name: NVIDIA CUDA 12.6 host compile on Windows
+    runs-on: windows-2022
+    timeout-minutes: 90
+
+    env:
+      PYTHONUTF8: "1"
+      INSTALL_PREFIX: ${{ github.workspace }}\build\install
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install winget
+        uses: Cyberboss/install-winget@v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Show runner environment
+        run: |
+          .\.ci\common\show-runner.ps1
+
+      - name: Install CUDA 12.6 Toolkit
+        run: |
+          .\.ci\vs2022-msvc-nvidia-cuda\install-cuda.ps1
+
+      - name: Verify CUDA 12.6 Toolkit
+        run: |
+          .\.ci\vs2022-msvc-nvidia-cuda\verify-cuda.ps1 `
+            -ExpectedCudaVersion "12.6"
+
+      - name: Install WEMI prerequisites
+        run: |
+          .\.ci\vs2022-msvc\setup-prerequisites.ps1
+
+      - name: Verify WEMI prerequisites
+        run: |
+          .\.ci\vs2022-msvc\verify-prerequisites.ps1
+
+      - name: Prepare uv virtual environment
+        run: |
+          .\.ci\common\prepare-uv-venv.ps1 `
+            -RepositoryRoot "${{ github.workspace }}"
+
+      - name: Run WEMI CUDA AIO installation
+        run: |
+          .\.ci\vs2022-msvc-nvidia-cuda\run-wemi-install.ps1 `
+            -RepositoryRoot "${{ github.workspace }}" `
+            -InstallPrefix "$env:INSTALL_PREFIX"
+
+      - name: Test installed Modules
+        run: |
+          .\.ci\vs2022-msvc\test-modules.ps1 `
+            -InstallPrefix "$env:INSTALL_PREFIX"
+
+      - name: Test CUDA host-only compile
+        run: |
+          .\.ci\vs2022-msvc-nvidia-cuda\test-cuda-host-compile.ps1 `
+            -InstallPrefix "$env:INSTALL_PREFIX" `
+            -VsModule "vs/2022/Enterprise" `
+            -MsvcModule "msvc/v143_14.44.35207/x64" `
+            -UcrtModule "ucrt/10.0.26100.0" `
+            -CudaModule "nvidia/cuda/12.6"
+
+      - name: Upload build outputs when failing
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nvidia-cuda-vs2022-failure-artifacts
+          path: |
+            build/cache.json
+            build/modulefiles
+            build/install
+          if-no-files-found: warn
