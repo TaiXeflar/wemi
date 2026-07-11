@@ -1,0 +1,36 @@
+name: Windows 2025 Runner observation
+run-name: Observe windows-2025 by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  observe:
+    name: Inspect windows-2025
+    runs-on: windows-2025
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Inspect runner
+        run: |
+          .\.ci\vs2026-obs\obs.ps1
+
+      - name: show runner
+        run: |
+          .\.ci\common\show-runner.ps1
+
+      - name: Upload observation report
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-2025-observation
+          path: windows-2025-report
