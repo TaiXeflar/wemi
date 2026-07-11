@@ -80,7 +80,7 @@ WEMI will scan, compile and install tcl Modulefiles to your Environment Modules 
 | Intel oneAPI | [![AIO][badge-ci-intel]][link-ci-intel] |
 | NVIDIA CUDA 12.6 | [![AIO][badge-ci-cuda12]][link-ci-cuda12] |
 | `windows-2026` runner |  |
-| VS2026, MSVC x64 | [![AIO][badge-ci-modules-aio]][link-ci-modules-aio]
+| VS2026, MSVC x64 | [![AIO][badge-ci-vs2026]][link-ci-vs2026] |
 | NVIDIA
 
 <!-- CI badges -->
@@ -107,6 +107,18 @@ WEMI will scan, compile and install tcl Modulefiles to your Environment Modules 
   <!-- CI: NVIDIA CUDA v12.6, vs2022 -->
   [badge-ci-cuda12]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022-cuda12.yaml/badge.svg?branch=master&event=push
   [link-ci-cuda12]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022-cuda12.yaml
+
+  <!-- CI: VS2026 -->
+  [badge-ci-vs2026]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026.yaml/badge.svg?branch=master&event=push
+  [link-ci-vs2026]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026.yaml
+
+  <!-- CI: VS2026 + Intel oneAPI -->
+  [badge-ci-vs2026-intel64]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026-intel64.yaml/badge.svg?branch=master&event=push
+  [link-ci-vs2026-intel64]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026-intel64.yaml
+
+  <!-- CI: VS2026 + NVIDIA CUDA 13.2 -->
+  [badge-ci-vs2026-cuda13]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022-cuda12.yaml/badge.svg?branch=master&event=push
+  [link-ci-vs2026-cuda13]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022-cuda12.yaml
 
 ## Early State development
 

@@ -63,7 +63,8 @@ if ($link.Source -match "\\Git\\usr\\bin\\link\.exe$") {
     throw "Resolved the wrong link.exe: $($link.Source)"
 }
 
-cl.exe /Bv
+Write-Host "MSVC compiler version details:"
+cl.exe /Bv 2>&1 | Write-Host
 
 if ($LASTEXITCODE -ne 0) {
     throw "cl.exe /Bv failed. Exit code: $LASTEXITCODE"
@@ -94,11 +95,7 @@ int main(void)
         -LiteralPath ".\hello_vs2026.c" `
         -Encoding ASCII
 
-    cl.exe `
-        .\hello_vs2026.c `
-        /nologo `
-        /W4 `
-        /Fe:hello_vs2026.exe
+    cl.exe .\hello_vs2026.c /nologo /W4 /Fe:hello_vs2026.exe
 
     if ($LASTEXITCODE -ne 0) {
         throw "cl.exe failed. Exit code: $LASTEXITCODE"
