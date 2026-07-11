@@ -1,36 +1,111 @@
-name: Windows 2025 Runner observation
-run-name: Observe windows-2025 by @${{ github.actor }}
+name: VS2026 MSVC AIO Smoke Test
+run-name: VS2026 MSVC smoke by @${{ github.actor }}
 
 on:
+  push:
+    branches:
+      - master
+    paths:
+      - "SDKs/**"
+      - "devices/**"
+      - "tasks/**"
+      - "utils/**"
+      - "include/**"
+      - ".ci/**"
+      - ".github/workflows/windows-vs2026.yaml"
+      - "wemi.py"
+      - "version.json"
+
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "SDKs/**"
+      - "devices/**"
+      - "tasks/**"
+      - "utils/**"
+      - "include/**"
+      - ".ci/**"
+      - ".github/workflows/windows-vs2026.yaml"
+      - "wemi.py"
+      - "version.json"
+
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: windows-vs2026-${{ github.ref }}
+  cancel-in-progress: true
 
 defaults:
   run:
     shell: pwsh
 
 jobs:
-  observe:
-    name: Inspect windows-2025
+  vs2026-msvc:
+    name: VS2026 MSVC AIO on Windows
     runs-on: windows-2025
-    timeout-minutes: 20
+    timeout-minutes: 45
+
+    env:
+      PYTHONUTF8: "1"
+      INSTALL_PREFIX: ${{ github.workspace }}\build\install
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Inspect runner
-        run: |
-          .\.ci\vs2026-obs\obs.ps1
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
 
-      - name: show runner
+      - name: Show runner environment
         run: |
           .\.ci\common\show-runner.ps1
 
-      - name: Upload observation report
+      # 不需要 Cyberboss/install-winget：
+      # windows-2025 已經內建 winget.exe。
+
+      - name: Install WEMI prerequisites
+        run: |
+          .\.ci\vs2026-msvc\setup-prerequisites.ps1
+
+      - name: Verify prerequisites
+        run: |
+          .\.ci\vs2026-msvc\verify-prerequisites.ps1
+
+      - name: Prepare uv virtual environment
+        run: |
+          .\.ci\common\prepare-uv-venv.ps1 `
+            -RepositoryRoot "${{ github.workspace }}"
+
+      - name: Run WEMI VS2026/MSVC AIO installation
+        run: |
+          .\.ci\vs2026-msvc\run-install.ps1 `
+            -RepositoryRoot "${{ github.workspace }}" `
+            -InstallPrefix "$env:INSTALL_PREFIX"
+
+      - name: Test installed Modules
+        run: |
+          .\.ci\vs2026-msvc\test-modules.ps1 `
+            -InstallPrefix "$env:INSTALL_PREFIX"
+
+      - name: Test VS2026 MSVC compile
+        run: |
+          .\.ci\vs2026-msvc\test-msvc-compile.ps1 `
+            -InstallPrefix "$env:INSTALL_PREFIX" `
+            -VsModule "vs/2026/Enterprise" `
+            -MsvcModule "msvc/v145_14.51.36231/x64" `
+            -UcrtModule "ucrt/10.0.26100.0"
+
+      - name: Upload build outputs when failing
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: windows-2025-observation
-          path: windows-2025-report
+          name: vs2026-msvc-aio-failure-artifacts
+          path: |
+            build/cache.json
+            build/modulefiles
+            build/install
+          if-no-files-found: warn
