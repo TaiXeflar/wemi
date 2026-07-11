@@ -107,3 +107,24 @@ Save-CommandOutput "runner-image-metadata" {
         "RUNNER_ARCH=$env:RUNNER_ARCH"
     )
 }
+
+Write-Host "Windows SDK Include versions:"
+Get-ChildItem `
+    "C:\Program Files (x86)\Windows Kits\10\Include" `
+    -Directory `
+    -ErrorAction SilentlyContinue |
+    Select-Object Name, FullName
+
+Write-Host "Windows SDK Lib versions:"
+Get-ChildItem `
+    "C:\Program Files (x86)\Windows Kits\10\Lib" `
+    -Directory `
+    -ErrorAction SilentlyContinue |
+    Select-Object Name, FullName
+
+Write-Host "Windows SDK bin versions:"
+Get-ChildItem `
+    "C:\Program Files (x86)\Windows Kits\10\bin" `
+    -Directory `
+    -ErrorAction SilentlyContinue |
+    Select-Object Name, FullName
