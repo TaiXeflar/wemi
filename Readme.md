@@ -76,12 +76,13 @@ WEMI will scan, compile and install tcl Modulefiles to your Environment Modules 
 | :-- | :-- |
 | Pre-Commit | [![CI][badge-ci-pre-commit]][link-ci-pre-commit] |
 | `windows-2022` runner |  |
-| VS2022, MSVC x64 | [![AIO][badge-ci-modules-aio]][link-ci-modules-aio] |
+| VS2022, MSVC v143 x64 | [![AIO][badge-ci-modules-aio]][link-ci-modules-aio] |
 | Intel oneAPI | [![AIO][badge-ci-intel]][link-ci-intel] |
 | NVIDIA CUDA 12.6 | [![AIO][badge-ci-cuda12]][link-ci-cuda12] |
 | `windows-2026` runner |  |
-| VS2026, MSVC x64 | [![AIO][badge-ci-vs2026]][link-ci-vs2026] |
-| NVIDIA
+| VS2026, MSVC v145 x64 | [![AIO][badge-ci-vs2026]][link-ci-vs2026] |
+| Intel oneAPI | [![AIO][badge-ci-vs2026-intel64]][link-ci-vs2026-intel64] |
+| NVIDIA | [![AIO][badge-ci-vs2026-cuda13]][link-ci-vs2026-cuda13] |
 
 <!-- CI badges -->
 
