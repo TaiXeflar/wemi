@@ -63,12 +63,6 @@ if ($link.Source -match "\\Git\\usr\\bin\\link\.exe$") {
     throw "Resolved the wrong link.exe: $($link.Source)"
 }
 
-Write-Host "MSVC compiler version details:"
-cl.exe /Bv 2>&1 | Write-Host
-
-if ($LASTEXITCODE -ne 0) {
-    throw "cl.exe /Bv failed. Exit code: $LASTEXITCODE"
-}
 
 $workDir = Join-Path $PWD "vs2026-msvc-compile-smoke-work"
 
