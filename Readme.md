@@ -118,8 +118,8 @@ WEMI will scan, compile and install tcl Modulefiles to your Environment Modules 
   [link-ci-vs2026-intel64]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026-intel64.yaml
 
   <!-- CI: VS2026 + NVIDIA CUDA 13.2 -->
-  [badge-ci-vs2026-cuda13]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022-cuda12.yaml/badge.svg?branch=master&event=push
-  [link-ci-vs2026-cuda13]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022-cuda12.yaml
+  [badge-ci-vs2026-cuda13]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026-cuda13.yaml/badge.svg?branch=master&event=push
+  [link-ci-vs2026-cuda13]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026-cuda13.yaml
 
 ## Early State development
 
