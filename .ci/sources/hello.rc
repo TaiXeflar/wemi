@@ -1,0 +1,19 @@
+
+/*
+    SPDX-License-Identifier: MIT
+    Copyright (c) 2026-${year} WEMI Contributors
+    This software is released under the MIT License.
+    https://opensource.org/licenses/MIT
+*/
+
+#pragma once
+
+#define IDI_WEMI 101
+#define IDS_WEMI_MESSAGE 201
+
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+STRINGTABLE
+BEGIN
+    IDS_WEMI_MESSAGE "Hello from the Windows Resource Compiler."
+END
