@@ -65,24 +65,39 @@ WEMI will scan, compile and install tcl Modulefiles to your Environment Modules 
 </div>
 <!-- SDK profiles -->
 
+## Early State development
+
+As WEMI declared current development status is in Early State development and version is InfDev status, WEMI will take several/lot of rolling destructable/refactoring changes, and not recieveng PR requests before a future stable release.
+
+Issues and disscutions are open welcomed.
+
 ## Support Status, CI test status
 
-| Platform Support Status |
-| :--: |
-| ![Windows AMD64][badge-windows-amd64] |
-| ![Windows ARM64][badge-windows-arm64] |
+- Windows Platform
 
-| CI Stats | Status |
-| :-- | :-- |
-| Pre-Commit | [![CI][badge-ci-pre-commit]][link-ci-pre-commit] |
-| `windows-2022` runner |  |
-| VS2022, MSVC v143 x64 | [![AIO][badge-ci-modules-aio]][link-ci-modules-aio] |
-| Intel oneAPI | [![AIO][badge-ci-intel]][link-ci-intel] |
-| NVIDIA CUDA 12.6 | [![AIO][badge-ci-cuda12]][link-ci-cuda12] |
-| `windows-2026` runner |  |
-| VS2026, MSVC v145 x64 | [![AIO][badge-ci-vs2026]][link-ci-vs2026] |
-| Intel oneAPI | [![AIO][badge-ci-vs2026-intel64]][link-ci-vs2026-intel64] |
-| NVIDIA | [![AIO][badge-ci-vs2026-cuda13]][link-ci-vs2026-cuda13] |
+    | Platform Support Status |
+    | :--: |
+    | ![Windows AMD64][badge-windows-amd64] |
+    | ![Windows ARM64][badge-windows-arm64] |
+
+- SDK deployment
+
+    | Windows Runner  | SDK     | target  | CI Status |
+    | :--:            | :--     | :--     | :--       |
+    | `ubuntu-latest` | pre-commit                    | repo| [![CI][badge-ci-pre-commit]][link-ci-pre-commit] |
+    | `windows-2022`  | Visual Studio 2022 Enterprise | x64 | [![AIO][badge-ci-modules-aio]][link-ci-modules-aio] |
+    |                 | Intel oneAPI (latest)         | x64 | [![AIO][badge-ci-intel]][link-ci-intel] |
+    |                 | NVIDIA CUDA 12.6              | x64 | [![AIO][badge-ci-cuda12]][link-ci-cuda12] |
+    | `windows-2025`  | Visual Studio 2026 Enterprise | x64 | [![AIO][badge-ci-vs2026]][link-ci-vs2026] |
+    |                 | Intel oneAPI (latest)         | x64 | [![AIO][badge-ci-vs2026-intel64]][link-ci-vs2026-intel64] |
+    |                 | NVIDIA CUDA 12.6              | x64 | [![AIO][badge-ci-vs2026-cuda13]][link-ci-vs2026-cuda13] |
+
+- Build and Incremential Recursive build test
+
+    | Windows Runner  | Toolchain | Target build SDK     | target  | CI Status |
+    | :--:            | :--       | :--     | :--       | :--       |
+    | `windows-2022`  | MSVC v143, CMake 3.31, Ninja 1.12 | `ROCm/TheRock` | `x64`, `gfx1100`, `gfx1101`, `gfx1102`, `gfx1200`, `gfx1201` | [![build][badge-build-therock]][therock-latest] |
+    |  | MSVC v143, CMake 3.31, Ninja 1.12, CUDA 12.6 | `dmlc/xgboost` |  `x64`, `sm_XX` | [![build][badge-build-therock]][therock-latest] |
 
 <!-- CI badges -->
 
@@ -121,11 +136,14 @@ WEMI will scan, compile and install tcl Modulefiles to your Environment Modules 
   [badge-ci-vs2026-cuda13]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026-cuda13.yaml/badge.svg?branch=master&event=push
   [link-ci-vs2026-cuda13]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026-cuda13.yaml
 
-## Early State development
+  <!-- CI: vs2022 build therock -->
+  [badge-build-therock]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2022-therock.yaml/badge.svg?branch=master&event=push
+  [therock-latest]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2022-therock.yaml
 
-As WEMI declared current development status is in Early State development and version is InfDev status, WEMI will take several/lot of rolling destructable/refactoring changes, and not recieveng PR requests before a future stable release.
+  <!-- CI: VS2026 + CUDA 13.2 build PyTorch -->
+  <!-- CI: VS2022 + CUDA 12.6 build PyTorch -->
+  <!-- CI: VS2022 + TheRock latest build PyTorch -->
 
-Issues and disscutions are open welcomed.
 
 ## Requirements
  - Python environment, recommends with [Astral UV][] venv.
