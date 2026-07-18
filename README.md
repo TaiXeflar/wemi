@@ -184,9 +184,34 @@ Issues and disscutions are open welcomed.
 
 ## Limitations
 
-Cygwin/MSYS2 Environment is not available to run wemi with their Python executables are `posix` model, doesn't contain `winreg` in Python Standard Library.
+ - Code formatter
 
-The solution is open a venv with `win32` based Python model, with `uv` is the fastest way to run it. The installation doesn't effected with Python `posix`/`win32` differences, by you can just set a install prefix.
+    The code base is under Inf Dev status with possiable large changes there, the code format is not at the priority, with pre-commit feature only set SDPX License identifier only.
+
+    In future plan will add black or ruff formater.
+
+ - Cygwin/MSYS2
+
+    WEMI requires Python Standard Module `win32` which is not available in Cygwin/MSYS2 based posix Python. The solution is:
+      1. Run a Cygwin/MSYS2 bash and [Envmodule/modules][Environment Modules] build process as Linux/macOS does.
+      2. Run run another `pwsh` process to run `wemi`, set install prefix to Cygwin/MSYS2 dir's modulefiles.
+      3. Check installed modulefiles, if they need `dos2unix` to set `CRLF -> LF`.
+
+    There's a future CI plan to play this environment.
+
+ - AMD ROCm
+
+    1. HIP SDK will not be planned to CI test due it is not avail at winget.
+    2. ROCm/TheRock will be planed to future case test, with a recursive build test.
+
+ - Windows on ARM64
+
+    I'm interested in this, such as Snapdragon Elite X platform (Qualcomm) and GB10 (NVIDIA + MediaTek). But I can only keep these platforms on watching list.
+
+     - No experience on playing MSVC on ARM64/ARM64EC. But I'll try it.
+     - Qualcomm's SDK is hard to get with is QPM and licenses problems.
+     - GB10 chip has no existed MediaTek optimized compilers/SDKs and NVIDIA CUDA SDKs.
+
 
 
 ### Caveats
