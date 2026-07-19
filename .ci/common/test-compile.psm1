@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 
 Set-StrictMode -Version Latest
 
-function test-tcltk {
+function test-tclsh {
     $tclsh = Get-Command tclsh.exe -ErrorAction Stop
 
     $versionText = "puts [info patchlevel]" |
@@ -312,7 +312,7 @@ function test-hipify {
 }
 
 Export-ModuleMember -Function `
-    test-tcltk, `
+    test-tclsh, `
     test-msvc, `
     test-ml64, `
     test-rc, `
