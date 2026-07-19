@@ -33,3 +33,5 @@ function set-uvpython {
     }
 
 }
+
+Export-ModuleMember -Function set-uvpython
