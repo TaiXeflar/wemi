@@ -22,6 +22,10 @@ function set-uvpython {
 
     uv venv ".venv" --python $PythonVersion --seed
 
+    if ($LASTEXITCODE -ne 0) {
+        throw "uv failed to create the virtual environment."
+    }
+
     $python = Join-Path $RepositoryRoot ".venv\Scripts\python.exe"
     if (-not (Test-Path -LiteralPath $python -PathType Leaf)) {
         throw "Virtual environment Python was not created: $python"
