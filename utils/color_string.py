@@ -176,7 +176,8 @@ def message(
         print(f"\r{text}", end="\033[K", flush=True)
     elif mode == "STATUS":
         sleep(latency)
-        print(f"{f" -- {text}:":<60}", end="\n", flush=True)
+        _fmt = f" -- {text}:"
+        print(f"{_fmt:<60}", end="\n", flush=True)
         sleep(latency)
     elif mode in ("HINT", "WARNING", "ERROR"):
         print(cstring(text, mode))
