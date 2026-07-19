@@ -47,8 +47,9 @@ def configure():
         # 把被吞掉的錯誤交給你的錯誤處理器印出來
         seh.unwind(type(e), e, e.__traceback__)
     else:
+        b = Path('build').resolve().as_posix()
         message(
-            f' -- Build files have been written to: {Path('build').resolve().as_posix()}'
+            f' -- Build files have been written to: {b}'
         )
     finally:
         ...
