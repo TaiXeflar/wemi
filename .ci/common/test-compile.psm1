@@ -74,6 +74,7 @@ function test-msvc {
 
     Write-Host "MSVC C and C++ tests passed."
 }
+
 function test-ml64 {
     $sourceRoot = Join-Path $PSScriptRoot "..\sources"
     $outputRoot = Join-Path $env:RUNNER_TEMP "wemi-test-ml64"
@@ -84,15 +85,20 @@ function test-ml64 {
     $executable = Join-Path $outputRoot "hello-asm.exe"
 
     Get-Command ml64.exe -ErrorAction Stop | Out-Null
-    Get-Command link.exe -ErrorAction Stop | Out-Null
 
-    & ml64.exe /nologo /subsystem:console /entry:main "/Fe:$executable" $source kernel32.lib
+    & ml64.exe `
+        /nologo `
+        "/Fe$executable" `
+        $source `
+        /link `
+        /subsystem:console `
+        /entry:main `
+        kernel32.lib
 
     if ($LASTEXITCODE -ne 0) {
-        throw "ML64/MASM compilation or linking failed."
+        throw "ML64/MASM assembly or linking failed."
     }
 
-    # 執行產生的程式
     & $executable
 
     if ($LASTEXITCODE -ne 0) {
@@ -101,6 +107,7 @@ function test-ml64 {
 
     Write-Host "ML64/MASM test passed."
 }
+
 function test-rc {
     $sourceRoot = Join-Path $PSScriptRoot "..\sources"
     $outputRoot = Join-Path $env:RUNNER_TEMP "wemi-test-rc"
