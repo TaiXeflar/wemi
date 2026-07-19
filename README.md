@@ -71,80 +71,17 @@ As WEMI declared current development status is in Early State development and ve
 
 Issues and disscutions are open welcomed.
 
-## Support Status, CI test status
+## Support Status, CI test status (Refactoring CI Task)
 
 - Windows Platform
-
     | Platform Support Status |
     | :--: |
     | ![Windows AMD64][badge-windows-amd64] |
     | ![Windows ARM64][badge-windows-arm64] |
 
-- SDK deployment
-
-    | Windows Runner  | SDK     | target  | CI Status |
-    | :--:            | :--     | :--     | :--       |
-    | `ubuntu-latest` | pre-commit                    | repo| [![CI][badge-ci-pre-commit]][link-ci-pre-commit] |
-    | `windows-2022`  | Visual Studio 2022 Enterprise | x64 | [![AIO][badge-ci-modules-aio]][link-ci-modules-aio] |
-    |                 | Intel oneAPI (latest)         | x64 | [![AIO][badge-ci-intel]][link-ci-intel] |
-    |                 | NVIDIA CUDA 12.6              | x64 | [![AIO][badge-ci-cuda12]][link-ci-cuda12] |
-    | `windows-2025`  | Visual Studio 2026 Enterprise | x64 | [![AIO][badge-ci-vs2026]][link-ci-vs2026] |
-    |                 | Intel oneAPI (latest)         | x64 | [![AIO][badge-ci-vs2026-intel64]][link-ci-vs2026-intel64] |
-    |                 | NVIDIA CUDA 12.6              | x64 | [![AIO][badge-ci-vs2026-cuda13]][link-ci-vs2026-cuda13] |
-
-- Build and Incremential Recursive build test
-
-    | Windows Runner  | Toolchain | Target build SDK     | target  | CI Status |
-    | :--:            | :--       | :--     | :--       | :--       |
-    | `windows-2022`  | MSVC v143, CMake 3.31, Ninja 1.12 | `ROCm/TheRock` | `x64`, `gfx1100`, `gfx1101`, `gfx1102`, `gfx1200`, `gfx1201` | [![build][badge-build-therock]][therock-latest] |
-    |  | MSVC v143, CMake 3.31, Ninja 1.12, CUDA 12.6 | `dmlc/xgboost` |  `x64`, `sm_XX` | [![build][badge-build-therock]][therock-latest] |
-
-<!-- CI badges -->
-
   <!-- platform -->
   [badge-windows-amd64]: https://img.shields.io/badge/Windows%20AMD64-Enabled-blue?logo=windows11&logoColor=white&labelColor=555
   [badge-windows-arm64]: https://img.shields.io/badge/Windows%20ARM64-Disabled-black?logo=windows11&logoColor=white&labelColor=555
-
-  <!-- pre-commit -->
-  [badge-pre-commit]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit
-  [link-pre-commit]: https://github.com/pre-commit/pre-commit
-
-  [badge-ci-pre-commit]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg?branch=master
-  [link-ci-pre-commit]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml?query=branch%3Amaster+event%3Apush
-
-  <!-- CI: VS2022 -->
-  [badge-ci-modules-aio]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022.yaml/badge.svg?branch=master&event=push
-  [link-ci-modules-aio]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022.yaml
-
-  <!-- CI: Intel oneAPI, vs2022 -->
-  [badge-ci-intel]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022-intel64.yaml/badge.svg?branch=master&event=push
-  [link-ci-intel]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022-intel64.yaml
-
-  <!-- CI: NVIDIA CUDA v12.6, vs2022 -->
-  [badge-ci-cuda12]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022-cuda12.yaml/badge.svg?branch=master&event=push
-  [link-ci-cuda12]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2022-cuda12.yaml
-
-  <!-- CI: VS2026 -->
-  [badge-ci-vs2026]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026.yaml/badge.svg?branch=master&event=push
-  [link-ci-vs2026]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026.yaml
-
-  <!-- CI: VS2026 + Intel oneAPI -->
-  [badge-ci-vs2026-intel64]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026-intel64.yaml/badge.svg?branch=master&event=push
-  [link-ci-vs2026-intel64]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026-intel64.yaml
-
-  <!-- CI: VS2026 + NVIDIA CUDA 13.2 -->
-  [badge-ci-vs2026-cuda13]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026-cuda13.yaml/badge.svg?branch=master&event=push
-  [link-ci-vs2026-cuda13]: https://github.com/TaiXeflar/wemi/actions/workflows/windows-vs2026-cuda13.yaml
-
-  <!-- CI: vs2022 build therock -->
-  [badge-build-therock]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2022-therock.yaml/badge.svg?branch=master&event=push
-  [therock-latest]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2022-therock.yaml
-
-  <!-- CI: VS2026 + CUDA 13.2 build PyTorch -->
-  <!-- CI: VS2022 + CUDA 12.6 build PyTorch -->
-  <!-- CI: VS2022 + TheRock latest build PyTorch -->
-
-
 ## Requirements
  - Python environment, recommends with [Astral UV][] venv.
  - [Everything][]
@@ -184,9 +121,22 @@ Issues and disscutions are open welcomed.
 
 ## Limitations
 
+ - Locale
+
+    WEMI strongly not recommend set non Latin characters, full widith characters, half/full width spaces, dots, laft/right slashes as your user name, especially on these regions:
+
+     - Traditional Chinese (ZH-TW, Big5): Complexed Chinese word character, common used by Taiwan (R.O.C.), Hong Kong, Macao.
+     - Simplfied Chinese (ZH-CN, GBK): Simplfied Chinese word character, common used by Mainland China area.
+     - Japanese (JA, Shift-JIS): Japanese uses Kanji, Hiragana and Katakana.
+     - Korean (KR).
+
+    This is not WEMI cases because most development toolchains are prefer English environment, include full english charcters path. Instead, PC users should keep their names to English based names, dashes and underscores to avoid any cross-platform program have not complete support to it. For example:
+     - Avoid names like `C:/Users/三月七`, `C:/Users/琪亞娜　卡斯蘭娜`.
+     - Recommend user names: `C:/Users/SilverWolf999`, `C:/Users/Miku39`, `C:/Users/OMNI_1206` etc.
+
  - Code formatter
 
-    The code base is under Inf Dev status with possiable large changes there, the code format is not at the priority, with pre-commit feature only set SDPX License identifier only.
+    The code base is under Inf Dev status with possiable large changes there, the code format is not at the priority (not I'm f\*\*king lazy), with pre-commit feature only set SDPX License identifier only.
 
     In future plan will add black or ruff formater.
 
@@ -206,34 +156,55 @@ Issues and disscutions are open welcomed.
 
  - Windows on ARM64
 
-    I'm interested in this, such as Snapdragon Elite X platform (Qualcomm) and GB10 (NVIDIA + MediaTek). But I can only keep these platforms on watching list.
+    I'm interested in this, such as Snapdragon Elite X platform (Qualcomm) and GB10 (NVIDIA + MediaTek). But I can only keep these platforms on watching list:
 
      - No experience on playing MSVC on ARM64/ARM64EC. But I'll try it.
      - Qualcomm's SDK is hard to get with is QPM and licenses problems.
      - GB10 chip has no existed MediaTek optimized compilers/SDKs and NVIDIA CUDA SDKs.
 
+ - CI test coverage limitation on SDKs
+
+    This is the highlight and become a core to WEMI to prove that WEMI can handle environment setup
+    coverage is enough to handle large compile/build tasks as Linux HPC systems. But with some limits
+    here, to prevent or wait for future fix/add CI build test cases.
+
+    1. Some SDKs are not avail with package managers like `winget`, `choco`:
+        - NVIDIA CUDA-X Libraries
+        - AMD HIP SDK
+        - Qualcomm Snapdragon LLVM compiler
+        - etc.
+
+    2. Some SDKs is on my interested list but have no experience before:
+        - Cangjie
+        - Zig
+        - Rust
+        - Swift
+
+    3. Some SDKs are meant to be examined to be built from source will take time:
+        - ROCm/TheRock
+        - libtorch
+        - Tensorflow
+        - XGBoost
+        - netCDF
+        - GDAL
+        - etc.
+
+    4. Some SDKs will require Licenses to install:
 
 
-### Caveats
 
-WEMI have not tested Path with non Latin charcters languages yet:
- - Traditional Chinese (ZH-TW, Big5): Complexed Chinese word character, common used by Taiwan, Hong Kong, Macao.
- - Simplfied Chinese (ZH-CN, GBK): Simplfied Chinese word character, common used by Mainland China area.
- - Japanese (JA, Shift-JIS): Japanese uses Kanji, Hiragana and Katakana.
- - Korean (KR).
+    5. Experimential SDKs:
+        - MiHoYo/Hoyoverse GunsGirlsZ, GGZ/BH2
+        - MiHoYo/Hoyoverse Honkai Impact 3
+        - MiHoYo/Hoyoverse Genshin Impact
+        - MiHoYo/Hoyoverse Honkai: Star Rail
+        - MiHoYo/Hoyoverse Zenless Zone Zero, ZZZ
+        - MiHoYo/Hoyoverse Nexus Anima
+        - MiHoYo/Hoyoverse Varsapura
+        - MiHoYo/Hoyoverse PetitPlanet
+        -
 
-WEMI strongly not recommend set non Latin characters, full widith characters, half/full width spaces, dots, laft/right slashes as your user name. This is not WEMI cases because most development toolchains are prefer English environment, include full english charcters path.
-
-Instead, PC users should keep their names to English based names, dashes and underscores to avoid any cross-platform program have not complete support to it.
-
- For example:
- - Avoid names like `C:/Users/三月七`, `C:/Users/琪亞娜　卡斯蘭娜`.
- - Recommend user names: `C:/Users/SilverWolf999`, `C:/Users/Miku39`, `C:/Users/OMNI_1206` etc.
-
-WEMI have not tested on Cygwin/MSYS2 environment yet. I will do later tests by trying compile several projects.
-
-
-### Language Localization
+### Docs Language Localization
 Currently main language will be written in English (US). With after updates, there will several languages updates to docunemtation and wemi program.
 
 <!--    Websites    -->
@@ -250,8 +221,6 @@ Currently main language will be written in English (US). With after updates, the
 
 ### The idea/inventing monent
 This project is based on my collage school lifetime thoughts and with listening [七見斷滅智論抄][Il Dottore] [Prajnaparamitopadesa to Quell Seven Calamities][Il Dottore].
-
-
 
 <!-- links -->
 [Il Dottore]:   https://youtu.be/jBfLW28avYU
