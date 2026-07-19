@@ -84,6 +84,7 @@ function Install-CUDA13 {
 }
 
 Export-ModuleMember -Function   `
+    Test-Winget,                `
     Install-TclTk,              `
     Install-oneAPI,             `
     Install-CUDA11,             `
