@@ -1,0 +1,44 @@
+name: Sync to GitCode
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mirror-gitcode
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    name: Push mirror to GitCode
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Clone GitHub repository as mirror
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git clone --mirror \
+            "https://github.com/${GITHUB_REPOSITORY}.git" \
+            repository.git
+
+      - name: Push to GitCode
+        shell: bash
+        working-directory: repository.git
+        env:
+          GITCODE_USERNAME: ${{ secrets.GITCODE_USERNAME }}
+          GITCODE_TOKEN: ${{ secrets.GITCODE_SYNC_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${GITCODE_USERNAME}" || -z "${GITCODE_TOKEN}" ]]; then
+            echo "::error::GITCODE_USERNAME or GITCODE_TOKEN is not configured"
+            exit 1
+          fi
+
+          git push --mirror \
+            "https://${GITCODE_USERNAME}:${GITCODE_TOKEN}@gitcode.com/TaiXeflar/wemi.git"
