@@ -7,7 +7,7 @@
 
 # WΣMI (Windows Environment Modulefiles Installer)
 
-[![pre-commit](https://shields.io)](https://github.com/pre-commit/pre-commit)]
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 ![version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FTaiXeflar%2FWEMI%2Fmaster%2Fversion.json&query=%24.version&label=version&color=orange)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
@@ -71,7 +71,7 @@ As WEMI declared current development status is in Early State development and ve
 
 Issues and disscutions are open welcomed.
 
-## Support Status, CI test status (Refactoring CI Task)
+## CI status (Under maintainence: Refactoring CI Task)
 
 - Windows Platform
     | Platform Support Status |
@@ -85,19 +85,29 @@ Issues and disscutions are open welcomed.
 
 - CI List/Matrix
 
+  [![pre-commit-ci-badge][pre-commit-ci-action]][pre-commit-ci-act]
+
+[pre-commit-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg
+[pre-commit-ci-act]:    https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml
+
 - Git Repository
 
   | Repo Server | type | status | link |
-  | :--:        | :--: | :--: | :-- |
+  | :--         | :--: | :--: | :-- |
   | GitHub      | main | upstream | [https://github.com/TaiXeflar/wemi](https://github.com/TaiXeflar/wemi) |
   | GitLab      | mirror | [![gitlab_badge][gitlab_action_badge]][gitlab_action] | [https://gitlab.com/TaiXeflar/wemi](https://gitlab.com/TaiXeflar/wemi) |
+  | Gitea       | mirror | [![gitea_badge][gitea_action_badge]][gitea_action] | [https://gitea.com/TaiXeflar/wemi](https://gitea.com/TaiXeflar/wemi) |
   | Gitee       | mirror | [![gitee_badge][gitee_action_badge]][gitee_action] | [https://gitee.com/TaiXeflar/wemi](https://gitee.com/TaiXeflar/wemi) |
-  | GitCode     | mirror | unsupported | -- |
+  | GitCode     | mirror | [![gitcode_badge][gitcode_action_badge]][gitcode_action] | [https://gitcode.com/TaiXeflar/wemi](https://gitcode.com/TaiXeflar/wemi) |
 
   [gitlab_action_badge]:  https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitlab.yaml/badge.svg
   [gitlab_action]:        https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitlab.yaml
   [gitee_action_badge]:   https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitee.yaml/badge.svg
   [gitee_action]:         https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitee.yaml
+  [gitea_action_badge]:   https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitea.yaml/badge.svg
+  [gitea_action]:         https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitea.yaml
+  [gitcode_action_badge]: https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitcode.yaml/badge.svg
+  [gitcode_action]:       https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitcode.yaml
 
 
 ## Requirements
