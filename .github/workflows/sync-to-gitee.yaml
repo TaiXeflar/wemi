@@ -1,0 +1,44 @@
+name: Sync to Gitee
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mirror-gitee
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    name: Push mirror to Gitee
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Clone GitHub repository as mirror
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git clone --mirror \
+            "https://github.com/${GITHUB_REPOSITORY}.git" \
+            repository.git
+
+      - name: Push to Gitee
+        shell: bash
+        working-directory: repository.git
+        env:
+          GITEE_USERNAME: ${{ secrets.GITEE_USERNAME }}
+          GITEE_TOKEN: ${{ secrets.GITEE_SYNC_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${GITEE_USERNAME}" || -z "${GITEE_TOKEN}" ]]; then
+            echo "::error::GITEE_USERNAME or GITEE_TOKEN is not configured"
+            exit 1
+          fi
+
+          git push --mirror \
+            "https://${GITEE_USERNAME}:${GITEE_TOKEN}@gitee.com/TaiXeflar/wemi.git"
