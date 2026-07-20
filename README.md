@@ -85,10 +85,18 @@ Issues and disscutions are open welcomed.
 
 - CI List/Matrix
 
-  [![pre-commit-ci-badge][pre-commit-ci-action]][pre-commit-ci-act]
+  | task | status | information/details |
+  | :-- | :-- | :-- |
+  | pre-commit | [![pre-commit-ci-badge][pre-commit-ci-action]][pre-commit-ci-act] |
+  | Python test | [![cpython-uv-ci-badge][cpython-uv-ci-action]][cpython-uv-ci-link] | uv, CPython 3.10 ~ 3.15
 
-[pre-commit-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg
-[pre-commit-ci-act]:    https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml
+  <!-- CI: pre-commit -->
+  [pre-commit-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg
+  [pre-commit-ci-act]:    https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml
+
+  <!-- CI: Python Matrix -->
+  [cpython-uv-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/python-version-matrix-test.yaml/badge.svg
+  [cpython-uv-ci-link]:   https://github.com/TaiXeflar/wemi/actions/workflows/python-version-matrix-test.yaml
 
 - Git Repository
 
