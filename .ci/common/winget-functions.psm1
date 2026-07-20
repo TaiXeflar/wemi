@@ -36,6 +36,21 @@ function Install-Everything {
     }
 }
 
+function Install-ES {
+    winget install `
+        --id voidtools.Everything.Cli `
+        --exact `
+        --silent `
+        --accept-package-agreements `
+        --accept-source-agreements `
+        --disable-interactivity
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to install Everything."
+    }
+}
+
+
 function Test-Winget {
     if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
         throw "winget is not available."
@@ -118,6 +133,7 @@ function Install-CUDA13 {
 Export-ModuleMember -Function   `
     Test-Winget,                `
     Install-Everything,         `
+    Install-ES,                 `
     Install-TclTk,              `
     Install-oneAPI,             `
     Install-CUDA11,             `

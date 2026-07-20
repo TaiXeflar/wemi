@@ -37,6 +37,7 @@ Write-Host "WEMI install prefix: $InstallPrefix"
 Test-Winget
 
 Install-Everything
+Install-ES
 Install-TclTk
 
 set-uvpython `
