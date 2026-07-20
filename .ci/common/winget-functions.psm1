@@ -4,6 +4,38 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
+function Install-Everything {
+    winget install `
+        --id voidtools.Everything `
+        --exact `
+        --silent `
+        --accept-package-agreements `
+        --accept-source-agreements `
+        --disable-interactivity
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to install Everything."
+    }
+
+    $service = Get-Service `
+        -Name "Everything" `
+        -ErrorAction SilentlyContinue
+
+    if (-not $service) {
+        throw "Everything was installed, but the Everything service was not found."
+    }
+
+    if ($service.Status -ne "Running") {
+        Start-Service -Name "Everything"
+    }
+
+    $service = Get-Service -Name "Everything"
+
+    if ($service.Status -ne "Running") {
+        throw "Everything service failed to start."
+    }
+}
+
 function Test-Winget {
     if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
         throw "winget is not available."
@@ -85,6 +117,7 @@ function Install-CUDA13 {
 
 Export-ModuleMember -Function   `
     Test-Winget,                `
+    Install-Everything,         `
     Install-TclTk,              `
     Install-oneAPI,             `
     Install-CUDA11,             `

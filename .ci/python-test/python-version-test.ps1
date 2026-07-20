@@ -35,6 +35,8 @@ Write-Host "Python test version: $PythonVersion"
 Write-Host "WEMI install prefix: $InstallPrefix"
 
 Test-Winget
+
+Install-Everything
 Install-TclTk
 
 set-uvpython `
