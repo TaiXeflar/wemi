@@ -7,7 +7,7 @@
 
 # WΣMI (Windows Environment Modulefiles Installer)
 
-[![pre-commit][badge-pre-commit]][link-pre-commit]
+[![pre-commit](https://shields.io)](https://github.com/pre-commit/pre-commit)]
 ![version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FTaiXeflar%2FWEMI%2Fmaster%2Fversion.json&query=%24.version&label=version&color=orange)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
@@ -82,6 +82,24 @@ Issues and disscutions are open welcomed.
   <!-- platform -->
   [badge-windows-amd64]: https://img.shields.io/badge/Windows%20AMD64-Enabled-blue?logo=windows11&logoColor=white&labelColor=555
   [badge-windows-arm64]: https://img.shields.io/badge/Windows%20ARM64-Disabled-black?logo=windows11&logoColor=white&labelColor=555
+
+- CI List/Matrix
+
+- Git Repository
+
+  | Repo Server | type | status | link |
+  | :--:        | :--: | :--: | :-- |
+  | GitHub      | main | upstream | [https://github.com/TaiXeflar/wemi](https://github.com/TaiXeflar/wemi) |
+  | GitLab      | mirror | [![gitlab_badge][gitlab_action_badge]][gitlab_action] | [https://gitlab.com/TaiXeflar/wemi](https://gitlab.com/TaiXeflar/wemi) |
+  | Gitee       | mirror | [![gitee_badge][gitee_action_badge]][gitee_action] | [https://gitee.com/TaiXeflar/wemi](https://gitee.com/TaiXeflar/wemi) |
+  | GitCode     | mirror | unsupported | -- |
+
+  [gitlab_action_badge]:  https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitlab.yaml/badge.svg
+  [gitlab_action]:        https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitlab.yaml
+  [gitee_action_badge]:   https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitee.yaml/badge.svg
+  [gitee_action]:         https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitee.yaml
+
+
 ## Requirements
  - Python environment, recommends with [Astral UV][] venv.
  - [Everything][]
