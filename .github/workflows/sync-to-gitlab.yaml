@@ -1,0 +1,33 @@
+name: Sync to GitLab
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mirror-to-gitlab
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Clone GitHub repository
+        run: |
+          set -euo pipefail
+          git clone --mirror \
+            "https://github.com/${GITHUB_REPOSITORY}.git" \
+            repository.git
+
+      - name: Push mirror to GitLab
+        working-directory: repository.git
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_SYNC_TOKEN }}
+        run: |
+          set -euo pipefail
+          git push --mirror \
+            "https://oauth2:${GITLAB_TOKEN}@gitlab.com/TaiXeflar/wemi.git"
