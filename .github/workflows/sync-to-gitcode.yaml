@@ -1,13 +1,12 @@
 name: Sync to GitCode
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - "**"
+      - master
     tags:
       - "**"
-
-  workflow_dispatch:
 
 permissions:
   contents: read

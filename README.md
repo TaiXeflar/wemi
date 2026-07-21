@@ -108,13 +108,13 @@ Issues and disscutions are open welcomed.
   | Gitee       | mirror | [![gitee_badge][gitee_action_badge]][gitee_action] | [https://gitee.com/TaiXeflar/wemi](https://gitee.com/TaiXeflar/wemi) |
   | GitCode     | mirror | [![gitcode_badge][gitcode_action_badge]][gitcode_action] | [https://gitcode.com/TaiXeflar/wemi](https://gitcode.com/TaiXeflar/wemi) |
 
-  [gitlab_action_badge]:  https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitlab.yaml/badge.svg
+  [gitlab_action_badge]:  https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitlab.yaml/badge.svg?branch=master&event=push
   [gitlab_action]:        https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitlab.yaml
-  [gitee_action_badge]:   https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitee.yaml/badge.svg
+  [gitee_action_badge]:   https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitee.yaml/badge.svg?branch=master&event=push
   [gitee_action]:         https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitee.yaml
-  [gitea_action_badge]:   https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitea.yaml/badge.svg
+  [gitea_action_badge]:   https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitea.yaml/badge.svg?branch=master&event=push
   [gitea_action]:         https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitea.yaml
-  [gitcode_action_badge]: https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitcode.yaml/badge.svg
+  [gitcode_action_badge]: https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitcode.yaml/badge.svg?branch=master&event=push
   [gitcode_action]:       https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitcode.yaml
 
 
