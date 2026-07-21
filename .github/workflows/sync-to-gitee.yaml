@@ -1,6 +1,11 @@
 name: Sync to Gitee
 
 on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "**"
   workflow_dispatch:
 
 permissions:

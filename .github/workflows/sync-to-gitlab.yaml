@@ -1,6 +1,11 @@
 name: Sync to GitLab
 
 on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "**"
   workflow_dispatch:
 
 permissions:
