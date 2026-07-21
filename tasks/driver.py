@@ -10,7 +10,7 @@ from textwrap import dedent
 from utils import config
 from utils.functions import clear
 from utils.color_string import message
-from devices.windows import WindowsNT
+
 from tasks.generator import Generator
 from tasks.installer import Installer
 
@@ -21,39 +21,39 @@ class Driver:
         match task:
             case "configure":
                 configure()
+
+                if config.ALL_IN_ONE:
+                    generate()
+                    install()
+
             case "build":
                 generate()
+
             case "install":
                 install()
 
             case _:
-                raise RuntimeError(
-                    dedent(f"""\
-                        WEMI driver program recieved unspecified task {task}.
-                        """)
+                raise RuntimeError(dedent(f"""\
+                        WEMI driver program received unspecified task {task}.
+                        """
+                    )
                 )
-        if config.ALL_IN_ONE:
-            generate()
-            install()
 
 def configure():
     clear()
 
     try:
+        from devices.windows import WindowsNT
+
         device = WindowsNT(config.MODULES_ONLY)
         device.export()
     except Exception as e:
-        from tasks import seh
-        # 把被吞掉的錯誤交給你的錯誤處理器印出來
-        seh.unwind(type(e), e, e.__traceback__)
+        raise e
     else:
         b = Path('build').resolve().as_posix()
         message(
             f' -- Build files have been written to: {b}'
         )
-    finally:
-        ...
-
 
 def generate():
     generator = Generator()

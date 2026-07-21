@@ -16,8 +16,12 @@ def main():
 
     args_update()
     seh.setup_excepthook()
-    Driver.run(config.DEFAULT_TASK)
 
+    try:
+        Driver.run(config.DEFAULT_TASK)
+    except Exception as e:
+        seh.unwind(type(e), e, e.__traceback__)
+        raise SystemExit(1)
 
 if __name__ == "__main__":
     main()
