@@ -13,3 +13,4 @@ class ModuleTemplate(BaseModuleTemplate):
         self.add_module_whatis(self.module.module_whatis)
         self.set_root(self.module.root)
         self.prepend_path(*self.module.PATH)
+        self.prepend_path(*self.module.MODULEPATH)
