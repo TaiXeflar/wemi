@@ -218,6 +218,8 @@ Issues and disscutions are open welcomed.
 
     3. Some SDKs are meant to be examined to be built from source will take time:
         - ROCm/TheRock
+        - ROOT-Project/Cling
+        - Exaloop/codon
         - libtorch
         - Tensorflow
         - XGBoost
@@ -226,6 +228,8 @@ Issues and disscutions are open welcomed.
         - etc.
 
     4. Some SDKs will require Licenses to install:
+        - MATLAB
+        - Embarcadero C++ (Borland C++)
 
 
 
