@@ -25,6 +25,7 @@ from .header_analyzer import header_variable_finder
 from .functions import (
     subdirs,
     os_type,
+    cpu_type,
     tic_toc,
     clear,
 )
@@ -47,6 +48,7 @@ __all__ = [
     "regedit",
     "subdirs",
     "os_type",
+    'cpu_type',
     "tic_toc",
     "clear",
     "config",

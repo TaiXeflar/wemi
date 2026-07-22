@@ -6,6 +6,7 @@
 
 from typing import Literal
 import platform
+import os
 import subprocess
 import time
 from functools import wraps
@@ -29,6 +30,14 @@ def os_type() -> Literal["Windows", "Linux", "BSD", "macOS"]:
 
     return sysname
 
+def cpu_type() -> Literal['x64', 'ARM64']:
+    arch = os.getenv('PROCESSOR_ARCHITECTURE')
+    if arch == 'AMD64':
+        return 'x64'
+    elif arch == 'ARM64':
+        return 'ARM64'
+    else:
+        raise RuntimeError(f'Invalid CPU Architecture {arch}.')
 
 def subdirs(path: Path, leaf: bool = False) -> list[Path] | list[str]:
     if isinstance(path, str):
