@@ -3,19 +3,101 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-import sys
+from __future__ import annotations
+
 import json
+import math
+import shutil
+import sys
 import time
 from pathlib import Path
 from textwrap import dedent
-import math
-
+from typing import Literal
 
 from utils import config, message, cstring
 from tasks import seh
 
 from .objects.modulesobject import ModulesObject
 from .compiler import Compiler
+
+
+class BuildProgress:
+    """Render build progress in ninja-style or make-style output."""
+
+    def __init__(
+        self,
+        total: int,
+        style: Literal["ninja", "make"],
+    ) -> None:
+        self.total = max(total, 1)
+        self.style = style
+        self.interactive = sys.stdout.isatty()
+        self._line_active = False
+
+    def update(self, current: int, description: str) -> None:
+        """Display the current build target."""
+        if self.style == "ninja" and self.interactive:
+            self._write_ninja(current, description)
+            return
+
+        # Keep redirected/CI output readable even when ninja style is selected.
+        self._write_make(current, description)
+
+    def clear(self) -> None:
+        """Clear an active single-line ninja progress display."""
+        if not self._line_active:
+            return
+
+        width = self._usable_width()
+
+        if config.NO_ANSI_COLOR:
+            sys.stdout.write("\r" + (" " * width) + "\r")
+        else:
+            sys.stdout.write("\r\033[2K")
+
+        sys.stdout.flush()
+        self._line_active = False
+
+    def finish(self) -> None:
+        """Terminate an active ninja progress line."""
+        if self._line_active:
+            sys.stdout.write("\n")
+            sys.stdout.flush()
+            self._line_active = False
+
+    def _write_make(self, current: int, description: str) -> None:
+        percentage = min(100, current * 100 // self.total)
+        print(f"[{percentage:>3}%] {description}", flush=True)
+
+    def _write_ninja(self, current: int, description: str) -> None:
+        text = f"[{current}/{self.total}] {description}"
+        width = self._usable_width()
+        text = self._truncate(text, width)
+
+        if config.NO_ANSI_COLOR:
+            # Padding overwrites remnants from a longer previous target.
+            sys.stdout.write("\r" + text.ljust(width))
+        else:
+            sys.stdout.write(f"\r\033[2K{text}")
+
+        sys.stdout.flush()
+        self._line_active = True
+
+    @staticmethod
+    def _usable_width() -> int:
+        columns = shutil.get_terminal_size(fallback=(80, 24)).columns
+        # Avoid filling the last terminal column, which can trigger wrapping.
+        return max(columns - 1, 1)
+
+    @staticmethod
+    def _truncate(text: str, width: int) -> str:
+        if len(text) <= width:
+            return text
+
+        if width <= 3:
+            return text[:width]
+
+        return text[: width - 3] + "..."
 
 
 class Generator:
@@ -43,50 +125,46 @@ class Generator:
 
     def build(self):
         failed = 0
+        targets = list(self.scheduler.values())
+        progress = BuildProgress(
+            total=len(targets),
+            style=config.GENERATOR_STYLE,
+        )
 
-        total = len(self.scheduler)
-        for idx, tgt in self.scheduler.items():
-            idx = int(idx)
+        for idx, tgt in enumerate(targets, start=1):
             compiler = Compiler()
 
-            if tgt.objtype == 'File':
-                f_disp = f'Copying {tgt.MODULENAME}'
+            if tgt.objtype == "File":
+                description = f"Copying {tgt.MODULENAME}"
             else:
-                f_disp = f'Building {tgt.objtype} Modulefile Object {tgt.output}'
+                description = (
+                    f"Building {tgt.objtype} Modulefile Object {tgt.output}"
+                )
 
-            if config.GENERATOR_STYLE == 'ninja':
-                g_disp = f'[{idx}/{total}] {f_disp}'
-                sys.stdout.write(dedent(f"""\r{g_disp:<150}"""))
-                sys.stdout.flush()
-            elif config.GENERATOR_STYLE == 'make':
-                g_disp = f'[{math.floor((idx / total * 100)):>4}%]  {f_disp}'
-                sys.stdout.write(f"{g_disp:<120}\n")
-                sys.stdout.flush()
-
+            progress.update(idx, description)
 
             try:
                 time.sleep(0.05)
-                if tgt.objtype == 'File':
+                if tgt.objtype == "File":
                     compiler.copy(tgt)
                 else:
                     compiler.compile(tgt)
 
             except KeyboardInterrupt as e:
-                # Ctrl + C
-                print("")
+                progress.clear()
                 fail_hint = cstring("FAILED", (255, 0, 0), "BOLD")
-                message("NOTICE", dedent(f"{fail_hint}: build/{tgt.MODULENAME}"))
+                message("NOTICE", f"{fail_hint}: build/{tgt.MODULENAME}")
 
                 seh.unwind(type(e), e, e.__traceback__)
 
-                # Linux/UNIX sigint 130
+                # Linux/UNIX SIGINT convention.
                 sys.exit(130)
 
             except Exception as e:
-                print("")
+                progress.clear()
                 fail_hint = cstring("FAILED", (255, 0, 0), "BOLD")
-                message("NOTICE", dedent(f"{fail_hint}: build/{tgt.MODULENAME}"))
-                message("ERROR", dedent(f"{str(e)}"))
+                message("NOTICE", f"{fail_hint}: build/{tgt.MODULENAME}")
+                message("ERROR", str(e))
 
                 if not config.TOO_LONG_DIDNT_READ:
                     seh.unwind(type(e), e, e.__traceback__)
@@ -101,27 +179,26 @@ class Generator:
                     )
                     failed += 1
                     continue
-                else:
-                    sys.exit(1)
+
+                sys.exit(1)
+
+        progress.finish()
 
         # FORCE_COMPILE_CONTINUE
         if failed:
             message("")
             message(
                 "ERROR",
-                dedent(f"""\
+                dedent("""\
 
-                WEMI generator have {failed} compilation errors while generating targeted Tcl Modulefiles.
+                WEMI generator have compilation errors while generating targeted Tcl Modulefiles.
                 Please check on these information:
                  > The reported error type
                  > Your system have the correct SDK, Toolchain installation
 
-                """),
+                """).replace("compilation errors", f"{failed} compilation errors"),
             )
 
     def stop(self, e: Exception = None):
-        import sys
-
         message("ERROR", "Progress Terminated.")
-
         raise e if e else sys.exit(1)
