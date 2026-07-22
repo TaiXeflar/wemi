@@ -159,12 +159,15 @@ class WindowsCheck:
             pass
 
     def check_everything_service(self):
-        msg = " -- Checking for Windows has Everything service"
+        msg = " -- Checking for Windows Everything service is running"
         _1st_try = None
         message(msg)
         wait(0.3)
 
-        q = subprocess.run(["cmd.exe", "/C", "sc query everything"], capture_output=True, text=True)
+        everything = Path(r'C:/Program Files/Everything/everything.exe')
+
+        q = subprocess.run(["cmd.exe", "/C", "sc query everything"],
+                           capture_output=True, text=True, errors='ignore')
 
         if q.returncode == 0 and "RUNNING" in q.stdout:
             message(f"{msg:<74} -- Running")
@@ -173,40 +176,40 @@ class WindowsCheck:
             message(f"{msg:<74} -- No")
             _1st_try = False
 
+        # Failed to Find service
         if not _1st_try:
-            message('WARNING', '[Warning] Try to install Everything service')
+            msg = ' -- Checking for Windows has VoidTools/Everything'
+            message(msg)
 
-            # Deploy voidtools Everything
+            # Try solve if Everything not installed
+            if not everything.exists():
+                message(f'{msg:<74} -- Not Installed')
+
+                try:
+                    w_msg = '    Attemping install everything from winget'
+                    message('WARNING', w_msg)
+                    sub_q = subprocess.run(['winget', 'install', 'voidtools.Everything'],
+                                        capture_output=True, text=True, errors='ignore')
+                    message('WARNING', f'{w_msg:<74} -- Install Success')
+                except PermissionError as e:
+                    message('WARNING', f'{w_msg:<74} -- Install Failed')
+                    raise PermissionError(dedent(f'''\
+                            WEMI failed to install VoidTools Everything service.
+                            Stop.'''))
+                except Exception as e:
+                    message('WARNING', f'{w_msg:<74} -- Failed')
+                    raise e
+
+            # Try run Everything service
             try:
-                sub_q = subprocess.run(['winget', 'install', 'voidtools.Everything'],
-                                       capture_output=True, text=True)
-            except PermissionError as e:
-                raise PermissionError(dedent(f'''\
-                        WEMI failed to install VoidTools Everything service.
-                        Stop.'''))
+                w_msg = '    Attemping start everything daemon service'
+                message('WARNING', w_msg)
+                sub_r = subprocess.run([everything.as_posix(), '-start-service'])
+                message('WARNING', f'{w_msg:<74} -- Success')
             except Exception as e:
+                message('WARNING', f'{w_msg:<74} -- Failed')
                 raise e
 
-            try:
-                sub_r = subprocess.run(['C:/Program Files/Everything/everything.exe', '-start-service'])
-            except Exception as e:
-                raise e
-
-            else:
-                q = subprocess.run(["cmd.exe", "/C", "sc query everything"], capture_output=True, text=True)
-                if sub_q == 0 or 2316632107:
-                    message('Install complete')
-                else:
-                    message(dedent(f'''\
-                        Install with exit code {sub_q.returncode}
-                        {sub_q.stdout}
-                        {sub_q.stderr}
-                    '''))
-            finally:
-                if not (q.returncode == 0 and "RUNNING" in q.stdout):
-                    message(f"{msg:<74} -- Running")
-                else:
-                    raise RuntimeError('WEMI failed to install VoidTools Everything service. Abort.')
         return True
 
     def check_everything_cli(self):
@@ -228,7 +231,7 @@ class WindowsCheck:
             message('WARNING', '[Warning] Try to install Everything CLI')
             try:
                 sub_q = subprocess.run(['winget', 'install', 'voidtools.Everything.Cli'],
-                                       capture_output=True, text=True)
+                                       capture_output=True, text=True, errors='ignore')
             except PermissionError as e:
                 raise PermissionError(dedent(f'''\
                         WEMI failed to install VoidTools Everything-CLI.
@@ -236,8 +239,9 @@ class WindowsCheck:
             except Exception as e:
                 raise e
             else:
-                q = subprocess.run(["cmd.exe", "/C", "sc query everything"], capture_output=True, text=True)
-                if sub_q == 0 or 2316632107:
+                q = subprocess.run(["cmd.exe", "/C", "sc query everything"],
+                                   capture_output=True, text=True, errors='ignore')
+                if sub_q == 0 or sub_q == 2316632107:
                     message('Install complete')
                 else:
                     message(dedent(f'''\
@@ -249,7 +253,7 @@ class WindowsCheck:
                 if not (q.returncode == 0 and "RUNNING" in q.stdout):
                     message(f"{msg:<74} -- Running")
                 else:
-                    raise RuntimeError('WEMI failed to install VoidTools Everything service. Abort.')
+                    raise RuntimeError('WEMI failed to install VoidTools Everything CLI. Abort.')
         return True
 
     def check_tclsh_install(self):
