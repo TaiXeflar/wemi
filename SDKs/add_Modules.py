@@ -8,6 +8,7 @@ from typing import Literal
 
 from .refs import FindSDK
 from tasks.objects import ModulesObject, ModulesZip
+from utils import config
 
 _VERLIST = Literal[
     '5.0.0', '5.0.1',
@@ -70,13 +71,24 @@ class AddModules(FindSDK):
             'TESTINSTALL.bat',
         ]
 
-        self.add_rule([ModulesObject(
-            Module=f,
-            output=f,
-            mode='file',
-            Include_file='template_modulefile',
-            src=f'.deps/{self.z.foldername}/{f}'
-        ) for f in modules_dir_files])
+        for f in modules_dir_files:
+            if f == 'init/pwsh.ps1':
+                self.add_rule(ModulesObject(
+                    Module=f,
+                    output=f,
+                    mode='file',
+                    Include_file='template_modulefile',
+                    src=f'.deps/{self.z.foldername}/{f}',
+                    alias=config.MODULES_ALIAS
+                ))
+            else:
+                self.add_rule(ModulesObject(
+                    Module=f,
+                    output=f,
+                    mode='file',
+                    Include_file='template_modulefile',
+                    src=f'.deps/{self.z.foldername}/{f}'
+                ))
 
         self.add_rule([ModulesObject(
             Module=f,

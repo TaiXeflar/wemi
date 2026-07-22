@@ -44,3 +44,4 @@ ALL_IN_ONE = False
 ADD_MODULES = True
 NO_MODULES = False
 MODULES_ONLY = False
+MODULES_ALIAS = 'modules'

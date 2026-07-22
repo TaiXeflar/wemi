@@ -165,8 +165,9 @@ def args_update():
     options_build.add_argument(
         "-G",
         type=str,
-        choices=["ninja", "make"],
+        choices=("ninja", "make"),
         dest="GENERATOR_STYLE",
+        default=argparse.SUPPRESS,
         help="Select Generator progress style",
     )
     options_build.add_argument(
