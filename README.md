@@ -98,7 +98,11 @@ Issues and disscutions are open welcomed.
   [cpython-uv-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/python-version-matrix-test.yaml/badge.svg?branch=master&event=push
   [cpython-uv-ci-link]:   https://github.com/TaiXeflar/wemi/actions/workflows/python-version-matrix-test.yaml
 
-- Git Repository
+- Repository Sync Status
+
+  There are other hosting platforms sync with GitHub as mirror site by CI action.
+
+  GitHub repo is major develop upstream, other mirror site will sync every next day at 04:00 UTC+8.
 
   | Repo Server | type | status | link |
   | :--         | :--: | :--: | :-- |
