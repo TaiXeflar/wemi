@@ -91,11 +91,11 @@ Issues and disscutions are open welcomed.
   | Python test | [![cpython-uv-ci-badge][cpython-uv-ci-action]][cpython-uv-ci-link] | uv, CPython 3.10 ~ 3.15
 
   <!-- CI: pre-commit -->
-  [pre-commit-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg
+  [pre-commit-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg?branch=master&event=push
   [pre-commit-ci-act]:    https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml
 
   <!-- CI: Python Matrix -->
-  [cpython-uv-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/python-version-matrix-test.yaml/badge.svg
+  [cpython-uv-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/python-version-matrix-test.yaml/badge.svg?branch=master&event=push
   [cpython-uv-ci-link]:   https://github.com/TaiXeflar/wemi/actions/workflows/python-version-matrix-test.yaml
 
 - Git Repository
