@@ -217,12 +217,12 @@ class FindSDK(ABC):
         return self.__es__(cmd_args)
 
     # 2. 內部執行方法：只負責處理 subprocess 和 例外捕捉
-    def __es__(self, cmd_args: list[str]):
+    def __es__(self, *cmd_args: str):
         if not self.es:
             return []
 
         # 組裝最終的命令列陣列
-        full_cmd = [self.es] + cmd_args
+        full_cmd = [self.es.as_posix(), *cmd_args]
 
         try:
             # 加入 capture_output=True 才能抓到回傳值，text=True 讓回傳值變成字串而非 bytes
