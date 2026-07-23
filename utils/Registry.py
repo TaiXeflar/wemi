@@ -18,7 +18,7 @@ def regedit(
     /,
     *,
     key_name: Optional[str] = None,
-) -> Union[str, List[str], Any]:  # Any for NOTDEFINED
+) -> Union[str, List[str], Any] | None:  # Any for NOTDEFINED
     # 對應 Root Key
     if root_key in ("HKEY_LOCAL_MACHINE", "HKLM"):
         _root = winreg.HKEY_LOCAL_MACHINE

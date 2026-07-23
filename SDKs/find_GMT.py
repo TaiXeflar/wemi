@@ -19,8 +19,13 @@ class FindGMT(FindSDK):
 
     def __WINDOWS__(self):
         gmt_dir_list = [
-            Path(gmt).parent.parent for gmt in self.everything(regex=r"^gmt.exe$")
+            p
+            for gmt in self.everything(regex=r"^gmt\.exe$")
+            if (p := Path(gmt).parent.parent).exists()
         ]
+
+        if not gmt_dir_list:
+            return
 
         for gmt in gmt_dir_list:
             gmt_version = self.gmt_ver_extract(gmt / "include/gmt/gmt_version.h")

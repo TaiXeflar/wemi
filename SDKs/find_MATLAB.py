@@ -22,6 +22,9 @@ class FindMATLAB(FindSDK):
         super().__WINDOWS__()
 
         matlab_versions = regedit("HKLM", r"SOFTWARE\MathWorks\MATLAB")
+        if matlab_versions is None:
+            return
+
         matlab_versioning = [
             self._matlab_version_analyzer(ver) for ver in matlab_versions
         ]
