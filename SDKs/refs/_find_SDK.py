@@ -222,7 +222,7 @@ class FindSDK(ABC):
             return []
 
         # 組裝最終的命令列陣列
-        full_cmd = [self.es] + cmd_args
+        full_cmd = [self.es.as_posix()] + cmd_args
 
         try:
             # 加入 capture_output=True 才能抓到回傳值，text=True 讓回傳值變成字串而非 bytes
