@@ -227,8 +227,12 @@ class FindSDK(ABC):
         try:
             # 加入 capture_output=True 才能抓到回傳值，text=True 讓回傳值變成字串而非 bytes
             # encoding 建議設為 utf-8 避免中文檔名亂碼
-            result = subprocess.run(
-                full_cmd, capture_output=True, text=True, check=True, encoding="utf-8"
+            result = subprocess.run(full_cmd,
+                                    capture_output=True,
+                                    text=True,
+                                    check=True,
+                                    encoding="utf-8",
+                                    errors='ignore',
             )
 
             # 將 es.exe 輸出的多行文字，切割成 list 回傳
