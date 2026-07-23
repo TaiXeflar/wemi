@@ -15,6 +15,13 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+$env:PYTHONUTF8 = "1"
+$env:PYTHONIOENCODING = "utf-8"
+
+[Console]::InputEncoding = [System.Text.UTF8Encoding]::new()
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+$OutputEncoding = [System.Text.UTF8Encoding]::new()
+
 $RepositoryRoot = (Resolve-Path -LiteralPath $RepositoryRoot).Path
 $InstallPrefix = Join-Path $env:RUNNER_TEMP "wemi-all-sdk-observation"
 
@@ -65,6 +72,7 @@ Write-Host "Running WEMI configure with all SDK scanners."
 Write-Host "Install prefix: $InstallPrefix"
 
 & $Python `
+    -X utf8 `
     (Join-Path $RepositoryRoot "wemi.py") `
     configure `
     --prefix $InstallPrefix
