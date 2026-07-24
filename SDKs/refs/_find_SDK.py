@@ -214,7 +214,7 @@ class FindSDK(ABC):
             return None
 
         # 將整理好的乾淨 list 傳給 __es__ 執行
-        return self.__es__(cmd_args)
+        return self.__es__(*cmd_args)
 
     # 2. 內部執行方法：只負責處理 subprocess 和 例外捕捉
     def __es__(self, *cmd_args: str):
