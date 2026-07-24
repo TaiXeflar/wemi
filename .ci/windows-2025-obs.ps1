@@ -1,4 +1,3 @@
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
 # This software is released under the MIT License.
@@ -22,42 +21,59 @@ $env:PYTHONIOENCODING = "utf-8"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
 $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
-$RepositoryRoot = (Resolve-Path -LiteralPath $RepositoryRoot).Path
-$InstallPrefix = Join-Path $env:RUNNER_TEMP "wemi-all-sdk-observation"
+$RepositoryRoot = (
+    Resolve-Path -LiteralPath $RepositoryRoot
+).Path
+
+$InstallPrefix = Join-Path `
+    $env:RUNNER_TEMP `
+    "wemi-all-sdk-observation"
 
 Set-Location $RepositoryRoot
 
 Import-Module `
-    (Join-Path $RepositoryRoot ".ci\common\prepare-uv-venv.psm1") `
+    (
+        Join-Path `
+            $RepositoryRoot `
+            ".ci\common\prepare-uv-venv.psm1"
+    ) `
     -Force
 
 Import-Module `
-    (Join-Path $RepositoryRoot ".ci\common\show-runner.psm1") `
-    -Force
-
-Import-Module `
-    (Join-Path $RepositoryRoot ".ci\common\winget-functions.psm1") `
+    (
+        Join-Path `
+            $RepositoryRoot `
+            ".ci\common\show-runner.psm1"
+    ) `
     -Force
 
 show-runner
-
-Test-Winget
-Install-Everything
-Install-ES
-Install-TclTk
 
 set-uvpython `
     -RepositoryRoot $RepositoryRoot `
     -PythonVersion $PythonVersion
 
-$Python = Join-Path $RepositoryRoot ".venv\Scripts\python.exe"
+$Python = Join-Path `
+    $RepositoryRoot `
+    ".venv\Scripts\python.exe"
 
-if (-not (Test-Path -LiteralPath $Python -PathType Leaf)) {
-    throw "Virtual environment Python was not found: $Python"
+if (
+    -not (
+        Test-Path `
+            -LiteralPath $Python `
+            -PathType Leaf
+    )
+) {
+    throw (
+        "Virtual environment Python was not found: " +
+        $Python
+    )
 }
 
 Remove-Item `
-    -LiteralPath (Join-Path $RepositoryRoot "build") `
+    -LiteralPath (
+        Join-Path $RepositoryRoot "build"
+    ) `
     -Recurse `
     -Force `
     -ErrorAction SilentlyContinue
@@ -75,16 +91,28 @@ Write-Host "Install prefix: $InstallPrefix"
     -X utf8 `
     (Join-Path $RepositoryRoot "wemi.py") `
     configure `
+    --aio `
     --prefix $InstallPrefix
 
 if ($LASTEXITCODE -ne 0) {
     throw "WEMI all-SDK configure failed."
 }
 
-$CacheFile = Join-Path $RepositoryRoot "build\cache.json"
+$CacheFile = Join-Path `
+    $RepositoryRoot `
+    "build\cache.json"
 
-if (-not (Test-Path -LiteralPath $CacheFile -PathType Leaf)) {
-    throw "WEMI configure completed without creating build\cache.json."
+if (
+    -not (
+        Test-Path `
+            -LiteralPath $CacheFile `
+            -PathType Leaf
+    )
+) {
+    throw (
+        "WEMI configure completed without creating " +
+        "build\cache.json."
+    )
 }
 
 Write-Host "All SDK configure observation completed."
