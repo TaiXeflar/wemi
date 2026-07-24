@@ -37,16 +37,74 @@ function Install-Everything {
 }
 
 function Install-ES {
+    [CmdletBinding()]
+    param()
+
     winget install `
         --id voidtools.Everything.Cli `
         --exact `
-        --silent `
+        --source winget `
         --accept-package-agreements `
         --accept-source-agreements `
         --disable-interactivity
 
+    $InstallExitCode = $LASTEXITCODE
+
+    # 0x8A15002B means the package is already installed /
+    # there is no applicable update.
+    $UpdateNotApplicable = [uint32]0x8A15002B
+
+    if (
+        $InstallExitCode -ne 0 -and
+        [uint32]$InstallExitCode -ne $UpdateNotApplicable
+    ) {
+        throw (
+            "Everything CLI installation failed with exit code " +
+            "$InstallExitCode."
+        )
+    }
+
+    $EsExecutable = Get-ChildItem `
+        -LiteralPath (
+            Join-Path `
+                $env:LOCALAPPDATA `
+                "Microsoft\WinGet\Packages"
+        ) `
+        -Filter "es.exe" `
+        -File `
+        -Recurse `
+        -ErrorAction SilentlyContinue |
+        Where-Object {
+            $_.FullName -like "*voidtools.Everything.Cli*"
+        } |
+        Select-Object -First 1
+
+    if ($null -eq $EsExecutable) {
+        throw "Everything CLI was installed, but es.exe was not found."
+    }
+
+    $EsDirectory = $EsExecutable.Directory.FullName
+
+    # Available immediately in the current step.
+    $env:PATH = "$EsDirectory;$env:PATH"
+
+    # Available to every following GitHub Actions step.
+    if ($env:GITHUB_PATH) {
+        Add-Content `
+            -LiteralPath $env:GITHUB_PATH `
+            -Value $EsDirectory `
+            -Encoding utf8
+    }
+
+    Write-Host "Everything CLI: $($EsExecutable.FullName)"
+
+    & $EsExecutable.FullName -version
+
     if ($LASTEXITCODE -ne 0) {
-        throw "Failed to install Everything."
+        throw (
+            "Everything CLI executable test failed with exit code " +
+            "$LASTEXITCODE."
+        )
     }
 }
 
