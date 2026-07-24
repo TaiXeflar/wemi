@@ -24,21 +24,12 @@ Import-Module `
     -Force
 
 Import-Module `
-    (Join-Path $RepositoryRoot ".ci\common\winget-functions.psm1") `
-    -Force
-
-Import-Module `
     (Join-Path $RepositoryRoot ".ci\common\modules-init.psm1") `
     -Force
 
 Write-Host "Python test version: $PythonVersion"
 Write-Host "WEMI install prefix: $InstallPrefix"
 
-Test-Winget
-
-Install-Everything
-Install-ES
-Install-TclTk
 
 set-uvpython `
     -RepositoryRoot $RepositoryRoot `
