@@ -40,72 +40,73 @@ function Install-ES {
     [CmdletBinding()]
     param()
 
+    $PackageId = "voidtools.Everything.Cli"
+
+    Write-Host "Installing Everything CLI..."
+
     winget install `
-        --id voidtools.Everything.Cli `
+        --id $PackageId `
         --exact `
         --source winget `
         --accept-package-agreements `
         --accept-source-agreements `
-        --disable-interactivity
+        --disable-interactivity `
+        --silent
 
-    $InstallExitCode = $LASTEXITCODE
+    # WinGet installs the package under:
+    #
+    # %LOCALAPPDATA%\Microsoft\WinGet\Packages\
+    # voidtools.Everything.Cli_Microsoft.Winget.Source_8wekyb3d8bbwe\
+    # es.exe
 
-    # 0x8A15002B means the package is already installed /
-    # there is no applicable update.
-    $UpdateNotApplicable = [uint32]0x8A15002B
+    $WinGetPackagesRoot = Join-Path `
+        $env:LOCALAPPDATA `
+        "Microsoft\WinGet\Packages"
 
-    if (
-        $InstallExitCode -ne 0 -and
-        [uint32]$InstallExitCode -ne $UpdateNotApplicable
-    ) {
+    $PackageDirectory = Join-Path `
+        $WinGetPackagesRoot `
+        "voidtools.Everything.Cli_Microsoft.Winget.Source_8wekyb3d8bbwe"
+
+    $EsExecutable = Join-Path `
+        $PackageDirectory `
+        "es.exe"
+
+    if (-not (
+        Test-Path `
+            -LiteralPath $EsExecutable `
+            -PathType Leaf
+    )) {
         throw (
-            "Everything CLI installation failed with exit code " +
-            "$InstallExitCode."
+            "Everything CLI installation completed, " +
+            "but es.exe was not found at: $EsExecutable"
         )
     }
 
-    $EsExecutable = Get-ChildItem `
-        -LiteralPath (
-            Join-Path `
-                $env:LOCALAPPDATA `
-                "Microsoft\WinGet\Packages"
-        ) `
-        -Filter "es.exe" `
-        -File `
-        -Recurse `
-        -ErrorAction SilentlyContinue |
-        Where-Object {
-            $_.FullName -like "*voidtools.Everything.Cli*"
-        } |
-        Select-Object -First 1
-
-    if ($null -eq $EsExecutable) {
-        throw "Everything CLI was installed, but es.exe was not found."
+    # Make es.exe available inside the current PowerShell process.
+    if (
+        $env:PATH -notlike "*$PackageDirectory*"
+    ) {
+        $env:PATH = "$PackageDirectory;$env:PATH"
     }
 
-    $EsDirectory = $EsExecutable.Directory.FullName
-
-    # Available immediately in the current step.
-    $env:PATH = "$EsDirectory;$env:PATH"
-
-    # Available to every following GitHub Actions step.
+    # Make es.exe available to following GitHub Actions steps.
     if ($env:GITHUB_PATH) {
         Add-Content `
             -LiteralPath $env:GITHUB_PATH `
-            -Value $EsDirectory `
+            -Value $PackageDirectory `
             -Encoding utf8
     }
 
-    Write-Host "Everything CLI: $($EsExecutable.FullName)"
+    Write-Host "Everything CLI installed:"
+    Write-Host "  $EsExecutable"
 
-    & $EsExecutable.FullName -version
+    $EsCommand = Get-Command `
+        $EsExecutable `
+        -CommandType Application `
+        -ErrorAction Stop
 
-    if ($LASTEXITCODE -ne 0) {
-        throw (
-            "Everything CLI executable test failed with exit code " +
-            "$LASTEXITCODE."
-        )
-    }
+    Write-Host "Everything CLI executable:"
+    Write-Host "  $($EsCommand.Source)"
 }
 
 
