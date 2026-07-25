@@ -596,7 +596,7 @@ class FindOneAPI(FindSDK):
                     mode="tcl",
                     Include_file="template_intel_mkl",
                     Version=mkl_ver,
-                    conflicts="intel/mkl",
+                    conflicts=["intel/mkl"],
                     VARs={
                         "root": mkl,
                         "intel_target_arch": INTEL_TARGET_ARCH,
