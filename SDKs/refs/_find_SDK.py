@@ -217,37 +217,66 @@ class FindSDK(ABC):
         return self.__es__(*cmd_args)
 
     # 2. 內部執行方法：只負責處理 subprocess 和 例外捕捉
-    def __es__(self, *cmd_args: str):
+    def __es__(self, *cmd_args: str) -> list[Path]:
         if not self.es:
             return []
 
-        # 組裝最終的命令列陣列
-        full_cmd = [self.es.as_posix(), *cmd_args]
+        es_path = self.es.as_posix()
+        full_cmd = [es_path, *cmd_args]
 
-        try:
-            # 加入 capture_output=True 才能抓到回傳值，text=True 讓回傳值變成字串而非 bytes
-            # encoding 建議設為 utf-8 避免中文檔名亂碼
-            result = subprocess.run(full_cmd,
-                                    capture_output=True,
-                                    text=True,
-                                    check=True,
-                                    encoding="utf-8",
-                                    errors='ignore',
+        result = subprocess.run(
+            full_cmd,
+            capture_output=True,
+            text=True,
+            check=False,
+            encoding="utf-8",
+            errors="ignore",
+        )
+
+        if result.returncode == 0:
+            return [
+                Path(line.strip())
+                for line in result.stdout.splitlines()
+                if line.strip()
+            ]
+
+        if result.returncode == 9:
+            # ES explicitly reported no results because
+            # -no-result-error was supplied.
+            return []
+
+        if result.returncode == 8:
+            probe = subprocess.run(
+                [
+                    es_path,
+                    "-get-everything-version",
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+                encoding="utf-8",
+                errors="ignore",
             )
 
-            # 將 es.exe 輸出的多行文字，切割成 list 回傳
-            if result.stdout:
-                # 移除頭尾空白後以換行符號切割
-                return [Path(pth) for pth in result.stdout.strip().split("\n")]
+            if probe.returncode == 0:
+                # IPC is alive. This ES build/environment appears to
+                # return 8 for an empty result or retain a stale code.
+                return []
+
+            print(
+                "Everything IPC unavailable: "
+                f"{probe.stderr.strip() or result.stderr.strip()}"
+            )
             return []
 
-        except subprocess.CalledProcessError as e:
-            # 可以在這裡加入你的 logging
-            print(f"Everything 執行錯誤: {e}")
-            return []
-        except Exception as e:
-            print(f"未知的錯誤: {e}")
-            return []
+        print(
+            "Everything search failed: "
+            f"exit={result.returncode}, "
+            f"command={full_cmd!r}, "
+            f"stderr={result.stderr.strip()!r}"
+        )
+
+        return []
 
     def _find_program(self, *args) -> Path | None:
         if not args:
