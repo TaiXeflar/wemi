@@ -34,6 +34,37 @@ function Install-Everything {
     if ($service.Status -ne "Running") {
         throw "Everything service failed to start."
     }
+
+    $EverythingDirectory = Join-Path `
+        $env:ProgramFiles `
+        "Everything"
+
+    $EverythingExecutable = Join-Path `
+        $EverythingDirectory `
+        "Everything.exe"
+
+    if (-not (
+        Test-Path `
+            -LiteralPath $EverythingExecutable `
+            -PathType Leaf
+    )) {
+        throw (
+            "Everything was installed, but Everything.exe " +
+            "was not found at: $EverythingExecutable"
+        )
+    }
+
+    $env:PATH = "$EverythingDirectory;$env:PATH"
+
+    if ($env:GITHUB_PATH) {
+        Add-Content `
+            -LiteralPath $env:GITHUB_PATH `
+            -Value $EverythingDirectory `
+            -Encoding utf8
+    }
+
+    Write-Host "Everything executable:"
+    Write-Host "  $EverythingExecutable"
 }
 
 function Install-ES {
