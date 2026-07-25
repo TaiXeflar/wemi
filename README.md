@@ -91,11 +91,11 @@ Issues and disscutions are open welcomed.
   | Python test | [![cpython-uv-ci-badge][cpython-uv-ci-action]][cpython-uv-ci-link] | uv, CPython 3.10 ~ 3.15
 
   <!-- CI: pre-commit -->
-  [pre-commit-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg?branch=master&event=push
+  [pre-commit-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg?branch=master
   [pre-commit-ci-act]:    https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml
 
   <!-- CI: Python Matrix -->
-  [cpython-uv-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/python-version-matrix-test.yaml/badge.svg?branch=master&event=push
+  [cpython-uv-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/python-version-matrix-test.yaml/badge.svg?branch=master
   [cpython-uv-ci-link]:   https://github.com/TaiXeflar/wemi/actions/workflows/python-version-matrix-test.yaml
 
 - Repository Sync Status
@@ -112,13 +112,13 @@ Issues and disscutions are open welcomed.
   | Gitee       | mirror | [![gitee_badge][gitee_action_badge]][gitee_action] | [https://gitee.com/TaiXeflar/wemi](https://gitee.com/TaiXeflar/wemi) |
   | GitCode     | mirror | [![gitcode_badge][gitcode_action_badge]][gitcode_action] | [https://gitcode.com/TaiXeflar/wemi](https://gitcode.com/TaiXeflar/wemi) |
 
-  [gitlab_action_badge]:  https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitlab.yaml/badge.svg?branch=master&event=push
+  [gitlab_action_badge]:  https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitlab.yaml/badge.svg?branch=master
   [gitlab_action]:        https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitlab.yaml
-  [gitee_action_badge]:   https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitee.yaml/badge.svg?branch=master&event=push
+  [gitee_action_badge]:   https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitee.yaml/badge.svg?branch=master
   [gitee_action]:         https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitee.yaml
-  [gitea_action_badge]:   https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitea.yaml/badge.svg?branch=master&event=push
+  [gitea_action_badge]:   https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitea.yaml/badge.svg?branch=master
   [gitea_action]:         https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitea.yaml
-  [gitcode_action_badge]: https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitcode.yaml/badge.svg?branch=master&event=push
+  [gitcode_action_badge]: https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitcode.yaml/badge.svg?branch=master
   [gitcode_action]:       https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitcode.yaml
 
 
