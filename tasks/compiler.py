@@ -60,10 +60,10 @@ class Compiler:
         return template_class
 
     def compile(self, module_obj: ModulesObject):
-        include_val = module_obj.include_file
+        include_val = module_obj.ref
         if not include_val:
             raise FileNotFoundError(dedent(f'''\
-                ModulesObject {module_obj.MODULENAME} cannot find required Tclsh template Python header'''
+                ModulesObject {module_obj.Module} cannot find required Tclsh template Python header'''
             ))
 
         TemplateClass = self._load_template_class(include_val)
@@ -81,15 +81,15 @@ class Compiler:
 
     def copy(self, module_obj: ModulesObject):
         output = module_obj.output
-        src = module_obj._raw_data.get("src")
+        src = module_obj.src
 
         srcfile = Path(src)
         out_path = self.output_dir / output
         out_path.parent.mkdir(parents=True, exist_ok=True)
 
         # Check if Modulefile object `init/pwsh.ps1` has set alias
-        if module_obj.MODULENAME == 'init/pwsh.ps1':
-            a:str = module_obj._raw_data.get('alias')
+        if module_obj.Module == 'init/pwsh.ps1':
+            a:str = module_obj.alias
             patch_line = f'Set-Alias -Name {a} -Value envmodule'
             shutil.copyfile(src=srcfile, dst=out_path)
             with open(out_path, 'a') as f:
