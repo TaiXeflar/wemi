@@ -145,7 +145,7 @@ class Generator:
 
             try:
                 time.sleep(0.05)
-                if tgt.objtype == "File":
+                if tgt.type == "file":
                     compiler.copy(tgt)
                 else:
                     compiler.compile(tgt)
