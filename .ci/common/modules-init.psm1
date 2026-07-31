@@ -14,7 +14,7 @@ function init-modules {
 
     $ErrorActionPreference = "Stop"
 
-    $installRoot = (Resolve-Path -LiteralPath $InstallPrefix).Path
+    $installRoot = (Resolve-Path -LiteralPath (Join-Path $InstallPrefix "modulefiles")).Path
 
     $tclsh = Get-Command tclsh.exe -ErrorAction Stop
     $tclBin = Split-Path -Path $tclsh.Source -Parent

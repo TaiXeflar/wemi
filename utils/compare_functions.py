@@ -10,7 +10,7 @@ from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from functools import total_ordering
 from operator import eq, ge, gt, le, lt, ne
-from typing import Any, Literal, Self, TypeAlias, overload
+from typing import Any, Literal, TypeAlias, overload
 
 
 VersionInput: TypeAlias = (
@@ -150,7 +150,7 @@ class VersionNum:
         cls,
         value: Any,
         /,
-    ) -> Self | None:
+    ) -> VersionNum | None:
         """Return a parsed version or ``None`` for unsupported/invalid input."""
 
         try:
@@ -163,7 +163,7 @@ class VersionNum:
         cls,
         text: str,
         /,
-    ) -> Self | None:
+    ) -> VersionNum | None:
         """Search arbitrary text for its first numeric version."""
 
         return cls.try_parse(text)
