@@ -153,7 +153,7 @@ class Generator:
             except KeyboardInterrupt as e:
                 progress.clear()
                 fail_hint = cstring("FAILED", (255, 0, 0), "BOLD")
-                message("NOTICE", f"{fail_hint}: build/{tgt.MODULENAME}")
+                message("NOTICE", f"{fail_hint}: build/{tgt.Module}")
 
                 seh.unwind(type(e), e, e.__traceback__)
 
@@ -163,7 +163,7 @@ class Generator:
             except Exception as e:
                 progress.clear()
                 fail_hint = cstring("FAILED", (255, 0, 0), "BOLD")
-                message("NOTICE", f"{fail_hint}: build/{tgt.MODULENAME}")
+                message("NOTICE", f"{fail_hint}: build/{tgt.Module}")
                 message("ERROR", str(e))
 
                 if not config.TOO_LONG_DIDNT_READ:
@@ -173,7 +173,7 @@ class Generator:
                     message(
                         "ERROR",
                         dedent(f"""\
-                        Warning: Modules Object {tgt.MODULENAME} compile failed with Python raised {e.__class__.__name__},
+                        Warning: Modules Object {tgt.Module} compile failed with Python raised {e.__class__.__name__},
                         but wemi generator will continue with flag NO_COMPILE_FAIL_STOP is true.
                         """),
                     )
