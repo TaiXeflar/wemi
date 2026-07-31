@@ -44,7 +44,7 @@ class Installer:
             try:
                 src_file = Path("build/modulefiles") / obj.output
 
-                if obj.objtype == 'File':
+                if obj.type == 'File':
                     install_dir = dest
                 else:
                     install_dir = dest/"modulefiles"
