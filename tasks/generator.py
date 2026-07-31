@@ -134,11 +134,11 @@ class Generator:
         for idx, tgt in enumerate(targets, start=1):
             compiler = Compiler()
 
-            if tgt.objtype == "File":
-                description = f"Copying {tgt.MODULENAME}"
+            if tgt.type == "file":
+                description = f"Copying {tgt.Module}"
             else:
                 description = (
-                    f"Building {tgt.objtype} Modulefile Object {tgt.output}"
+                    f"Building {tgt.type} Modulefile Object {tgt.output}"
                 )
 
             progress.update(idx, description)
