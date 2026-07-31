@@ -4,276 +4,521 @@
 # https://opensource.org/licenses/MIT
 
 from __future__ import annotations
-from typing import Iterable, Tuple, Union, Literal, overload
+
 import re
+from collections.abc import Iterable, Sequence
+from dataclasses import dataclass
+from functools import total_ordering
+from operator import eq, ge, gt, le, lt, ne
+from typing import Any, Literal, Self, TypeAlias, overload
 
 
+VersionInput: TypeAlias = (
+    "VersionNum | str | Sequence[int | str | None]"
+)
+VersionOperator: TypeAlias = Literal[
+    "=",
+    "≠",
+    "!=",
+    "<",
+    "<=",
+    ">",
+    ">=",
+]
+CompatibilityMode: TypeAlias = Literal[
+    "STRICT",
+    "MINOR",
+    "MAJOR",
+    "FUZZY",
+]
+
+# VersionNum intentionally models vendor/toolchain numeric versions rather
+# than SemVer or PEP 440 versions.
+#
+# The pattern searches for the first numeric version in a string to preserve
+# compatibility with existing WEMI callers such as:
+#   "CUDA Version 13.0"
+#   "MSVC 14.51.36231_v145"
+_VERSION_SEARCH_PATTERN = re.compile(
+    r"(?P<numeric>\d+(?:\.\d+)*)(?P<suffix>[^\s]*)"
+)
+
+
+@total_ordering
+@dataclass(frozen=True, slots=True, init=False)
 class VersionNum:
-    def __init__(self, version_input):
-        self.valid = False
-        self.major = 0
-        self.minor = 0
-        self.patch = 0
-        self.suffix = ""
-        self.fullname = str(version_input)
+    """Immutable numeric vendor/toolchain version.
 
-        if isinstance(version_input, str):
-            self._parse_string(version_input)
-        elif isinstance(version_input, (list, tuple)):
-            self._parse_sequence(version_input)
-        elif isinstance(version_input, VersionNum):
-            self.valid = version_input.valid
-            self.major, self.minor, self.patch, self.suffix = (
-                version_input.major,
-                version_input.minor,
-                version_input.patch,
-                version_input.suffix,
-            )
+    ``VersionNum`` preserves the original input text while extracting an
+    arbitrary number of numeric components for comparisons.
+
+    Comparison ignores suffix text and treats trailing zero components as
+    insignificant. Therefore ``1.2``, ``1.2.0`` and ``1.2.0.0`` compare equal.
+
+    This is not a SemVer or PEP 440 parser.
+    """
+
+    original: str
+    parts: tuple[int, ...]
+    suffix: str
+
+    def __init__(
+        self,
+        version_input: VersionNum | str | Sequence[int | str | None],
+        /,
+    ) -> None:
+        if isinstance(version_input, VersionNum):
+            original = version_input.original
+            parts = version_input.parts
+            suffix = version_input.suffix
+        elif isinstance(version_input, str):
+            original, parts, suffix = self._parse_string(version_input)
+        elif isinstance(version_input, Sequence) and not isinstance(
+            version_input,
+            (str, bytes, bytearray),
+        ):
+            original, parts, suffix = self._parse_sequence(version_input)
         else:
-            self.fullname = str(version_input)
+            raise TypeError(
+                "VersionNum expects a version string, a sequence of numeric "
+                "components, or another VersionNum; received "
+                f"{type(version_input).__name__}."
+            )
 
-        if not self.valid:
-            # 如果正則匹配失敗，至少保留完整名稱，不要變成 0.0.0
-            self.major = self.minor = self.patch = 0
+        object.__setattr__(self, "original", original)
+        object.__setattr__(self, "parts", parts)
+        object.__setattr__(self, "suffix", suffix)
 
-    def _parse_string(self, v_str):
-        # 讓 minor, patch 與 suffix 都變成可選，且支援 X.Y
-        match = re.search(r"(\d+)(?:\.(\d+))?(?:\.(\d+))?(.*)", v_str)
-        if match:
-            self.valid = True
-            self.major = int(match.group(1) or 0)
-            self.minor = int(match.group(2) or 0)
-            self.patch = int(match.group(3) or 0)
-            self.suffix = match.group(4).strip(".- ")
-        self.fullname = v_str
+    @staticmethod
+    def _parse_string(
+        value: str,
+    ) -> tuple[str, tuple[int, ...], str]:
+        original = value.strip()
 
-    def _parse_sequence(self, seq):
-        # 支援 tuple 長度不足 3 的情況 (例如來自 re.groups() 的 ('0', '28'))
-        if not seq:
-            return
-        self.valid = True
-        self.major = int(seq[0]) if len(seq) > 0 and seq[0] is not None else 0
-        self.minor = int(seq[1]) if len(seq) > 1 and seq[1] is not None else 0
-        self.patch = int(seq[2]) if len(seq) > 2 and seq[2] is not None else 0
+        if not original:
+            raise ValueError("Version string cannot be empty.")
+
+        match = _VERSION_SEARCH_PATTERN.search(original)
+        if match is None:
+            raise ValueError(
+                f"No numeric version could be found in {value!r}."
+            )
+
+        parts = tuple(
+            int(component)
+            for component in match.group("numeric").split(".")
+        )
+        suffix = match.group("suffix").strip("._-+ ")
+
+        return original, parts, suffix
+
+    @staticmethod
+    def _parse_sequence(
+        value: Sequence[int | str | None],
+    ) -> tuple[str, tuple[int, ...], str]:
+        if not value:
+            raise ValueError("Version sequence cannot be empty.")
+
+        parts: list[int] = []
+
+        for component in value:
+            if component is None:
+                parts.append(0)
+                continue
+
+            try:
+                integer = int(component)
+            except (TypeError, ValueError) as error:
+                raise ValueError(
+                    "Version sequence must contain only integer-compatible "
+                    f"components; received {component!r}."
+                ) from error
+
+            if integer < 0:
+                raise ValueError(
+                    "Version components cannot be negative; "
+                    f"received {integer}."
+                )
+
+            parts.append(integer)
+
+        original = ".".join(str(component) for component in parts)
+        return original, tuple(parts), ""
+
+    @classmethod
+    def try_parse(
+        cls,
+        value: Any,
+        /,
+    ) -> Self | None:
+        """Return a parsed version or ``None`` for unsupported/invalid input."""
+
+        try:
+            return cls(value)
+        except (TypeError, ValueError):
+            return None
+
+    @classmethod
+    def search(
+        cls,
+        text: str,
+        /,
+    ) -> Self | None:
+        """Search arbitrary text for its first numeric version."""
+
+        return cls.try_parse(text)
 
     @property
-    def verTuple(self):
-        return (self.major, self.minor, self.patch)
+    def comparison_key(self) -> tuple[int, ...]:
+        """Numeric comparison key with insignificant trailing zeros removed."""
 
-    # 核心比較邏輯
-    def __lt__(self, other):
-        other = VersionNum(other)  # 自動轉換輸入
-        return self.verTuple < other.verTuple
+        parts = list(self.parts)
+        while len(parts) > 1 and parts[-1] == 0:
+            parts.pop()
+        return tuple(parts)
 
-    def __eq__(self, other):
-        other = VersionNum(other)
-        return self.verTuple == other.verTuple
+    @property
+    def normalized(self) -> str:
+        """Return all parsed numeric components joined by dots."""
 
-    def __le__(self, other):
-        return self < other or self == other
+        return ".".join(str(component) for component in self.parts)
 
-    def __gt__(self, other):
-        return not self <= other
+    @property
+    def major(self) -> int:
+        return self.parts[0] if self.parts else 0
 
-    def __ge__(self, other):
-        return not self < other
+    @property
+    def minor(self) -> int:
+        return self.parts[1] if len(self.parts) > 1 else 0
 
-    def __str__(self):
-        return f"{self.major}.{self.minor}.{self.patch}"
+    @property
+    def patch(self) -> int:
+        return self.parts[2] if len(self.parts) > 2 else 0
+
+    @property
+    def version_tuple(self) -> tuple[int, ...]:
+        return self.parts
+
+    @property
+    def verTuple(self) -> tuple[int, ...]:
+        """Compatibility alias for the historical API."""
+
+        return self.parts
+
+    @property
+    def fullname(self) -> str:
+        """Compatibility alias for the historical API."""
+
+        return self.original
+
+    @property
+    def valid(self) -> bool:
+        """Compatibility property.
+
+        Invalid versions are no longer represented by a VersionNum instance;
+        construction raises ``TypeError`` or ``ValueError`` instead.
+        """
+
+        return True
+
+    def starts_with(
+        self,
+        other: VersionNum | str | Sequence[int | str | None],
+        /,
+    ) -> bool:
+        """Return whether this numeric version starts with another version."""
+
+        prefix = VersionNum(other).parts
+        return self.parts[: len(prefix)] == prefix
+
+    @staticmethod
+    def _coerce_other(other: object) -> VersionNum | None:
+        if isinstance(other, VersionNum):
+            return other
+
+        if isinstance(other, str):
+            return VersionNum.try_parse(other)
+
+        if isinstance(other, Sequence) and not isinstance(
+            other,
+            (str, bytes, bytearray),
+        ):
+            return VersionNum.try_parse(other)
+
+        return None
+
+    def __eq__(self, other: object) -> bool:
+        converted = self._coerce_other(other)
+        if converted is None:
+            return False
+        return self.comparison_key == converted.comparison_key
+
+    def __lt__(self, other: object) -> bool:
+        converted = self._coerce_other(other)
+        if converted is None:
+            return NotImplemented
+        return self.comparison_key < converted.comparison_key
+
+    def __hash__(self) -> int:
+        # Objects that compare equal must have the same hash.
+        return hash(self.comparison_key)
+
+    def __str__(self) -> str:
+        # Preserve vendor suffixes and the original display spelling.
+        return self.original
 
     def __repr__(self) -> str:
-        # 這會印出 VersionNum('1.2.3')，引號會自動處理
-        return self.__str__()
+        return f"{type(self).__name__}({self.original!r})"
 
     def __format__(self, format_spec: str) -> str:
-        # 如果使用者沒有指定格式 (例如 f"{v}")，format_spec 會是空字串
-        if not format_spec:
-            return str(self)
-
-        # 這裡直接使用 python 內建的 format 函數
-        # 它會自動看懂 "<10" 這種語法
         return format(str(self), format_spec)
 
 
+_VERSION_OPERATORS = {
+    "=": eq,
+    "≠": ne,
+    "!=": ne,
+    "<": lt,
+    "<=": le,
+    ">": gt,
+    ">=": ge,
+}
+
+
 def VERSION(
-    obj: Union[str, VersionNum],
-    op: Literal["=", "≠", "!=", "<", "<=", ">", ">="],
-    compare: Union[str, VersionNum],
+    obj: VersionNum | str,
+    op: VersionOperator,
+    compare: VersionNum | str,
     /,
     *,
-    blacklist: Iterable[str | VersionNum] = None,
+    blacklist: Iterable[str | VersionNum] | None = None,
     fuzzy: bool = False,
 ) -> bool:
-    if obj is None:
+    """Compare two versions and optionally reject blacklisted versions."""
+
+    if obj is None or compare is None:
         return False
 
-    v1, v2 = VersionNum(obj), VersionNum(compare)
-    ops = {
-        "=": v1 == v2,
-        "≠": v1 != v2,
-        "!=": v1 != v2,
-        "<": v1 < v2,
-        "<=": v1 <= v2,
-        ">": v1 > v2,
-        ">=": v1 >= v2,
-    }
+    operation = _VERSION_OPERATORS.get(op)
+    if operation is None:
+        raise ValueError(f"Unsupported version operator: {op!r}")
 
-    # 1. 基礎比較
-    result = ops.get(op, False)
+    try:
+        left = VersionNum(obj)
+        right = VersionNum(compare)
+    except (TypeError, ValueError):
+        return False
 
-    # 2. 如果基礎比較通過，且有黑名單，則進一步檢查
+    result = operation(left, right)
+
     if result and blacklist is not None:
-        return VERSION_BLACKLIST(v1, blacklist, fuzzy=fuzzy)
+        return VERSION_BLACKLIST(
+            left,
+            blacklist,
+            fuzzy=fuzzy,
+        )
 
     return result
 
 
 def VERSION_IN_RANGE(
-    min: str | VersionNum,
+    minimum: str | VersionNum,
     op1: Literal["<", "<="],
-    v: str | VersionNum,
+    version: str | VersionNum,
     op2: Literal["<", "<="],
-    max: str | VersionNum,
+    maximum: str | VersionNum,
     /,
-    *,  # 強制關鍵字參數，避免混淆
-    blacklist: Iterable[str | VersionNum] = None,
+    *,
+    blacklist: Iterable[str | VersionNum] | None = None,
     fuzzy: bool = False,
 ) -> bool:
-    """
-    判斷 v 是否在 min 與 max 之間，並可選排除黑名單內的版本。
-    """
+    """Return whether ``minimum op1 version op2 maximum`` is true."""
 
-    if v is None:
+    if version is None:
         return False
 
-    # 1. 先做原本的範圍檢查
-    # 注意：這裡直接利用短路邏輯，如果範圍不合直接回傳 False
-    left = VERSION(min, op1, v)
-    if not left:
+    if not VERSION(minimum, op1, version):
         return False
 
-    right = VERSION(v, op2, max)
-    if not right:
+    if not VERSION(version, op2, maximum):
         return False
 
-    # 2. 如果有設定黑名單，再檢查是否命中黑名單
     if blacklist is not None:
-        # VERSION_BLACKLIST 回傳 True 代表「安全 (Pass)」，False 代表「命中黑名單 (Fail)」
-        return VERSION_BLACKLIST(v, blacklist, fuzzy=fuzzy)
+        return VERSION_BLACKLIST(
+            version,
+            blacklist,
+            fuzzy=fuzzy,
+        )
 
     return True
 
 
 def VERSION_EXCLUDE_RANGE(
-    v: str | VersionNum,
+    version: str | VersionNum,
     op1: Literal["<", "<="],
-    min_v,
+    minimum: str | VersionNum,
     op2: Literal[">", ">="],
-    max_v,
+    maximum: str | VersionNum,
     /,
     *,
-    blacklist: Iterable[str | VersionNum] = None,
+    blacklist: Iterable[str | VersionNum] | None = None,
     fuzzy: bool = False,
-):
-    if v is None:
+) -> bool:
+    """Return whether a version lies outside an excluded range."""
+
+    if version is None:
         return False
-    # (v, ">=", max, "<=", min) -> v > b and v < a
-    # 1. 原本邏輯：在 min 之下 或 在 max 之上
-    in_safe_zone = VERSION(v, op1, min_v) or VERSION(v, op2, max_v)
+
+    in_safe_zone = (
+        VERSION(version, op1, minimum)
+        or VERSION(version, op2, maximum)
+    )
 
     if not in_safe_zone:
         return False
 
-    # 2. 黑名單過濾
     if blacklist is not None:
-        return VERSION_BLACKLIST(v, blacklist, fuzzy=fuzzy)
+        return VERSION_BLACKLIST(
+            version,
+            blacklist,
+            fuzzy=fuzzy,
+        )
 
     return True
 
 
 def VERSION_WHITELIST(
-    v: str | VersionNum,
-    find_list: Iterable[str],
+    version: str | VersionNum,
+    find_list: Iterable[str | VersionNum],
     /,
     *,
-    compatibility: Literal["STRICT", "MINOR", "MAJOR", "FUZZY"] = "STRICT",
+    compatibility: CompatibilityMode = "STRICT",
 ) -> bool:
-    if v is None:
+    """Return whether a version matches the requested compatibility policy.
+
+    ``STRICT`` compares the full numeric version.
+    ``MINOR`` compares major and minor components.
+    ``MAJOR`` compares only the major component.
+    ``FUZZY`` performs a numeric prefix comparison.
+    """
+
+    if version is None:
         return False
 
-    target = VersionNum(v)
+    target = VersionNum.try_parse(version)
+    if target is None:
+        return False
+
+    mode = compatibility.upper()
+    if mode not in {"STRICT", "MINOR", "MAJOR", "FUZZY"}:
+        raise ValueError(
+            f"Unsupported compatibility mode: {compatibility!r}"
+        )
 
     for raw_item in find_list:
-        if compatibility.upper() == "FUZZY":
-            if str(raw_item) in target.fullname:
-                return True
+        item = VersionNum.try_parse(raw_item)
+        if item is None:
             continue
 
-        item = VersionNum(raw_item)
+        if mode == "STRICT" and target == item:
+            return True
 
-        if compatibility.upper() == "STRICT":
-            if target == item:
-                return True
+        if mode == "MINOR" and (
+            target.major,
+            target.minor,
+        ) == (
+            item.major,
+            item.minor,
+        ):
+            return True
 
-        elif compatibility.upper() == "MINOR":
-            if target.major == item.major and target.minor == item.minor:
-                return True
+        if mode == "MAJOR" and target.major == item.major:
+            return True
 
-        elif compatibility.upper() == "MAJOR":
-            if target.major == item.major:
-                return True
+        if mode == "FUZZY" and target.starts_with(item):
+            return True
 
     return False
 
 
 def VERSION_BLACKLIST(
-    v: str | VersionNum,
-    prohibited: Iterable[str | VersionNum],  # 擴充型別提示
+    version: str | VersionNum,
+    prohibited: Iterable[str | VersionNum],
     /,
     *,
     fuzzy: bool = False,
-):
-    if v is None:
+) -> bool:
+    """Return ``False`` when a version appears in the prohibited list.
+
+    With ``fuzzy=True``, prohibited entries are treated as numeric prefixes.
+    """
+
+    if version is None:
         return False
 
-    target = VersionNum(v)
+    target = VersionNum.try_parse(version)
+    if target is None:
+        return False
 
-    for item in prohibited:
+    for raw_item in prohibited:
+        item = VersionNum.try_parse(raw_item)
+        if item is None:
+            continue
+
         if fuzzy:
-            # Fuzzy 模式通常比較適合字串比對
-            if str(item) in target.fullname:
+            if target.starts_with(item):
                 return False
-        else:
-            # 利用 VersionNum 的 __eq__ 來處理 (str vs VersionNum) 的自動轉型
-            # 這樣就算 blacklist 傳入 ["3.11.0", VersionNum("3.12.1")] 也能通
-            if target == item:
-                return False
+        elif target == item:
+            return False
+
     return True
 
 
 @overload
 def STREQUAL(obj1: str, obj2: str) -> bool: ...
+
+
 @overload
 def STREQUAL(obj1: VersionNum, obj2: VersionNum) -> bool: ...
 
 
-def STREQUAL(obj1: Union[str, VersionNum], obj2: Union[str, VersionNum]):
-    if obj1 is None:
+def STREQUAL(
+    obj1: str | VersionNum,
+    obj2: str | VersionNum,
+) -> bool:
+    if obj1 is None or obj2 is None:
         return False
 
     if isinstance(obj1, VersionNum) or isinstance(obj2, VersionNum):
-        return VersionNum(obj1) == VersionNum(obj2)
+        left = VersionNum.try_parse(obj1)
+        right = VersionNum.try_parse(obj2)
+        return (
+            left is not None
+            and right is not None
+            and left == right
+        )
+
     return str(obj1) == str(obj2)
 
 
 @overload
 def STRMATCH(obj: str, find: str) -> bool: ...
+
+
 @overload
-def STRMATCH(obj: str, find: Iterable[str] | list[str] | Tuple[str]) -> bool: ...
+def STRMATCH(
+    obj: str,
+    find: Iterable[str],
+) -> bool: ...
 
 
-def STRMATCH(obj: str, find: str | Iterable[str] | list[str] | Tuple[str]) -> bool:
-    target_str = str(obj)
-    if isinstance(find, (list, tuple)):
-        return any(str(keyword) in target_str for keyword in find)
-    return str(find) in target_str
+def STRMATCH(
+    obj: str,
+    find: str | Iterable[str],
+) -> bool:
+    target = str(obj)
+
+    if isinstance(find, str):
+        return find in target
+
+    return any(str(keyword) in target for keyword in find)
