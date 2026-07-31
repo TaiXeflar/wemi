@@ -22,6 +22,23 @@ ModifyMode: TypeAlias = Literal["set", "add", "del"]
 VersionCompareEntry: TypeAlias = dict[str, VersionNum | str]
 
 
+class UnknownModulesObjectFieldError(TypeError):
+    """Raised when constructor input contains unsupported field names."""
+
+    def __init__(
+        self,
+        unknown: list[str],
+        candidates: list[str],
+    ) -> None:
+        self.unknown = tuple(unknown)
+        self.suggestions = tuple(candidates)
+
+        super().__init__(
+            "Unknown ModulesObject field(s): "
+            + ", ".join(unknown)
+        )
+
+
 @dataclass(init=False, slots=True)
 class ModulesObject(Mapping[str, Any]):
     """Intermediate representation used to generate WEMI modulefiles.
@@ -49,6 +66,8 @@ class ModulesObject(Mapping[str, Any]):
 
     type: ModuleType = "tcl"
     ref: str | None = None
+    src: str | None = None
+    alias: str | list[str] | None = None
     modules_help: str = ""
     module_whatis: str = ""
     ver: VersionNum | None = None
@@ -320,9 +339,9 @@ class ModulesObject(Mapping[str, Any]):
 
         unknown = sorted(set(data) - set(field_specs))
         if unknown:
-            raise TypeError(
-                "Unknown ModulesObject field(s): "
-                + ", ".join(unknown)
+            raise UnknownModulesObjectFieldError(
+                unknown,
+                sorted(field_specs),
             )
 
         for name, spec in field_specs.items():
@@ -368,6 +387,30 @@ class ModulesObject(Mapping[str, Any]):
                 "ref",
                 self.ref,
             )
+
+        if self.src is not None:
+            self.src = self._require_nonempty_string(
+                "src",
+                self.src,
+            )
+
+        if self.alias is not None:
+            if isinstance(self.alias, str):
+                self.alias = self._require_nonempty_string(
+                    "alias",
+                    self.alias,
+                )
+            else:
+                self.alias = [
+                    self._require_nonempty_string(
+                        "alias",
+                        item,
+                    )
+                    for item in self._coerce_list(
+                        "alias",
+                        self.alias,
+                    )
+                ]
 
         if self.root is not None:
             self.root = self._require_nonempty_string(
