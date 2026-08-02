@@ -11,6 +11,9 @@ from .refs import BaseModuleTemplate
 class ModuleTemplate(BaseModuleTemplate):
     def build(self):
 
+        v = self.module.ver
+
+        self.add_module_whatis(f'Cangjie compiler v{v}')
         self.add_llvm_conflict(
             "amd/hip",
             "ROCm/TheRock",

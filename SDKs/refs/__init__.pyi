@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Union, Any, overload
 from typing_extensions import Literal
-from utils import VersionNum
+from utils.compare_functions import VersionNum
 from tasks import ModulesObject
 
 class FindSDK(ABC):

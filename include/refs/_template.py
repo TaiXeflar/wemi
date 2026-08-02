@@ -14,8 +14,8 @@ from utils.compare_functions import VersionNum
 from tasks import ModulesObject
 
 with open("version.json", "r", encoding="utf-8") as f:
-    v = json.loads(f.read().strip())
-WEMI_VERSION = v
+    v: dict[Literal['version'], str] = json.loads(f.read().strip())
+WEMI_VERSION = v['version']
 
 class BaseModuleTemplate:
     def __init__(self, module_obj: ModulesObject):
