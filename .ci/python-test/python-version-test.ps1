@@ -68,7 +68,7 @@ if (-not (Test-Path -LiteralPath $InstallPrefix -PathType Container)) {
     throw "WEMI install prefix was not created: $InstallPrefix"
 }
 
-$InitScript = Join-Path $InstallPrefix "modulefiles\init\pwsh.ps1"
+$InitScript = Join-Path $InstallPrefix "init\pwsh.ps1"
 
 if (-not (Test-Path -LiteralPath $InitScript -PathType Leaf)) {
     throw "Environment Modules PowerShell initialization script was not installed: $InitScript"

@@ -35,16 +35,23 @@ class FindTheRock(RocXParserMixin, FindSDK):
             return
 
         hip_dirs_therock = [
-            hip.parent.parent for hip in hip_dirs if self._hip_is_from_therock(hip)
+            hip for hip in hip_dirs if self._hip_is_from_therock(hip)
         ]
 
-        for dist in hip_dirs_therock:
+        for hip in hip_dirs_therock:
+            dist = hip.parent.parent
             rocm_config: Dict[str, Any] = {
                 "Path": dist.as_posix(),
                 "Path of LLVM": (dist / "lib/llvm").as_posix(),
             }
+
+            # Exclude if install have no version File
             ver_file = (dist / ".info/version")
             if not ver_file.exists():
+                continue
+
+            # Exclude hipcc binary from TheRock build directories; only finds cmake installed binary tree like dirs
+            if any(w in str(ver_file) for w in ("build", 'dist')):
                 continue
             
             rocm_ver = ver_file.read_text("utf-8").strip()
@@ -64,44 +71,41 @@ class FindTheRock(RocXParserMixin, FindSDK):
 
             rocm_version = rocm_config.get("therock")
             if not rocm_version or rocm_version != rocm_ver:
-                message(
-                    "WARNING",
-                    dedent(f"""\
-                Warning: skipping ROCm/TheRock {rocm_ver} profile with version cinfigure incorrect."""),
-                )
+                message("WARNING", dedent(f"""\
+                    Warning: skipping ROCm/TheRock {rocm_ver} profile with version cinfigure incorrect."""
+                    ))
                 continue
 
             self.add_rule(ModulesObject(
-                    Module=f"ROCm/TheRock/{rocm_version}",
-                    output=f"ROCm/TheRock/{rocm_version}",
-                    mode="tcl",
-                    Include_file="template_amd_rocm_therock",
-                    Version=rocm_version,
-                    deps=["UCRT"],
-                    conflicts=["ROCm/TheRock"],
-                    llvm_conflicts=["llvm", "cangjie"],
-                    hetero_conflicts=[
-                        "amd/hip",
-                        "intel/ocloc",
-                        "intel/mkl",
-                        "nvidia/cuda",
-                        "nvidia/cudnn",
-                        "nvidia/cudss",
-                        "nvidia/cusparselt",
-                        "nvidia/cutensor",
-                        "nvidia/nvhpc",
-                        "nvidia/nvhpc-byo",
-                    ],
-                    root=dist.as_posix(),
-                    ENVs={
-                        "ROCM_HOME": "$root",
-                        "ROCM_PATH": "$root",
-                        "LLVM_DIR": "$root/lib/llvm",
-                    },
-                    PATH=["$root/bin", "$root/lib/llvm/bin"],
-                    INCLUDE=["$root/include", "$root/lib/llvm/include"],
-                    LIB=["$root/lib", "$root/lib/llvm/lib"],
-                    LD_LIBRARY_PATH=["$root/bin", "$root/lib/llvm/bin"],
-                    CMAKE_PREFIX_PATH=["$root", "$root/lib/llvm"],
-                )
-            )
+                Module=f"ROCm/TheRock/{rocm_version}",
+                output=f"ROCm/TheRock/{rocm_version}",
+                mode="tcl",
+                Include_file="template_amd_rocm_therock",
+                Version=rocm_version,
+                deps=["UCRT"],
+                conflicts=["ROCm/TheRock"],
+                llvm_conflicts=["llvm", "cangjie"],
+                hetero_conflicts=[
+                    "amd/hip",
+                    "intel/ocloc",
+                    "intel/mkl",
+                    "nvidia/cuda",
+                    "nvidia/cudnn",
+                    "nvidia/cudss",
+                    "nvidia/cusparselt",
+                    "nvidia/cutensor",
+                    "nvidia/nvhpc",
+                    "nvidia/nvhpc-byo",
+                ],
+                root=dist.as_posix(),
+                ENVs={
+                    "ROCM_HOME": "$root",
+                    "ROCM_PATH": "$root",
+                    "LLVM_DIR": "$root/lib/llvm",
+                },
+                PATH=["$root/bin", "$root/lib/llvm/bin"],
+                INCLUDE=["$root/include", "$root/lib/llvm/include"],
+                LIB=["$root/lib", "$root/lib/llvm/lib"],
+                LD_LIBRARY_PATH=["$root/bin", "$root/lib/llvm/bin"],
+                CMAKE_PREFIX_PATH=["$root", "$root/lib/llvm"],
+            ))

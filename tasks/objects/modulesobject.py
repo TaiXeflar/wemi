@@ -70,6 +70,7 @@ class ModulesObject(Mapping[str, Any]):
     alias: str | list[str] | None = None
     modules_help: str = ""
     module_whatis: str = ""
+    cmakefile_content: str | None = None
     ver: VersionNum | None = None
 
     # ------------------------------------------------------------------
@@ -444,6 +445,12 @@ class ModulesObject(Mapping[str, Any]):
                 )
 
         self._normalize_vcompare()
+
+        if self.cmakefile_content is not None:
+            self.cmakefile_content = self._require_string(
+                "cmakefile_content",
+                self.cmakefile_content,
+            )
 
     @staticmethod
     def _require_string(

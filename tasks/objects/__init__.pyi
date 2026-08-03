@@ -59,6 +59,7 @@ class ModulesObject(Mapping[str, Any]):
     ref: str | None
     modules_help: str
     module_whatis: str
+    cmakefile_content: str | None
     ver: VersionNum | None
 
     prereq: list[str]

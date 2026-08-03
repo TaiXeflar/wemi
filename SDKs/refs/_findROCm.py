@@ -217,10 +217,9 @@ class RocXParserMixin:
 
         if (hip_bin_dir / "clang.exe").exists() and (hip_dir / "amdgcn").exists():
             return False
-        elif (hip_dir / "lib/llvm/bin/clang.exe").exists():
+        elif (hip_dir / "lib/llvm/bin/clang.exe").exists() and (hip_dir/'.info/version').exists():
             return True
         else:
-            message("WARNING", f'Found unknown hipcc and amd-llvm compilers. This might be TheRock build but not usable binary.')
             return False
             # raise RuntimeError(dedent(f'''\
             #     configuring hipcc have errors where identifying hipcc release is out of cases.
