@@ -11,6 +11,6 @@ from .refs import BaseModuleTemplate
 class ModuleTemplate(BaseModuleTemplate):
     def build(self):
         self.add_module_whatis(self.module.module_whatis)
-        self.add_conflict(*self.module.conflicts)
+        self.add_conflict(*self.module.conflict)
         self.set_root(self.module.root)
         self.prepend_path("PATH", *self.module.PATH)

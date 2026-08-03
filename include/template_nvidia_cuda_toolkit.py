@@ -8,7 +8,7 @@ from .refs import BaseModuleTemplate
 
 class ModuleTemplate(BaseModuleTemplate):
     def build(self):
-        ver = self.module.VERSION
+        ver = self.module.ver
 
         self.add_module_whatis(f"NVIDIA CUDA {ver} Toolkit")
 
