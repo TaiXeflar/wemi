@@ -4,6 +4,7 @@
 # https://opensource.org/licenses/MIT
 
 from typing import Literal, get_args, Optional, Any
+from textwrap import dedent
 from pathlib import Path
 
 
@@ -219,6 +220,11 @@ class RocXParserMixin:
         elif (hip_dir / "lib/llvm/bin/clang.exe").exists():
             return True
         else:
-            raise RuntimeError(
-                "Configuring hipcc have errors where identifying hipcc release is out of cases"
-            )
+            message("WARNING", f'Found unknown hipcc and amd-llvm compilers. This might be TheRock build but not usable binary.')
+            return False
+            # raise RuntimeError(dedent(f'''\
+            #     configuring hipcc have errors where identifying hipcc release is out of cases.
+            #      > hip_bin_dir: {hip_bin_dir.as_posix()}
+            #        clang:       {hip_bin_dir / "clang.exe"} {(hip_bin_dir / "clang.exe").exists()}
+            #     '''
+            # ))

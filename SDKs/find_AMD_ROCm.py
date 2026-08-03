@@ -43,7 +43,11 @@ class FindTheRock(RocXParserMixin, FindSDK):
                 "Path": dist.as_posix(),
                 "Path of LLVM": (dist / "lib/llvm").as_posix(),
             }
-            rocm_ver = (dist / ".info/version").read_text("utf-8").strip()
+            ver_file = (dist / ".info/version")
+            if not ver_file.exists():
+                continue
+            
+            rocm_ver = ver_file.read_text("utf-8").strip()
             message(f"    ROCm/TheRock {rocm_ver}    {dist.resolve().as_posix()}")
 
             dist_info_path = dist / "share/therock/dist_info.json"
@@ -67,8 +71,7 @@ class FindTheRock(RocXParserMixin, FindSDK):
                 )
                 continue
 
-            self.add_rule(
-                ModulesObject(
+            self.add_rule(ModulesObject(
                     Module=f"ROCm/TheRock/{rocm_version}",
                     output=f"ROCm/TheRock/{rocm_version}",
                     mode="tcl",
