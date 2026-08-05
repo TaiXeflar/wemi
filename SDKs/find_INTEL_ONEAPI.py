@@ -32,17 +32,25 @@ class FindOneAPI(FindSDK):
     def __WINDOWS__(self):
 
         if not self.ONEAPI_ROOT:
-            return
+
+            # prevent if intel oneapi installer not write regedit
+            # fallback to find setvars.bat
+            _setvars = self.everything('setvars.bat')
+
+            if not _setvars:
+                return
+            else:
+                self.ONEAPI_ROOT = _setvars[0]
 
         self.add_rule(
             ModulesObject(
                 Module="intel/oneapi",
                 output="intel/oneapi",
-                mode="tcl",
-                Include_file="template_intel_oneapi",
+                type="tcl",
+                ref="template_intel_oneapi",
                 module_whaits="Intel oneAPI",
                 root=self.ONEAPI_ROOT,
-                ENVs={"ONEAPI_ROOT": "$root"},
+                ENV={"ONEAPI_ROOT": "$root"},
                 MODULEPATH=[".deps/intel/oneapi"],
             )
         )
