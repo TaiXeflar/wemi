@@ -53,7 +53,7 @@ class FindTheRock(RocXParserMixin, FindSDK):
             # Exclude hipcc binary from TheRock build directories; only finds cmake installed binary tree like dirs
             if any(w in str(ver_file) for w in ("build", 'dist')):
                 continue
-            
+
             rocm_ver = ver_file.read_text("utf-8").strip()
             message(f"    ROCm/TheRock {rocm_ver}    {dist.resolve().as_posix()}")
 
