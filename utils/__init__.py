@@ -29,7 +29,7 @@ from .functions import (
     tic_toc,
     clear,
 )
-
+from .timestamp import Timestamp
 from . import config
 
 __all__ = [
@@ -52,4 +52,5 @@ __all__ = [
     "tic_toc",
     "clear",
     "config",
+    'Timestamp',
 ]
