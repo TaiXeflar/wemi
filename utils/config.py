@@ -45,3 +45,7 @@ ADD_MODULES = True
 NO_MODULES = False
 MODULES_ONLY = False
 MODULES_ALIAS = 'modules'
+
+BUILD_TIMESTAMP_TIME_ZONE: str = 'locale'
+BUILD_TIMESTAMP_HOUR_TYPE: Literal['AM/PM', '24hr', '30hr'] = '24hr'
+BUILD_TIMESTAMP_REGNAL_TYPE: Literal['CE', 'R.O.C.', 'Japan'] = 'CE'

@@ -161,6 +161,23 @@ def args_update():
         dest='ALL_IN_ONE',
         help='All in one process'
     )
+    options_config.add_argument('--time-zone', 
+                                type=str, 
+                                dest="BUILD_TIMESTAMP_TIME_ZONE", 
+                                default='locale',
+                                help='Specify built modulefiles timestamp timezone location')
+    options_config.add_argument('--time-hr', 
+                                type=str,
+                                choices=['AM/PM', '24hr', '30hr'],
+                                dest="BUILD_TIMESTAMP_HOUR_TYPE", 
+                                default='24hr',
+                                help='Specify built modulefiles timestamp hours format')
+    options_config.add_argument('--time-regnal',
+                                type=str,
+                                choices=['CE', 'R.O.C.', 'Japan'],
+                                dest="BUILD_TIMESTAMP_REGNAL_TYPE",
+                                default='CE',
+                                help='Specify built modulefiles timestamp regnal')
 
     options_build.add_argument(
         "-G",
