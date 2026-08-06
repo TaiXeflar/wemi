@@ -32,7 +32,7 @@ class FindOneAPI(FindSDK):
 
             # prevent if intel oneapi installer not write regedit
             # fallback to find setvars.bat
-            _setvars: Path = self.everything('setvars.bat')
+            _setvars: Path = self.everything('setvars.bat')[0]
 
             if not _setvars or not _setvars.is_file():
                 return
