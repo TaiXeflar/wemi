@@ -107,7 +107,7 @@ class Generator:
     def schedule(self):
         try:
             build_cache_list: list[ModulesObject] = [
-                ModulesObject(tgt)
+                ModulesObject(**tgt)
                 for tgt in json.loads(Path("build/cache.json").read_text())
             ]
             build_schedule_dict: dict[str, ModulesObject] = {
