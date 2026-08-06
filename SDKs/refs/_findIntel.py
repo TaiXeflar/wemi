@@ -1,3 +1,4 @@
+
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
 # This software is released under the MIT License.
@@ -8,6 +9,7 @@ from pathlib import Path
 from textwrap import dedent
 
 import re
+import os
 import subprocess
 
 from utils import regedit
@@ -78,6 +80,11 @@ def intel_target_arch():
         )
 
 def intel_guess_dir() -> Path | None:
+
+    _v = os.environ.get("ONEAPI_ROOT")
+    if _v and (_r := Path(_v)).exists():
+        return _r.resolve()
+
     raw_paths = (
         regedit(
             "HKLM",

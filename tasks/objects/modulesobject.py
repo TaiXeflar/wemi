@@ -71,7 +71,7 @@ class ModulesObject(Mapping[str, Any]):
     modules_help: str = ""
     module_whatis: str = ""
     cmakefile_content: str | None = None
-    ver: VersionNum | None = None
+    ver: VersionNum | str | None = None
 
     # ------------------------------------------------------------------
     # Dependencies, conflicts and version checks
@@ -478,22 +478,20 @@ class ModulesObject(Mapping[str, Any]):
     @staticmethod
     def _coerce_version(
         value: VersionNum | str | None,
-    ) -> VersionNum | None:
-        if value is None or value is Ellipsis:
-            return None
-        if isinstance(value, VersionNum):
+    ) -> VersionNum | str | None:
+        if value is None or isinstance(value, VersionNum):
             return value
-        if isinstance(value, str):
-            return VersionNum(value)
-        raise TypeError(
-            "ver must be VersionNum, str, None, or Ellipsis; "
-            f"received {type(value).__name__}."
-        )
+
+        parsed = VersionNum.try_parse(value)
+        if parsed is not None:
+            return parsed
+
+        return value
 
     @staticmethod
     def _coerce_list(
         name: str,
-        value: Any,
+        value: VersionNum | str | None,
     ) -> list[Any]:
         if value is None:
             return []

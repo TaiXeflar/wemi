@@ -5,8 +5,6 @@
 
 from pathlib import Path
 from textwrap import dedent
-import re
-import subprocess
 
 from .refs import FindSDK
 from .refs._findIntel import intel_guess_dir, intel_target_arch, intel_compiler_version_grepper
@@ -21,7 +19,6 @@ INTEL_TARGET_ARCH = intel_target_arch()
 
 
 class FindOneAPI(FindSDK):
-    ONEAPI_ROOT = INTEL_ONEAPI_ROOT
     _name_desc = "Intel oneAPI"
     is_llvm_infra = True
     is_hetero_tgt = False
@@ -31,16 +28,19 @@ class FindOneAPI(FindSDK):
 
     def __WINDOWS__(self):
 
-        if not self.ONEAPI_ROOT:
+        if INTEL_ONEAPI_ROOT is None:
 
             # prevent if intel oneapi installer not write regedit
             # fallback to find setvars.bat
-            _setvars = (self.everything('setvars.bat')[0])
+            _setvars: Path = self.everything('setvars.bat')
 
             if not _setvars or not _setvars.is_file():
                 return
             else:
-                self.ONEAPI_ROOT = _setvars.parent.resolve().as_posix()
+                self.ONEAPI_ROOT = _setvars.parent
+        else:
+            self.ONEAPI_ROOT = INTEL_ONEAPI_ROOT
+
 
         self.add_rule(
             ModulesObject(
@@ -49,7 +49,7 @@ class FindOneAPI(FindSDK):
                 type="tcl",
                 ref="template_intel_oneapi",
                 module_whaits="Intel oneAPI",
-                root=self.ONEAPI_ROOT,
+                root=self.ONEAPI_ROOT.resolve().as_posix(),
                 ENV={"ONEAPI_ROOT": "$root"},
                 MODULEPATH=[".deps/intel/oneapi"],
             )
