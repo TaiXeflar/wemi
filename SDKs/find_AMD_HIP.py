@@ -76,7 +76,7 @@ class FindHIPSDK(RocXParserMixin, FindSDK):
                     output=f"amd/hip/{verstr}",
                     mode="tcl",
                     Include_file="template_amd_hipsdk",
-                    module_whaits=f"AMD HIP {verstr} SDK",
+                    module_whatis=f"AMD HIP {verstr} SDK",
                     modules_help=f"AMD HIP {verstr} SDK",
                     Version=verstr,
                     deps=[],

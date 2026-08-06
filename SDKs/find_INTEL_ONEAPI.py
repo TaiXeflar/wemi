@@ -46,11 +46,11 @@ class FindOneAPI(FindSDK):
             ModulesObject(
                 Module="intel/oneapi",
                 output="intel/oneapi",
-                type="tcl",
-                ref="template_intel_oneapi",
-                module_whaits="Intel oneAPI",
+                mode="tcl",
+                Include_file="template_intel_oneapi",
+                module_whatis="Intel oneAPI",
                 root=self.ONEAPI_ROOT.resolve().as_posix(),
-                ENV={"ONEAPI_ROOT": "$root"},
+                ENVs={"ONEAPI_ROOT": "$root"},
                 MODULEPATH=[".deps/intel/oneapi"],
             )
         )
@@ -94,7 +94,7 @@ class FindOneAPI(FindSDK):
                         ),
                         mode="tcl",
                         Include_file="template_intel_tbb",
-                        module_whaits=f"Intel oneAPI Thread Building Blocks {tbb_ver}",
+                        module_whatis=f"Intel oneAPI Thread Building Blocks {tbb_ver}",
                         Version=tbb_ver,
                         deps=["intel/tcm"],
                         conflicts=["Intel/tbb"],
@@ -653,7 +653,7 @@ class FindOneAPI(FindSDK):
                         output=".deps/intel/oneapi/" + f"intel/dnnl/{dnnl_ver}",
                         mode="tcl",
                         Include_file="template_intel_dnnl",
-                        module_whaits=f"Intel oneAPI Deep Neural Network Library (oneDNN/DNNL) -> {dnnl}",
+                        module_whatis=f"Intel oneAPI Deep Neural Network Library (oneDNN/DNNL) -> {dnnl}",
                         conflicts=["intel/dnnl"],
                         VARs={
                             "root": self.ONEAPI_ROOT,
@@ -696,7 +696,7 @@ class FindOneAPI(FindSDK):
                             output=".deps/intel/oneapi/" + f"intel/dnnl/{dnnl_ver}.{b}",
                             mode="tcl",
                             Include_file="template_intel_dnnl",
-                            module_whaits=f"Intel oneAPI Deep Neural Network Library (oneDNN/DNNL) -> {dnnl}_{b}",
+                            module_whatis=f"Intel oneAPI Deep Neural Network Library (oneDNN/DNNL) -> {dnnl}_{b}",
                             conflicts=["intel/dnnl"],
                             VARs={
                                 "root": self.ONEAPI_ROOT,

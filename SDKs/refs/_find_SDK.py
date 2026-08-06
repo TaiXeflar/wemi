@@ -446,7 +446,7 @@ class FindSDK(ABC):
             # 3. (選擇性) 過濾掉空字串或空列表，保持 cache.json 乾淨
             clean_data = {k: v for k, v in data.items() if v}
 
-            self.info.append(ModulesObject(clean_data))
+            self.info.append(ModulesObject(**clean_data))
         else:
             if isinstance(obj, list) and all(
                 isinstance(item, ModulesObject) for item in obj

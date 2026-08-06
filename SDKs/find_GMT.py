@@ -37,7 +37,7 @@ class FindGMT(FindSDK):
                     output=f"gmt/{gmt_version}",
                     mode="tcl",
                     Include_file="template_gmt",
-                    module_whaits=f"Generic Mapping Tools (GMT) {gmt_version}",
+                    module_whatis=f"Generic Mapping Tools (GMT) {gmt_version}",
                     Version=gmt_version,
                     conflicts=["gmt"],
                     root=gmt.resolve().as_posix(),

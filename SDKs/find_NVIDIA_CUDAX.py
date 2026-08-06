@@ -87,7 +87,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
 
             self.add_rule(
                 ModulesObject(
-                    module_whaits=f"NVIDIA CUDNN {cudnn_ver} SDK (CUDA {cuda_deps_ver})",
+                    module_whatis=f"NVIDIA CUDNN {cudnn_ver} SDK (CUDA {cuda_deps_ver})",
                     Module=f"nvidia/cudnn/{cudnn_ver}",
                     output=f".deps/nvidia/cuda/{cuda_deps_ver}/nvidia/cuDNN/{cudnn_ver}",
                     mode="tcl",
@@ -138,7 +138,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 mode="tcl",
                 Include_file="template_nvidia_cudss",
                 Version=cudss_ver,
-                module_whaits=f"NVIDIA CUDSS {cudss_ver} SDK (CUDA {cuda_deps_ver})",
+                module_whatis=f"NVIDIA CUDSS {cudss_ver} SDK (CUDA {cuda_deps_ver})",
                 deps=[f"nvidia/cuda/{cuda_deps_ver}"],
                 conflicts=["nvidia/cudss"],
                 vcompare=[
@@ -189,7 +189,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 mode="tcl",
                 Include_file="template_nvidia_cutensor",
                 Version=cutensor_ver,
-                module_whaits=f"NVIDIA cuTENSOR {cutensor_ver} SDK (CUDA {cuda_deps_ver})",
+                module_whatis=f"NVIDIA cuTENSOR {cutensor_ver} SDK (CUDA {cuda_deps_ver})",
                 deps=[f"nvidia/cuda/{cuda_deps_ver}"],
                 conflicts=["nvidia/cutensor"],
                 vcompare=[
@@ -233,7 +233,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 mode="tcl",
                 Include_file="template_nvidia_cusparselt",
                 Version=cusparselt_ver,
-                module_whaits=f"NVIDIA cuSPARSELt {cusparselt_ver} SDK (CUDA {cuda_deps_ver})",
+                module_whatis=f"NVIDIA cuSPARSELt {cusparselt_ver} SDK (CUDA {cuda_deps_ver})",
                 deps=[f"nvidia/cuda/{cuda_deps_ver}"],
                 conflicts=["nvidia/cusparselt"],
                 vcompare=[
@@ -273,7 +273,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                     output=f".deps/nvidia/cuda/cudaX/nvidia/cutlass/{cutlass_ver}",
                     mode="tcl",
                     Include_file="template_nvidia_cutlass",
-                    module_whaits=f"NVIDIA cutlass {cutlass_ver} C++ Library",
+                    module_whatis=f"NVIDIA cutlass {cutlass_ver} C++ Library",
                     root=cutlass_dir.resolve().as_posix(),
                     PATH=["$root/bin"],
                     INCLUDE=["$root/include"],
@@ -313,7 +313,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                     output=f".deps/nvidia/cuda/{cuda_deps_ver}/nvidia/tensorrt/{nvinfer_ver}",
                     mode="tcl",
                     Include_file="template_nvidia_tensorrt",
-                    module_whaits=f"NVIDIA TensorRT {nvinfer_ver} (CUDA {cuda_deps_ver})",
+                    module_whatis=f"NVIDIA TensorRT {nvinfer_ver} (CUDA {cuda_deps_ver})",
                     root=tensorrt_dir.resolve().as_posix(),
                     PATH=["$root/bin"],
                     INCLUDE=["$root/include"],
@@ -378,7 +378,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                     output=f'.deps/nvidia/cuda/{cuda_deps_ver}/nvidia/amgx/{version_str}',
                     mode='tcl',
                     Include_file='template_nvidia_amgx',
-                    module_whaits=f'NVIDIA Algebraic Multigrid Solver Library',
+                    module_whatis=f'NVIDIA Algebraic Multigrid Solver Library',
                     prereq='nvidia/cuda',
                     conflicts=['nvidia/amgx'],
                     root=dll.parent.parent.resolve().as_posix(),
@@ -409,7 +409,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 output=f'.deps/nvidia/cuda/{cuda_dep}/nvidia/libmathdx/{ver}',
                 mode='tcl',
                 Include_file='template_nvidia_libmathdx',
-                module_whaits=f'NVIDIA LibMathDx Library',
+                module_whatis=f'NVIDIA LibMathDx Library',
                 prereq=f'nvidia/cuda/{cuda_dep}',
                 conflicts='nvidia/libmathdx',
                 root=root.resolve().as_posix(),

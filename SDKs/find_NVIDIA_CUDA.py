@@ -12,14 +12,10 @@ from typing import Union
 
 from .refs import FindSDK
 from .refs._findCUDA import CUDA_X_TYPEHINT, cuda_components_phonebook
-from .refs._findVS20XX import cpu_host_arch
 
 from utils.cmake_analyzer import cmake_variable_finder
 from utils import message
 from tasks import ModulesObject
-
-_WIN_PLATFORM_ = cpu_host_arch()
-
 
 class FindCUDA(FindSDK):
     _name_desc = "NVIDIA CUDA Toolkit"

@@ -67,7 +67,7 @@ class FindCangjie(FindSDK):
                     Module=f"cangjie/{cjc_ver}",
                     output=f"cangjie/{cjc_ver}",
                     mode="tcl",
-                    module_whaits=f"Cangjie Language {cjc_ver}",
+                    module_whatis=f"Cangjie Language {cjc_ver}",
                     Include_file="template_cangjie",
                     Version=cjc_ver,
                     conflicts=["cangjie"],

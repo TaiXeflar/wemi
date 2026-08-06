@@ -59,7 +59,7 @@ class FindStrawberryPerl(FindSDK):
                     mode="tcl",
                     Include_file="template_strawberry",
                     Version=perl_v,
-                    module_whaits=f"strawberry Perl {perl_v}",
+                    module_whatis=f"strawberry Perl {perl_v}",
                     conflicts=["strawberry"],
                     root=perl.resolve().as_posix(),
                     PATH=[
