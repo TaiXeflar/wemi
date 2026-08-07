@@ -91,35 +91,35 @@ Status will be blank as the test case is pending for CI design.
     | task | information/details | status |
     | :-- | :-- | :-- |
     | pre-commit | pre-commit | [![pre-commit-ci-badge][pre-commit-ci-action]][pre-commit-ci-act]
-    | Python test | uv, CPython 3.10.13     | [![cpython-310-badge][cpython-310-ci]][cpython-310-test]
-    | Python test | uv, CPython 3.11.9      | [![cpython-311-badge][cpython-311-ci]][cpython-311-test]
-    | Python test | uv, CPython 3.12.13     | [![cpython-312-badge][cpython-312-ci]][cpython-312-test]
-    | Python test | uv, CPython 3.13.12     | [![cpython-313-badge][cpython-313-ci]][cpython-313-test]
-    | Python test | uv, CPython 3.14.2      | [![cpython-314-badge][cpython-314-ci]][cpython-314-test]
-    | Python test | uv, CPython 3.15.0a     | [![cpython-315-badge][cpython-315-ci]][cpython-315-test]
+    | Python test | uv, CPython 3.10.13     | [![python-310-badge][python-310-ci]][python-310-test]
+    | Python test | uv, CPython 3.11.9      | [![python-311-badge][python-311-ci]][python-311-test]
+    | Python test | uv, CPython 3.12.13     | [![python-312-badge][python-312-ci]][python-312-test]
+    | Python test | uv, CPython 3.13.12     | [![python-313-badge][python-313-ci]][python-313-test]
+    | Python test | uv, CPython 3.14.2      | [![python-314-badge][python-314-ci]][python-314-test]
+    | Python test | uv, CPython 3.15.0a     | [![python-315-badge][python-315-ci]][python-315-test]
 
   <!-- CI: pre-commit -->
   [pre-commit-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg?branch=master
   [pre-commit-ci-act]:    https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml
 
   <!-- CI: Python version case -->
-  [cpython-310-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/cpython-310-test.yaml/badge.svg?branch=master
-  [cpython-310-test]: https://github.com/TaiXeflar/wemi/actions/workflows/cpython-310-test.yaml
+  [python-310-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/python-310-test.yaml/badge.svg?branch=master
+  [python-310-test]: https://github.com/TaiXeflar/wemi/actions/workflows/python-310-test.yaml
 
-  [cpython-311-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/cpython-311-test.yaml/badge.svg?branch=master
-  [cpython-311-test]: https://github.com/TaiXeflar/wemi/actions/workflows/cpython-311-test.yaml
+  [python-311-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/.yaml/badge.svg?branch=master
+  [python-311-test]: https://github.com/TaiXeflar/wemi/actions/workflows/python-311-test.yaml
 
-  [cpython-312-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/cpython-312-test.yaml/badge.svg?branch=master
-  [cpython-312-test]: https://github.com/TaiXeflar/wemi/actions/workflows/cpython-312-test.yaml
+  [python-312-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/python-312-test.yaml/badge.svg?branch=master
+  [python-312-test]: https://github.com/TaiXeflar/wemi/actions/workflows/python-312-test.yaml
 
-  [cpython-313-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/cpython-313-test.yaml/badge.svg?branch=master
-  [cpython-313-test]: https://github.com/TaiXeflar/wemi/actions/workflows/cpython-313-test.yaml
+  [python-313-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/python-313-test.yaml/badge.svg?branch=master
+  [python-313-test]: https://github.com/TaiXeflar/wemi/actions/workflows/python-313-test.yaml
 
-  [cpython-314-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/cpython-314-test.yaml/badge.svg?branch=master
-  [cpython-314-test]: https://github.com/TaiXeflar/wemi/actions/workflows/cpython-314-test.yaml
+  [python-314-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/python-314-test.yaml/badge.svg?branch=master
+  [python-314-test]: https://github.com/TaiXeflar/wemi/actions/workflows/python-314-test.yaml
 
-  [cpython-315-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/cpython-315-test.yaml/badge.svg?branch=master
-  [cpython-315-test]: https://github.com/TaiXeflar/wemi/actions/workflows/cpython-315-test.yaml
+  [python-315-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/python-315-test.yaml/badge.svg?branch=master
+  [python-315-test]: https://github.com/TaiXeflar/wemi/actions/workflows/python-315-test.yaml
 
 - Compiler smoke test
 
