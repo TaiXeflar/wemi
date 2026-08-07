@@ -56,7 +56,7 @@ class BaseModuleTemplate:
             raise TypeError(
                 dedent(f"""\
                 WEMI raised a TypeError on add_modules_help() method.
-                >>> traceback: In ModulesObject {self.module.MODULENAME}
+                >>> traceback: In ModulesObject {self.module.Module}
                     Expected all argument type is str.
                     Detected invalid element type: {bad_type}
                      > {invalid_items[0]}
@@ -76,7 +76,7 @@ class BaseModuleTemplate:
             raise TypeError(
                 dedent(f"""\
                 WEMI raised a TypeError on add_module_whatis() method.
-                >>> traceback: In ModulesObject {self.module.MODULENAME}
+                >>> traceback: In ModulesObject {self.module.Module}
                     Expected all argument type is str.
                     Detected invalid element type: {bad_type}
             """)
@@ -169,7 +169,7 @@ class BaseModuleTemplate:
                         dedent(f"""\
                         prereq vcompare compare syntax occured ValueError with {cond}.
 
-                            traceback: in modulesobject {self.module.MODULENAME}
+                            traceback: in modulesobject {self.module.Module}
                                 > vcompare: {vcompare_list}
                         """)
                     )
