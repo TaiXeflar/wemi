@@ -1,5 +1,10 @@
 
 
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from typing import Literal, TypeAlias, Union, Optional
 from dataclasses import dataclass
 
@@ -17,10 +22,10 @@ LLVM_DIST_PROFILE: TypeAlias = Literal[
 ]
 
 HETERO_DIST_PROFILE: TypeAlias = Literal[
-    r'amd/hip', 
-    r'ROCm/TheRock', 
-    r'nvidia/cuda', 
-    r'nvidia/nvhpc', 
+    r'amd/hip',
+    r'ROCm/TheRock',
+    r'nvidia/cuda',
+    r'nvidia/nvhpc',
     r'nvidia/nvhpc-byo',
     r'nvidia/pgi',
     r'intel/ocloc',
@@ -99,7 +104,7 @@ CCompiler: TypeAlias = Literal[
     'icl.exe',          # Intel C compiler classic
     'icc.exe',          # Intel C compiler classic
     'icpc.exe',
-    'icx-cl.exe',       # Intel C compiler (IntelLLVM)        
+    'icx-cl.exe',       # Intel C compiler (IntelLLVM)
     'dpcpp.exe',
     'dpcpp-cl.exe',
     'amdclang.exe',
