@@ -73,6 +73,10 @@ Issues and disscutions are open welcomed.
 
 ## CI status (Under maintainence: Refactoring CI Task)
 
+CI Testing are based on `windows-2025` runner.
+
+Status will be blank as the test case is pending for CI design.
+
 - Windows Platform
     | Platform Support Status |
     | :--: |
@@ -83,12 +87,11 @@ Issues and disscutions are open welcomed.
   [badge-windows-amd64]: https://img.shields.io/badge/Windows%20AMD64-Enabled-blue?logo=windows11&logoColor=white&labelColor=555
   [badge-windows-arm64]: https://img.shields.io/badge/Windows%20ARM64-Disabled-black?logo=windows11&logoColor=white&labelColor=555
 
-- CI List/Matrix
-
-  | task | status | information/details |
-  | :-- | :-- | :-- |
-  | pre-commit | [![pre-commit-ci-badge][pre-commit-ci-action]][pre-commit-ci-act] |
-  | Python test | [![cpython-uv-ci-badge][cpython-uv-ci-action]][cpython-uv-ci-link] | uv, CPython 3.10 ~ 3.15
+- pre-commit, Python 3 version matrix 
+    | task | information/details | status | 
+    | :-- | :-- | :-- |
+    | pre-commit | | [![pre-commit-ci-badge][pre-commit-ci-action]][pre-commit-ci-act]
+    | Python test | uv, CPython 3.10 ~ 3.15 | [![cpython-uv-ci-badge][cpython-uv-ci-action]][cpython-uv-ci-link]
 
   <!-- CI: pre-commit -->
   [pre-commit-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg?branch=master
@@ -98,6 +101,31 @@ Issues and disscutions are open welcomed.
   [cpython-uv-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/python-version-matrix-test.yaml/badge.svg?branch=master
   [cpython-uv-ci-link]:   https://github.com/TaiXeflar/wemi/actions/workflows/python-version-matrix-test.yaml
 
+- Compiler smoke test
+
+    | task              | details                       | toolchain               | status  |
+    | :--               | :--                           | :--                     | :--     |
+    | Visual C/C++      | Visual C/C++, MASM, Resource  | VS2026 Enterprise       |  
+    | Intel C++         | Intel C/C++, Visual Fortran   | Intel oneAPI latest     |  
+    | NVIDIA CUDA Host  | CUDA Host                     | CUDA 13.2               |  
+    | Cangjie           | cjc                           | Cangjie 1.1.0           |  
+
+- Build test, Recursive build examination
+      
+    | task              | toolchain                           | status  |
+    | :--               | :--                                 | :--     |
+    | ROCm/TheRock      | VS2026, MSVC v145, Perl 5.42        |
+    | NVIDIA/cutlass    | VS2026, MSVC v145, CUDA 13.4        |
+    | pytorch/pytorch   | VS2026, MSVC v145, CUDA 13.4        |
+    | pytorch/pytorch   | VS2026, MSVC v145, TheRock          |
+    | python/cpython    | VS2026, MSVC v145                   |
+    | HDF4/HDF5         | VS2026, MSVC v145
+    | NetCDF            | VS2026, MSVC v145
+    | pNetCDF           | VS2026, MSVC v145
+    | GDAL              | VS2026, MSVC v145
+    | GMT               | VS2026, MSVC v145
+    | etc.
+
 - Repository Sync Status
 
   There are other hosting platforms sync with GitHub as mirror site by CI action.
@@ -105,7 +133,7 @@ Issues and disscutions are open welcomed.
   GitHub repo is major develop upstream, other mirror site will sync every next day at 04:00 UTC+8.
 
   | Repo Server | type | status | link |
-  | :--         | :--: | :--: | :-- |
+  | :--         | :--  | :--  | :-- |
   | GitHub      | main | upstream | [https://github.com/TaiXeflar/wemi](https://github.com/TaiXeflar/wemi) |
   | GitLab      | mirror | [![gitlab_badge][gitlab_action_badge]][gitlab_action] | [https://gitlab.com/TaiXeflar/wemi](https://gitlab.com/TaiXeflar/wemi) |
   | Gitea       | mirror | [![gitea_badge][gitea_action_badge]][gitea_action] | [https://gitea.com/TaiXeflar/wemi](https://gitea.com/TaiXeflar/wemi) |
@@ -122,12 +150,13 @@ Issues and disscutions are open welcomed.
   [gitcode_action]:       https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitcode.yaml
 
 
-## Requirements
+## Requirements 
  - Python environment, recommends with [Astral UV][] venv.
  - [Everything][]
  - [Everything CLI][]
- - [gsudo][]
- - A installed [Environment Modules][] environment
+ - [gsudo][] (optional)
+
+    gsudo is a optional compoment, if you need elevate privileges.
 
 ## Usage
 
@@ -165,9 +194,9 @@ Issues and disscutions are open welcomed.
 
     WEMI strongly not recommend set non Latin characters, full widith characters, half/full width spaces, dots, laft/right slashes as your user name, especially on these regions:
 
-     - Traditional Chinese (ZH-TW, Big5): Complexed Chinese word character, common used by Taiwan (R.O.C.), Hong Kong, Macao.
-     - Simplfied Chinese (ZH-CN, GBK): Simplfied Chinese word character, common used by Mainland China area.
-     - Japanese (JA, Shift-JIS): Japanese uses Kanji, Hiragana and Katakana.
+     - Traditional Chinese (ZH-TW, Big5): Complexed Chinese word character, common used by R.O.C.(Taiwan), Hong Kong, Macao.
+     - Simplfied Chinese (ZH-CN, GBK): Simplfied Chinese word character, common used by Mainland China.
+     - Japanese (JA, Shift-JIS): Japanese uses Kanji, Hiragana(平仮名) and Katakana(片仮名).
      - Korean (KR).
 
     This is not WEMI cases because most development toolchains are prefer English environment, include full english charcters path. Instead, PC users should keep their names to English based names, dashes and underscores to avoid any cross-platform program have not complete support to it. For example:
@@ -182,12 +211,24 @@ Issues and disscutions are open welcomed.
 
  - Cygwin/MSYS2
 
-    WEMI requires Python Standard Module `win32` which is not available in Cygwin/MSYS2 based posix Python. The solution is:
-      1. Run a Cygwin/MSYS2 bash and [Envmodule/modules][Environment Modules] build process as Linux/macOS does.
+    WEMI requires Python Standard Module `win32` which is not available in Cygwin/MSYS2 based posix Python. And most
+    of wemi supported SDKs, their ecosystem are MSVC based toolchains, with Microsoft or Intel/AMD/NVIDIA and other 3rd
+    party provided environment setup support. 
+    
+     The solution is:
+      1. Run a Cygwin/MSYS2 bash and [Envmodules/modules][Environment Modules] build process as Linux/macOS does.
       2. Run run another `pwsh` process to run `wemi`, set install prefix to Cygwin/MSYS2 dir's modulefiles.
       3. Check installed modulefiles, if they need `dos2unix` to set `CRLF -> LF`.
 
     There's a future CI plan to play this environment.
+
+ - GCC, GCC based LLVM
+
+    GCC compilers with it's releases may be different, with target triple X MSVCRT/UCRT matrix, and also different SDKs will contain their gcc redistribution.
+
+    This may need time to select what kind of GCC compilers and related SDKs to support. But wemi will have future plan to 
+    support them. 
+
 
  - AMD ROCm
 
@@ -201,6 +242,12 @@ Issues and disscutions are open welcomed.
      - No experience on playing MSVC on ARM64/ARM64EC. But I'll try it.
      - Qualcomm's SDK is hard to get with is QPM and licenses problems.
      - GB10 chip has no existed MediaTek optimized compilers/SDKs and NVIDIA CUDA SDKs.
+        
+        \[Update\]: NVIDIA has released CUDA 13.4 developer version release with cross compilation support.
+
+        CUDA SDKs will follow `$env(VSCMD_ARG_TGT_ARCH)` env variable. So I think this is effectness to 
+        NVIDIA CUDA that need refactoring, but NVIDIA CUDA-X is in plan.
+
 
  - CI test coverage limitation on SDKs
 
@@ -222,21 +269,21 @@ Issues and disscutions are open welcomed.
 
     3. Some SDKs are meant to be examined to be built from source will take time:
         - ROCm/TheRock
-        - ROOT-Project/Cling
         - Exaloop/codon
-        - libtorch
-        - Tensorflow
+        - ROOT-Project/Cling
+        - Swift
+        - torch/libtorch
         - XGBoost
-        - netCDF
+        - NetCDF/pNetCDF
         - GDAL
+        - HDF4/HDF5
         - etc.
 
     4. Some SDKs will require Licenses to install:
         - MATLAB
-        - Embarcadero C++ (Borland C++)
-
-
-
+        - Borland C++
+        - Embarcadero C++
+  
     5. Experimential SDKs:
         - MiHoYo/Hoyoverse GunsGirlsZ, GGZ/BH2
         - MiHoYo/Hoyoverse Honkai Impact 3
@@ -246,7 +293,6 @@ Issues and disscutions are open welcomed.
         - MiHoYo/Hoyoverse Nexus Anima
         - MiHoYo/Hoyoverse Varsapura
         - MiHoYo/Hoyoverse PetitPlanet
-        -
 
 ### Docs Language Localization
 Currently main language will be written in English (US). With after updates, there will several languages updates to docunemtation and wemi program.
