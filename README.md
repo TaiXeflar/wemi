@@ -91,12 +91,12 @@ Status will be blank as the test case is pending for CI design.
     | task | information/details | status |
     | :-- | :-- | :-- |
     | pre-commit | pre-commit | [![pre-commit-ci-badge][pre-commit-ci-action]][pre-commit-ci-act]
-    | Python test | uv, CPython 3.10.13     | [![cpython-310-badge][cpython-310-test]][cpython-310-ci-action]
-    | Python test | uv, CPython 3.11.9      | [![cpython-311-badge][cpython-311-test]][cpython-311-ci-action]
-    | Python test | uv, CPython 3.12.13     | [![cpython-312-badge][cpython-312-test]][cpython-312-ci-action]
-    | Python test | uv, CPython 3.13.12     | [![cpython-313-badge][cpython-313-test]][cpython-313-ci-action]
-    | Python test | uv, CPython 3.14.2      | [![cpython-314-badge][cpython-314-test]][cpython-314-ci-action]
-    | Python test | uv, CPython 3.15.0a     | [![cpython-315-badge][cpython-315-test]][cpython-315-ci-action]
+    | Python test | uv, CPython 3.10.13     | [![cpython-310-badge][cpython-310-ci]][cpython-310-test]
+    | Python test | uv, CPython 3.11.9      | [![cpython-311-badge][cpython-311-ci]][cpython-311-test]
+    | Python test | uv, CPython 3.12.13     | [![cpython-312-badge][cpython-312-ci]][cpython-312-test]
+    | Python test | uv, CPython 3.13.12     | [![cpython-313-badge][cpython-313-ci]][cpython-313-test]
+    | Python test | uv, CPython 3.14.2      | [![cpython-314-badge][cpython-314-ci]][cpython-314-test]
+    | Python test | uv, CPython 3.15.0a     | [![cpython-315-badge][cpython-315-ci]][cpython-315-test]
 
   <!-- CI: pre-commit -->
   [pre-commit-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg?branch=master
