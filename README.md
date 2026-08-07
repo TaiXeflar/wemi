@@ -87,8 +87,8 @@ Status will be blank as the test case is pending for CI design.
   [badge-windows-amd64]: https://img.shields.io/badge/Windows%20AMD64-Enabled-blue?logo=windows11&logoColor=white&labelColor=555
   [badge-windows-arm64]: https://img.shields.io/badge/Windows%20ARM64-Disabled-black?logo=windows11&logoColor=white&labelColor=555
 
-- pre-commit, Python 3 version matrix 
-    | task | information/details | status | 
+- pre-commit, Python 3 version matrix
+    | task | information/details | status |
     | :-- | :-- | :-- |
     | pre-commit | | [![pre-commit-ci-badge][pre-commit-ci-action]][pre-commit-ci-act]
     | Python test | uv, CPython 3.10 ~ 3.15 | [![cpython-uv-ci-badge][cpython-uv-ci-action]][cpython-uv-ci-link]
@@ -105,13 +105,13 @@ Status will be blank as the test case is pending for CI design.
 
     | task              | details                       | toolchain               | status  |
     | :--               | :--                           | :--                     | :--     |
-    | Visual C/C++      | Visual C/C++, MASM, Resource  | VS2026 Enterprise       |  
-    | Intel C++         | Intel C/C++, Visual Fortran   | Intel oneAPI latest     |  
-    | NVIDIA CUDA Host  | CUDA Host                     | CUDA 13.2               |  
-    | Cangjie           | cjc                           | Cangjie 1.1.0           |  
+    | Visual C/C++      | Visual C/C++, MASM, Resource  | VS2026 Enterprise       |
+    | Intel C++         | Intel C/C++, Visual Fortran   | Intel oneAPI latest     |
+    | NVIDIA CUDA Host  | CUDA Host                     | CUDA 13.2               |
+    | Cangjie           | cjc                           | Cangjie 1.1.0           |
 
 - Build test, Recursive build examination
-      
+
     | task              | toolchain                           | status  |
     | :--               | :--                                 | :--     |
     | ROCm/TheRock      | VS2026, MSVC v145, Perl 5.42        |
@@ -150,7 +150,7 @@ Status will be blank as the test case is pending for CI design.
   [gitcode_action]:       https://github.com/TaiXeflar/wemi/actions/workflows/sync-to-gitcode.yaml
 
 
-## Requirements 
+## Requirements
  - Python environment, recommends with [Astral UV][] venv.
  - [Everything][]
  - [Everything CLI][]
@@ -213,8 +213,8 @@ Status will be blank as the test case is pending for CI design.
 
     WEMI requires Python Standard Module `win32` which is not available in Cygwin/MSYS2 based posix Python. And most
     of wemi supported SDKs, their ecosystem are MSVC based toolchains, with Microsoft or Intel/AMD/NVIDIA and other 3rd
-    party provided environment setup support. 
-    
+    party provided environment setup support.
+
      The solution is:
       1. Run a Cygwin/MSYS2 bash and [Envmodules/modules][Environment Modules] build process as Linux/macOS does.
       2. Run run another `pwsh` process to run `wemi`, set install prefix to Cygwin/MSYS2 dir's modulefiles.
@@ -226,8 +226,8 @@ Status will be blank as the test case is pending for CI design.
 
     GCC compilers with it's releases may be different, with target triple X MSVCRT/UCRT matrix, and also different SDKs will contain their gcc redistribution.
 
-    This may need time to select what kind of GCC compilers and related SDKs to support. But wemi will have future plan to 
-    support them. 
+    This may need time to select what kind of GCC compilers and related SDKs to support. But wemi will have future plan to
+    support them.
 
 
  - AMD ROCm
@@ -242,10 +242,10 @@ Status will be blank as the test case is pending for CI design.
      - No experience on playing MSVC on ARM64/ARM64EC. But I'll try it.
      - Qualcomm's SDK is hard to get with is QPM and licenses problems.
      - GB10 chip has no existed MediaTek optimized compilers/SDKs and NVIDIA CUDA SDKs.
-        
+
         \[Update\]: NVIDIA has released CUDA 13.4 developer version release with cross compilation support.
 
-        CUDA SDKs will follow `$env(VSCMD_ARG_TGT_ARCH)` env variable. So I think this is effectness to 
+        CUDA SDKs will follow `$env(VSCMD_ARG_TGT_ARCH)` env variable. So I think this is effectness to
         NVIDIA CUDA that need refactoring, but NVIDIA CUDA-X is in plan.
 
 
@@ -283,7 +283,7 @@ Status will be blank as the test case is pending for CI design.
         - MATLAB
         - Borland C++
         - Embarcadero C++
-  
+
     5. Experimential SDKs:
         - MiHoYo/Hoyoverse GunsGirlsZ, GGZ/BH2
         - MiHoYo/Hoyoverse Honkai Impact 3
