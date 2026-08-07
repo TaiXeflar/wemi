@@ -33,7 +33,7 @@ class Installer:
             raise FileNotFoundError("Cannot find build rules from build/cache.json")
 
         cache_data = json.loads(cache_file.read_text(encoding="utf-8"))
-        cache = [ModulesObject(obj) for obj in cache_data]
+        cache = [ModulesObject(**obj) for obj in cache_data]
         cache_n = len(cache)
 
         message('')
