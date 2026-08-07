@@ -6,30 +6,32 @@
 
 # NVIDIA SDK supported list
 
-| NVIDIA Toolkit/SDK | Versions | Status | note |
-| :----: | :----: | :----: | :---- |
-|||||
-| NVIDIA CUDA |
-| CUDA 13       | 13.0 ~ 13.X   | ✅ |
-| CUDA 12       | 12.0 ~ 12.9   | ✅ |
-| CUDA 11       | 11.0 ~ 11.8   | ✅ |
-| CUDA 10       | <= 10.X       | ❌ | WEMI not supported CUDA Major version
-|||||
+| NVIDIA Toolkit/SDK    | Versions      | Status    | note      |
+| :----:                | :----:        | :----:    | :----     |
+|                       |               |           |           |
+| NVIDIA CUDA           |
+| CUDA 13               | >= 13.4       | ✅        | 13.4 includes cross compile library
+| CUDA 13               | 13.0 ~ 13.3   | ✅        |
+| CUDA 12               | 12.0 ~ 12.9   | ✅        |
+| CUDA 11               | 11.0 ~ 11.8   | ✅        |
+| CUDA 10               | <= 10.X       | ❌        | WEMI not supported CUDA Major version
+|                       |               |           |
 | CUDA-X |
-|||||
-| cuDNN         | 8.8 ~ 9.X     | ✅ | CUDA deps version >= 11.0
-| cuDSS         | Any           | ✅ | CUDA deps version >= 11.0
-| cuTENSOR      | Any           | ✅ | CUDA deps version >= 11.0
-| cuSPARSELt    | Any           | ✅ | CUDA deps version >= 11.0
-| cutlass       | Any           | ✅ | No specific CUDA dll deps
-| tensorRT      | Any           | ✅ | CUDA deps version >= 11.0
-| cuTile        |               | ❌ | Not supported CUDA Major version teardown
-| AMGX          | Any           | ✅ | CUDA deps version >= 11.0
-| NVTX          | ?             | ❌ | Pending test
-| cuCollect     | ?             | ❌ | Pending test
-| stdexec       | ?             | ❌ | Pending test
-| cuda-gdb      | ?             | ❌ | Wait for NVIDIA release cuda-gdb binary package (MinGW-w64 target)
-| MatX          | ?             | ❌ | Pending test
+|                       |               |           ||
+| cuDNN                 | 8.8 ~ 9.X     | ✅ | CUDA deps version >= 11.0
+| cuDSS                 | Any           | ✅ | CUDA deps version >= 11.0
+| cuTENSOR              | Any           | ✅ | CUDA deps version >= 11.0
+| cuSPARSELt            | Any           | ✅ | CUDA deps version >= 11.0
+| cutlass               | Any           | ✅ | No specific CUDA dll deps
+| tensorRT              | Any           | ✅ | CUDA deps version >= 11.0
+| cuTile                |               | ❌ | Not supported CUDA Major version teardown
+| AMGX                  | Any           | ✅ | CUDA deps version >= 11.0
+| libMathDX             | Any           | ✅ | CUDA deps version >= 11.0
+| NVTX                  | ?             | ❌ | Pending test
+| cuCollect             | ?             | ❌ | Pending test
+| stdexec               | ?             | ❌ | Pending test
+| cuda-gdb              | ?             | ❌ | Wait for NVIDIA release cuda-gdb binary package (MinGW-w64 target)
+| MatX                  | ?             | ❌ | Pending test
 |||||
 | NVIDIA HPC SDK |
 |||||
@@ -78,6 +80,8 @@ Within CUDA Toolkit Version limitation mentioned above, most of cuDNN is support
 
 ## NVIDIA TensorRT
 
+## NVIDIA libmathDx
+
 ## NVIDIA cutlass
 NVIDIA cutlass is version analyzable and CUDA major version non-analyzable, so NVIDIA/cutlass will be a general unlock options.
 
@@ -89,4 +93,3 @@ When you load any `nvidia/cuda` profile, you can see unlocked `nvidia/cutlass` o
 - NVIDIA cuQuantum (if it is support to Windows)
 - NVIDIA cuPQC (if it is support to Windows)
 - NVIDIA HPC SDK (if is re-starts support to Windows x64/ARM64)
-- NVIDIA CUDA Toolkit (Update patch on if Windows ARM64 release)
