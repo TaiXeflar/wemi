@@ -82,7 +82,7 @@ class FindTheRock(RocXParserMixin, FindSDK):
                 mode="tcl",
                 Include_file="template_amd_rocm_therock",
                 Version=rocm_version,
-                deps=["UCRT"],
+                deps=["ucrt"],
                 conflicts=["ROCm/TheRock"],
                 llvm_conflicts=["llvm", "cangjie"],
                 hetero_conflicts=[
