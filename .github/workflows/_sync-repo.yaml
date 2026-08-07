@@ -1,0 +1,71 @@
+name: Generic Repository Sync
+
+on:
+  workflow_call:
+    inputs:
+      host:
+        description: Mirror host
+        required: true
+        type: string
+
+      repository:
+        description: Target repository path
+        required: true
+        type: string
+
+      username:
+        description: Non-secret username, e.g. oauth2 for GitLab
+        required: false
+        type: string
+        default: ""
+
+    secrets:
+      username:
+        required: false
+
+      token:
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Clone GitHub repository as mirror
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git clone --mirror \
+            "https://github.com/${GITHUB_REPOSITORY}.git" \
+            repository.git
+
+      - name: Push mirror
+        shell: bash
+        working-directory: repository.git
+        env:
+          MIRROR_HOST: ${{ inputs.host }}
+          MIRROR_REPOSITORY: ${{ inputs.repository }}
+          INPUT_USERNAME: ${{ inputs.username }}
+          SECRET_USERNAME: ${{ secrets.username }}
+          MIRROR_TOKEN: ${{ secrets.token }}
+        run: |
+          set -euo pipefail
+
+          if [[ -n "${SECRET_USERNAME}" ]]; then
+            MIRROR_USERNAME="${SECRET_USERNAME}"
+          else
+            MIRROR_USERNAME="${INPUT_USERNAME}"
+          fi
+
+          if [[ -z "${MIRROR_USERNAME}" || -z "${MIRROR_TOKEN}" ]]; then
+            echo "::error::Mirror credentials are not configured"
+            exit 1
+          fi
+
+          git push --mirror \
+            "https://${MIRROR_USERNAME}:${MIRROR_TOKEN}@${MIRROR_HOST}/${MIRROR_REPOSITORY}"

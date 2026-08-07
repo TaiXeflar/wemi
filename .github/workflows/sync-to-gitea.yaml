@@ -17,32 +17,12 @@ concurrency:
 jobs:
   mirror:
     name: Push mirror to Gitea
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+    uses: ./.github/workflows/_sync-repo.yaml
 
-    steps:
-      - name: Clone GitHub repository as mirror
-        shell: bash
-        run: |
-          set -euo pipefail
+    with:
+      host: gitea.com
+      repository: TaiXeflar/wemi.git
 
-          git clone --mirror \
-            "https://github.com/${GITHUB_REPOSITORY}.git" \
-            repository.git
-
-      - name: Push to Gitea
-        shell: bash
-        working-directory: repository.git
-        env:
-          GITEA_USERNAME: ${{ secrets.GITEA_USERNAME }}
-          GITEA_TOKEN: ${{ secrets.GITEA_SYNC_TOKEN }}
-        run: |
-          set -euo pipefail
-
-          if [[ -z "${GITEA_USERNAME}" || -z "${GITEA_TOKEN}" ]]; then
-            echo "::error::GITEA_USERNAME or GITEA_TOKEN is not configured"
-            exit 1
-          fi
-
-          git push --mirror \
-            "https://${GITEA_USERNAME}:${GITEA_TOKEN}@gitea.com/TaiXeflar/wemi.git"
+    secrets:
+      username: ${{ secrets.GITEA_USERNAME }}
+      token: ${{ secrets.GITEA_SYNC_TOKEN }}
