@@ -106,7 +106,7 @@ Status will be blank as the test case is pending for CI design.
   [python-310-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/python-310-test.yaml/badge.svg?branch=master
   [python-310-test]: https://github.com/TaiXeflar/wemi/actions/workflows/python-310-test.yaml
 
-  [python-311-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/.yaml/badge.svg?branch=master
+  [python-311-ci]: https://github.com/TaiXeflar/wemi/actions/workflows/python-311-test.yaml/badge.svg?branch=master
   [python-311-test]: https://github.com/TaiXeflar/wemi/actions/workflows/python-311-test.yaml
 
   [python-312-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/python-312-test.yaml/badge.svg?branch=master
