@@ -96,7 +96,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                     deps=[f"nvidia/cuda/{cuda_deps_ver}"],
                     conflicts=["nvidia/cudnn"],
                     vcompare=[
-                        {"env": "CUDA_VERSION", "compare": "!=", "ver": cuda_deps_ver}
+                        {"env": "CUDA_VERSION", "compare": ">=", "ver": cuda_deps_ver}
                     ],
                     root=cudnn_dir.resolve().as_posix(),
                     PATH=[f"$root/bin/{tmp}/{arch}" if suffixed else "$root/bin"],
@@ -142,7 +142,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 deps=[f"nvidia/cuda/{cuda_deps_ver}"],
                 conflicts=["nvidia/cudss"],
                 vcompare=[
-                    {"env": "CUDA_VERSION", "compare": "!=", "ver": cuda_deps_ver}
+                    {"env": "CUDA_VERSION", "compare": ">=", "ver": cuda_deps_ver}
                 ],
                 root=cudss_dir.resolve().as_posix(),
                 PATH=[f"$root/bin/{cuda_deps_ver}" if suffixed else "$root/bin"],
@@ -193,7 +193,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 deps=[f"nvidia/cuda/{cuda_deps_ver}"],
                 conflicts=["nvidia/cutensor"],
                 vcompare=[
-                    {"env": "CUDA_VERSION", "compare": "!=", "ver": cuda_deps_ver}
+                    {"env": "CUDA_VERSION", "compare": ">=", "ver": cuda_deps_ver}
                 ],
                 root=cutensor_dir.resolve().as_posix(),
                 PATH=[f"$root/bin/{cuda_deps_ver}" if suffixed else "$root/bin"],
@@ -237,7 +237,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 deps=[f"nvidia/cuda/{cuda_deps_ver}"],
                 conflicts=["nvidia/cusparselt"],
                 vcompare=[
-                    {"env": "CUDA_VERSION", "compare": "!=", "ver": cuda_deps_ver}
+                    {"env": "CUDA_VERSION", "compare": ">=", "ver": cuda_deps_ver}
                 ],
                 root=cusparselt_dir.resolve().as_posix(),
                 PATH=[f"$root/bin/{cuda_deps_ver}" if suffixed else "$root/bin"],

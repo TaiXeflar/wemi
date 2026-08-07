@@ -153,17 +153,17 @@ class BaseModuleTemplate:
                 )
 
                 if cond == ">":
-                    res = "== 1"
-                elif cond == ">=":
-                    res = ">= 0"
-                elif cond == "=":
-                    res = "== 0"
-                elif cond == "<=":
                     res = "<= 0"
-                elif cond == "<":
-                    res = "== -1"
-                elif cond in ("!=", "≠"):
+                elif cond == ">=":
+                    res = "< 0"
+                elif cond == "=":
                     res = "!= 0"
+                elif cond == "<=":
+                    res = "> 0"
+                elif cond == "<":
+                    res = ">= 0"
+                elif cond in ("!=", "≠"):
+                    res = "== 0"
                 else:
                     raise ValueError(
                         dedent(f"""\
