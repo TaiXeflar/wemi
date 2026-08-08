@@ -15,7 +15,7 @@ on:
       - "**.py"
       - ".ci/common/**"
       - ".ci/sources/**"
-      - ".ci/compile-smoke-test/**"
+      - ".ci/compile/test-msvc.ps1"
       - ".github/workflows/vs2026-msvc-v145.yaml"
 
   pull_request:
@@ -109,7 +109,7 @@ jobs:
       - name: C language - compile, link and execute
         run: |
           Import-Module `
-            .\.ci\compile-smoke-test\test-msvc.psm1 `
+            .\.ci\compile\test-msvc.psm1 `
             -Force
 
           Test-MsvcC
@@ -117,7 +117,7 @@ jobs:
       - name: C++ language - compile, link and execute
         run: |
           Import-Module `
-            .\.ci\compile-smoke-test\test-msvc.psm1 `
+            .\.ci\compile\test-msvc.psm1 `
             -Force
 
           Test-MsvcCxx
@@ -125,7 +125,7 @@ jobs:
       - name: Static library - compile, archive, link and execute
         run: |
           Import-Module `
-            .\.ci\compile-smoke-test\test-msvc.psm1 `
+            .\.ci\compile\test-msvc.psm1 `
             -Force
 
           Test-MsvcStaticLibrary
@@ -133,7 +133,7 @@ jobs:
       - name: Dynamic library - compile, link and execute
         run: |
           Import-Module `
-            .\.ci\compile-smoke-test\test-msvc.psm1 `
+            .\.ci\compile\test-msvc.psm1 `
             -Force
 
           Test-MsvcDynamicLibrary
@@ -141,7 +141,7 @@ jobs:
       - name: MASM - assemble, link and execute
         run: |
           Import-Module `
-            .\.ci\compile-smoke-test\test-msvc.psm1 `
+            .\.ci\compile\test-msvc.psm1 `
             -Force
 
           Test-MsvcMasm
@@ -149,7 +149,7 @@ jobs:
       - name: Resource Compiler - compile resource
         run: |
           Import-Module `
-            .\.ci\compile-smoke-test\test-msvc.psm1 `
+            .\.ci\compile\test-msvc.psm1 `
             -Force
 
           Test-MsvcResource

@@ -1,4 +1,10 @@
 
+
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 name: Python 3.11 Test
 
 on:
@@ -6,21 +12,23 @@ on:
     branches:
       - master
     paths:
-      - "**.py"
+      - "wemi.py"
+      - "version.json"
       - ".ci/common/**"
       - ".ci/python-test/**"
       - ".github/workflows/_python-version-test.yaml"
-      - ".github/workflows/python-3.11-test.yaml"
+      - ".github/workflows/python-311-test.yaml"
 
   pull_request:
     branches:
       - master
     paths:
-      - "**.py"
+      - "wemi.py"
+      - "version.json"
       - ".ci/common/**"
       - ".ci/python-test/**"
       - ".github/workflows/_python-version-test.yaml"
-      - ".github/workflows/python-3.12-test.yaml"
+      - ".github/workflows/python-311-test.yaml"
 
   workflow_dispatch:
 
