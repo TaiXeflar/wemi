@@ -1,50 +1,68 @@
-
-
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
+$ErrorActionPreference = "Stop"
+Set-StrictMode -Version Latest
 
 $script:SourceRoot = Join-Path $PSScriptRoot "..\sources"
-$script:OutputRoot = Join-Path $env:RUNNER_TEMP "wemi-test-msvc"
+
+if ($env:RUNNER_TEMP) {
+    $script:OutputRoot = Join-Path $env:RUNNER_TEMP "wemi-test-msvc"
+}
+else {
+    $script:OutputRoot = Join-Path ([System.IO.Path]::GetTempPath()) "wemi-test-msvc"
+}
 
 
-function New-MsvcSmokeDirectory {
+function new-msvc-test-directory {
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
         [string]$Name
     )
 
-    $path = Join-Path $script:OutputRoot $Name
+    $Path = Join-Path $script:OutputRoot $Name
 
     Remove-Item `
+        -LiteralPath $Path `
         -Recurse `
         -Force `
-        -ErrorAction SilentlyContinue `
-        $path
+        -ErrorAction SilentlyContinue
 
     New-Item `
         -ItemType Directory `
         -Force `
-        -Path $path |
+        -Path $Path |
         Out-Null
 
-    return $path
+    return $Path
 }
 
 
-function Assert-Command {
+function assert-msvc-command {
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
         [string]$Name
     )
 
-    Get-Command $Name -ErrorAction Stop | Out-Null
+    $Command = Get-Command `
+        $Name `
+        -CommandType Application `
+        -ErrorAction Stop
+
+    Write-Host (
+        "{0,-12} {1}" -f `
+        $Name, `
+        $Command.Source
+    )
 }
 
 
-function Assert-LastExitCode {
+function assert-native-success {
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
         [string]$Message
@@ -56,7 +74,8 @@ function Assert-LastExitCode {
 }
 
 
-function Invoke-SmokeExecutable {
+function invoke-msvc-test-executable {
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
         [string]$Path,
@@ -65,7 +84,11 @@ function Invoke-SmokeExecutable {
         [string]$Message
     )
 
-    if (-not (Test-Path $Path)) {
+    if (-not (
+        Test-Path `
+            -LiteralPath $Path `
+            -PathType Leaf
+    )) {
         throw "Expected executable was not generated: $Path"
     }
 
@@ -77,223 +100,422 @@ function Invoke-SmokeExecutable {
 }
 
 
-function Test-MsvcC {
-    $outputRoot = New-MsvcSmokeDirectory "c"
+function write-utf8-source {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string]$Path,
 
-    $source = Join-Path $script:SourceRoot "hello.c"
-    $executable = Join-Path $outputRoot "hello-c.exe"
+        [Parameter(Mandatory)]
+        [string]$Content
+    )
 
-    Assert-Command "cl.exe"
-
-    & cl.exe `
-        /nologo `
-        /W4 `
-        /WX `
-        /TC `
-        "/Fe:$executable" `
-        $source
-
-    Assert-LastExitCode "MSVC failed to compile/link hello.c."
-
-    Invoke-SmokeExecutable `
-        -Path $executable `
-        -Message "MSVC C executable failed."
-
-    Write-Host "MSVC C compile/link/runtime smoke test passed."
+    [System.IO.File]::WriteAllText(
+        $Path,
+        $Content,
+        [System.Text.UTF8Encoding]::new($false)
+    )
 }
 
 
-function Test-MsvcCxx {
-    $outputRoot = New-MsvcSmokeDirectory "cxx"
+function initialize-msvc-environment {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string]$InstallPrefix,
 
-    $source = Join-Path $script:SourceRoot "hello.cc"
-    $executable = Join-Path $outputRoot "hello-cxx.exe"
+        [Parameter(Mandatory)]
+        [string]$VisualStudioModule,
 
-    Assert-Command "cl.exe"
+        [Parameter(Mandatory)]
+        [string]$MsvcModule,
 
-    & cl.exe `
-        /nologo `
-        /W4 `
-        /WX `
-        /EHsc `
-        /TP `
-        "/Fe:$executable" `
-        $source
+        [Parameter(Mandatory)]
+        [string]$UcrtModule
+    )
 
-    Assert-LastExitCode "MSVC failed to compile/link hello.cc."
+    $ModulesInit = Join-Path `
+        $PSScriptRoot `
+        "..\common\modules-init.psm1"
 
-    Invoke-SmokeExecutable `
-        -Path $executable `
-        -Message "MSVC C++ executable failed."
+    Import-Module `
+        $ModulesInit `
+        -Force
 
-    Write-Host "MSVC C++ compile/link/runtime smoke test passed."
+    init-modules `
+        -InstallPrefix $InstallPrefix
+
+    Write-Host "Loading module: $VisualStudioModule"
+    module load $VisualStudioModule
+
+    Write-Host "Loading module: $MsvcModule"
+    module load $MsvcModule
+
+    Write-Host "Loading module: $UcrtModule"
+    module load $UcrtModule
+
+    Write-Host "Loaded module stack:"
+    module list
+
+    Write-Host "MSVC development commands:"
+
+    foreach ($Command in @(
+        "cl.exe",
+        "link.exe",
+        "lib.exe",
+        "ml64.exe",
+        "rc.exe"
+    )) {
+        assert-msvc-command $Command
+    }
 }
 
 
-function Test-MsvcStaticLibrary {
-    $outputRoot = New-MsvcSmokeDirectory "static-library"
+function test-msvc-cc {
+    [CmdletBinding()]
+    param()
 
-    $librarySource = Join-Path $script:SourceRoot "library.c"
-    $testSource = Join-Path $script:SourceRoot "library-test.c"
+    $OutputRoot = new-msvc-test-directory "c"
 
-    $object = Join-Path $outputRoot "library.obj"
-    $library = Join-Path $outputRoot "wemi-smoke.lib"
-    $executable = Join-Path $outputRoot "static-library-test.exe"
+    $Source = Join-Path $script:SourceRoot "hello.c"
+    $Executable = Join-Path $OutputRoot "hello-c.exe"
 
-    Assert-Command "cl.exe"
-    Assert-Command "lib.exe"
+    Push-Location $OutputRoot
 
-    & cl.exe `
-        /nologo `
-        /W4 `
-        /WX `
-        /TC `
-        /c `
-        "/Fo:$object" `
-        $librarySource
+    try {
+        & cl.exe `
+            /nologo `
+            /W4 `
+            /WX `
+            /TC `
+            "/Fe:$Executable" `
+            $Source
 
-    Assert-LastExitCode "MSVC failed to compile the static-library object."
+        assert-native-success `
+            "MSVC failed to compile/link hello.c."
 
-    & lib.exe `
-        /nologo `
-        "/OUT:$library" `
-        $object
-
-    Assert-LastExitCode "LIB failed to create the static library."
-
-    if (-not (Test-Path $library)) {
-        throw "Static library was not generated: $library"
+        invoke-msvc-test-executable `
+            -Path $Executable `
+            -Message "The MSVC C test executable failed."
+    }
+    finally {
+        Pop-Location
     }
 
-    & cl.exe `
-        /nologo `
-        /W4 `
-        /WX `
-        /TC `
-        "/I$script:SourceRoot" `
-        $testSource `
-        $library `
-        "/Fe:$executable"
-
-    Assert-LastExitCode "MSVC failed to link against the static library."
-
-    Invoke-SmokeExecutable `
-        -Path $executable `
-        -Message "Static-library consumer failed."
-
-    Write-Host "MSVC static library smoke test passed."
+    Write-Host "MSVC C compile/link/runtime test passed."
 }
 
 
-function Test-MsvcDynamicLibrary {
-    $outputRoot = New-MsvcSmokeDirectory "dynamic-library"
+function test-msvc-cxx {
+    [CmdletBinding()]
+    param()
 
-    $librarySource = Join-Path $script:SourceRoot "library.c"
-    $testSource = Join-Path $script:SourceRoot "library-test.c"
+    $OutputRoot = new-msvc-test-directory "cxx"
 
-    $dll = Join-Path $outputRoot "wemi-smoke.dll"
-    $importLibrary = Join-Path $outputRoot "wemi-smoke.lib"
-    $executable = Join-Path $outputRoot "dynamic-library-test.exe"
+    $Source = Join-Path $script:SourceRoot "hello.cc"
+    $Executable = Join-Path $OutputRoot "hello-cxx.exe"
 
-    Assert-Command "cl.exe"
+    Push-Location $OutputRoot
 
-    & cl.exe `
-        /nologo `
-        /W4 `
-        /WX `
-        /TC `
-        /LD `
-        /DWEMI_BUILD_DLL `
-        $librarySource `
-        "/Fe:$dll" `
-        /link `
-        "/IMPLIB:$importLibrary"
+    try {
+        & cl.exe `
+            /nologo `
+            /W4 `
+            /WX `
+            /EHsc `
+            /TP `
+            "/Fe:$Executable" `
+            $Source
 
-    Assert-LastExitCode "MSVC failed to build the DLL."
+        assert-native-success `
+            "MSVC failed to compile/link hello.cc."
 
-    if (-not (Test-Path $dll)) {
-        throw "DLL was not generated: $dll"
+        invoke-msvc-test-executable `
+            -Path $Executable `
+            -Message "The MSVC C++ test executable failed."
+    }
+    finally {
+        Pop-Location
     }
 
-    if (-not (Test-Path $importLibrary)) {
-        throw "DLL import library was not generated: $importLibrary"
-    }
-
-    & cl.exe `
-        /nologo `
-        /W4 `
-        /WX `
-        /TC `
-        /DWEMI_USE_DLL `
-        "/I$script:SourceRoot" `
-        $testSource `
-        $importLibrary `
-        "/Fe:$executable"
-
-    Assert-LastExitCode "MSVC failed to link against the DLL import library."
-
-    Invoke-SmokeExecutable `
-        -Path $executable `
-        -Message "DLL consumer failed."
-
-    Write-Host "MSVC dynamic library smoke test passed."
+    Write-Host "MSVC C++ compile/link/runtime test passed."
 }
 
 
-function Test-MsvcMasm {
-    $outputRoot = New-MsvcSmokeDirectory "masm"
+function test-msvc-lib {
+    [CmdletBinding()]
+    param()
 
-    $source = Join-Path $script:SourceRoot "hello.asm"
-    $executable = Join-Path $outputRoot "hello-asm.exe"
+    $OutputRoot = new-msvc-test-directory "static-lib"
 
-    Assert-Command "ml64.exe"
+    $LibrarySource = Join-Path $OutputRoot "wemi-static.c"
+    $ConsumerSource = Join-Path $OutputRoot "wemi-static-consumer.c"
 
-    & ml64.exe `
-        /nologo `
-        "/Fe$executable" `
-        $source `
-        /link `
-        /subsystem:console `
-        /entry:main `
-        kernel32.lib
+    $Object = Join-Path $OutputRoot "wemi-static.obj"
+    $Library = Join-Path $OutputRoot "wemi-static.lib"
+    $Executable = Join-Path $OutputRoot "wemi-static-test.exe"
 
-    Assert-LastExitCode "ML64/MASM assembly or linking failed."
+    write-utf8-source `
+        -Path $LibrarySource `
+        -Content @'
+int wemi_add(int a, int b)
+{
+    return a + b;
+}
+'@
 
-    Invoke-SmokeExecutable `
-        -Path $executable `
-        -Message "MASM executable failed."
+    write-utf8-source `
+        -Path $ConsumerSource `
+        -Content @'
+#include <stdio.h>
 
-    Write-Host "ML64/MASM assemble/link/runtime smoke test passed."
+int wemi_add(int a, int b);
+
+int main(void)
+{
+    int result = wemi_add(20, 22);
+
+    if (result != 42) {
+        fprintf(stderr, "Unexpected static-library result: %d\n", result);
+        return 1;
+    }
+
+    puts("MSVC static library consumer passed.");
+    return 0;
+}
+'@
+
+    Push-Location $OutputRoot
+
+    try {
+        & cl.exe `
+            /nologo `
+            /W4 `
+            /WX `
+            /TC `
+            /c `
+            "/Fo:$Object" `
+            $LibrarySource
+
+        assert-native-success `
+            "MSVC failed to compile the static-library object."
+
+        & lib.exe `
+            /nologo `
+            "/OUT:$Library" `
+            $Object
+
+        assert-native-success `
+            "LIB failed to create the static library."
+
+        if (-not (
+            Test-Path `
+                -LiteralPath $Library `
+                -PathType Leaf
+        )) {
+            throw "Static library was not generated: $Library"
+        }
+
+        & cl.exe `
+            /nologo `
+            /W4 `
+            /WX `
+            /TC `
+            $ConsumerSource `
+            $Library `
+            "/Fe:$Executable"
+
+        assert-native-success `
+            "MSVC failed to link the static-library consumer."
+
+        invoke-msvc-test-executable `
+            -Path $Executable `
+            -Message "The static-library consumer failed."
+    }
+    finally {
+        Pop-Location
+    }
+
+    Write-Host "MSVC static library build/link/runtime test passed."
 }
 
 
-function Test-MsvcResource {
-    $outputRoot = New-MsvcSmokeDirectory "resource"
+function test-msvc-dll {
+    [CmdletBinding()]
+    param()
 
-    $source = Join-Path $script:SourceRoot "hello.rc"
-    $resource = Join-Path $outputRoot "hello.res"
+    $OutputRoot = new-msvc-test-directory "dll"
 
-    Assert-Command "rc.exe"
+    $LibrarySource = Join-Path $OutputRoot "wemi-dll.c"
+    $ConsumerSource = Join-Path $OutputRoot "wemi-dll-consumer.c"
 
-    & rc.exe `
-        /nologo `
-        "/fo$resource" `
-        $source
+    $Dll = Join-Path $OutputRoot "wemi-smoke.dll"
+    $ImportLibrary = Join-Path $OutputRoot "wemi-smoke.lib"
+    $Executable = Join-Path $OutputRoot "wemi-dll-test.exe"
 
-    Assert-LastExitCode "RC failed to compile hello.rc."
+    write-utf8-source `
+        -Path $LibrarySource `
+        -Content @'
+__declspec(dllexport)
+int wemi_add(int a, int b)
+{
+    return a + b;
+}
+'@
 
-    if (-not (Test-Path $resource)) {
-        throw "RC completed without producing hello.res."
+    write-utf8-source `
+        -Path $ConsumerSource `
+        -Content @'
+#include <stdio.h>
+
+__declspec(dllimport)
+int wemi_add(int a, int b);
+
+int main(void)
+{
+    int result = wemi_add(20, 22);
+
+    if (result != 42) {
+        fprintf(stderr, "Unexpected DLL result: %d\n", result);
+        return 1;
     }
 
-    Write-Host "Windows Resource Compiler smoke test passed."
+    puts("MSVC DLL consumer passed.");
+    return 0;
+}
+'@
+
+    Push-Location $OutputRoot
+
+    try {
+        & cl.exe `
+            /nologo `
+            /W4 `
+            /WX `
+            /TC `
+            /LD `
+            $LibrarySource `
+            "/Fe:$Dll" `
+            /link `
+            "/IMPLIB:$ImportLibrary"
+
+        assert-native-success `
+            "MSVC failed to build the DLL."
+
+        foreach ($Artifact in @(
+            $Dll,
+            $ImportLibrary
+        )) {
+            if (-not (
+                Test-Path `
+                    -LiteralPath $Artifact `
+                    -PathType Leaf
+            )) {
+                throw "Expected DLL artifact was not generated: $Artifact"
+            }
+        }
+
+        & cl.exe `
+            /nologo `
+            /W4 `
+            /WX `
+            /TC `
+            $ConsumerSource `
+            $ImportLibrary `
+            "/Fe:$Executable"
+
+        assert-native-success `
+            "MSVC failed to link the DLL consumer."
+
+        invoke-msvc-test-executable `
+            -Path $Executable `
+            -Message "The DLL consumer failed."
+    }
+    finally {
+        Pop-Location
+    }
+
+    Write-Host "MSVC DLL build/link/runtime test passed."
+}
+
+
+function test-ml64 {
+    [CmdletBinding()]
+    param()
+
+    $OutputRoot = new-msvc-test-directory "masm"
+
+    $Source = Join-Path $script:SourceRoot "hello.asm"
+    $Executable = Join-Path $OutputRoot "hello-asm.exe"
+
+    Push-Location $OutputRoot
+
+    try {
+        & ml64.exe `
+            /nologo `
+            "/Fe$Executable" `
+            $Source `
+            /link `
+            /subsystem:console `
+            /entry:main `
+            kernel32.lib
+
+        assert-native-success `
+            "ML64/MASM assembly or linking failed."
+
+        invoke-msvc-test-executable `
+            -Path $Executable `
+            -Message "The MASM test executable failed."
+    }
+    finally {
+        Pop-Location
+    }
+
+    Write-Host "ML64/MASM assemble/link/runtime test passed."
+}
+
+
+function test-rc {
+    [CmdletBinding()]
+    param()
+
+    $OutputRoot = new-msvc-test-directory "resource"
+
+    $Source = Join-Path $script:SourceRoot "hello.rc"
+    $Resource = Join-Path $OutputRoot "hello.res"
+
+    Push-Location $OutputRoot
+
+    try {
+        & rc.exe `
+            /nologo `
+            "/fo$Resource" `
+            $Source
+
+        assert-native-success `
+            "RC failed to compile hello.rc."
+
+        if (-not (
+            Test-Path `
+                -LiteralPath $Resource `
+                -PathType Leaf
+        )) {
+            throw "RC completed without producing hello.res."
+        }
+    }
+    finally {
+        Pop-Location
+    }
+
+    Write-Host "Windows Resource Compiler test passed."
 }
 
 
 Export-ModuleMember -Function `
-    Test-MsvcC, `
-    Test-MsvcCxx, `
-    Test-MsvcStaticLibrary, `
-    Test-MsvcDynamicLibrary, `
-    Test-MsvcMasm, `
-    Test-MsvcResource
+    initialize-msvc-environment, `
+    test-msvc-cc, `
+    test-msvc-cxx, `
+    test-msvc-lib, `
+    test-msvc-dll, `
+    test-ml64, `
+    test-rc
