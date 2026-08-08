@@ -142,9 +142,8 @@ jobs:
           & $Python `
             (Join-Path $RepositoryRoot "wemi.py") `
             configure `
-            --modules-only `
             --aio `
-            --sdk VS20XX UCRT `
+            --sdk='VS20XX;UCRT' `
             --prefix $InstallPrefix
 
           if ($LASTEXITCODE -ne 0) {
