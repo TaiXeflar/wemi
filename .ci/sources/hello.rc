@@ -6,7 +6,7 @@
     https://opensource.org/licenses/MIT
 */
 
-#pragma once
+#include <windows.h>
 
 #define IDI_WEMI 101
 #define IDS_WEMI_MESSAGE 201
