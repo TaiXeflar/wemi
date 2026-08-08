@@ -1,3 +1,4 @@
+
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026-${year} WEMI Contributors
 # This software is released under the MIT License.
@@ -32,13 +33,10 @@ CompatibilityMode: TypeAlias = Literal[
     "FUZZY",
 ]
 
-# VersionNum intentionally models vendor/toolchain numeric versions rather
-# than SemVer or PEP 440 versions.
-#
-# The pattern searches for the first numeric version in a string to preserve
-# compatibility with existing WEMI callers such as:
-#   "CUDA Version 13.0"
-#   "MSVC 14.51.36231_v145"
+# VersionNum models vendor/toolchain numeric versions rather than SemVer or
+# PEP 440 versions. Search the first numeric version token from arbitrary text:
+#   "CUDA Version 13.0"       -> "13.0"
+#   "MSVC 14.51.36231_v145"  -> "14.51.36231_v145"
 _VERSION_SEARCH_PATTERN = re.compile(
     r"(?P<numeric>\d+(?:\.\d+)*)(?P<suffix>[^\s]*)"
 )
@@ -47,37 +45,82 @@ _VERSION_SEARCH_PATTERN = re.compile(
 @total_ordering
 @dataclass(frozen=True, slots=True, init=False)
 class VersionNum:
-    """Immutable numeric vendor/toolchain version.
+    """Immutable vendor/toolchain numeric version.
 
-    ``VersionNum`` preserves the original input text while extracting an
-    arbitrary number of numeric components for comparisons.
+    The source text is retained for compatibility/debugging, while ``str()``
+    returns only the version token parsed from that source.
 
-    Comparison ignores suffix text and treats trailing zero components as
-    insignificant. Therefore ``1.2``, ``1.2.0`` and ``1.2.0.0`` compare equal.
+    Comparison uses numeric components only, ignores suffix text, and treats
+    trailing zeros as insignificant. Therefore ``1.2``, ``1.2.0`` and
+    ``1.2.0.0`` compare equal.
 
     This is not a SemVer or PEP 440 parser.
     """
 
-    original: str
+    source: str
+    value: str
     parts: tuple[int, ...]
     suffix: str
 
-    def __init__(
-        self,
-        version_input: VersionNum | str | Sequence[int | str | None],
-        /,
-    ) -> None:
+    def __init__(self, version_input: VersionInput, /) -> None:
         if isinstance(version_input, VersionNum):
-            original = version_input.original
+            source = version_input.source
+            value = version_input.value
             parts = version_input.parts
             suffix = version_input.suffix
+
         elif isinstance(version_input, str):
-            original, parts, suffix = self._parse_string(version_input)
+            source = version_input.strip()
+            if not source:
+                raise ValueError("Version string cannot be empty.")
+
+            match = _VERSION_SEARCH_PATTERN.search(source)
+            if match is None:
+                raise ValueError(
+                    f"No numeric version could be found in {version_input!r}."
+                )
+
+            value = match.group(0)
+            parts = tuple(
+                int(component)
+                for component in match.group("numeric").split(".")
+            )
+            suffix = match.group("suffix").strip("._-+ ")
+
         elif isinstance(version_input, Sequence) and not isinstance(
             version_input,
             (str, bytes, bytearray),
         ):
-            original, parts, suffix = self._parse_sequence(version_input)
+            if not version_input:
+                raise ValueError("Version sequence cannot be empty.")
+
+            parsed: list[int] = []
+            for component in version_input:
+                if component is None:
+                    parsed.append(0)
+                    continue
+
+                try:
+                    number = int(component)
+                except (TypeError, ValueError) as error:
+                    raise ValueError(
+                        "Version sequence must contain only integer-compatible "
+                        f"components; received {component!r}."
+                    ) from error
+
+                if number < 0:
+                    raise ValueError(
+                        "Version components cannot be negative; "
+                        f"received {number}."
+                    )
+
+                parsed.append(number)
+
+            parts = tuple(parsed)
+            value = ".".join(map(str, parts))
+            source = value
+            suffix = ""
+
         else:
             raise TypeError(
                 "VersionNum expects a version string, a sequence of numeric "
@@ -85,72 +128,13 @@ class VersionNum:
                 f"{type(version_input).__name__}."
             )
 
-        object.__setattr__(self, "original", original)
+        object.__setattr__(self, "source", source)
+        object.__setattr__(self, "value", value)
         object.__setattr__(self, "parts", parts)
         object.__setattr__(self, "suffix", suffix)
 
-    @staticmethod
-    def _parse_string(
-        value: str,
-    ) -> tuple[str, tuple[int, ...], str]:
-        original = value.strip()
-
-        if not original:
-            raise ValueError("Version string cannot be empty.")
-
-        match = _VERSION_SEARCH_PATTERN.search(original)
-        if match is None:
-            raise ValueError(
-                f"No numeric version could be found in {value!r}."
-            )
-
-        parts = tuple(
-            int(component)
-            for component in match.group("numeric").split(".")
-        )
-        suffix = match.group("suffix").strip("._-+ ")
-
-        return original, parts, suffix
-
-    @staticmethod
-    def _parse_sequence(
-        value: Sequence[int | str | None],
-    ) -> tuple[str, tuple[int, ...], str]:
-        if not value:
-            raise ValueError("Version sequence cannot be empty.")
-
-        parts: list[int] = []
-
-        for component in value:
-            if component is None:
-                parts.append(0)
-                continue
-
-            try:
-                integer = int(component)
-            except (TypeError, ValueError) as error:
-                raise ValueError(
-                    "Version sequence must contain only integer-compatible "
-                    f"components; received {component!r}."
-                ) from error
-
-            if integer < 0:
-                raise ValueError(
-                    "Version components cannot be negative; "
-                    f"received {integer}."
-                )
-
-            parts.append(integer)
-
-        original = ".".join(str(component) for component in parts)
-        return original, tuple(parts), ""
-
     @classmethod
-    def try_parse(
-        cls,
-        value: Any,
-        /,
-    ) -> VersionNum | None:
+    def try_parse(cls, value: Any, /) -> VersionNum | None:
         """Return a parsed version or ``None`` for unsupported/invalid input."""
 
         try:
@@ -159,33 +143,29 @@ class VersionNum:
             return None
 
     @classmethod
-    def search(
-        cls,
-        text: str,
-        /,
-    ) -> VersionNum | None:
+    def search(cls, text: str, /) -> VersionNum | None:
         """Search arbitrary text for its first numeric version."""
 
         return cls.try_parse(text)
 
     @property
     def comparison_key(self) -> tuple[int, ...]:
-        """Numeric comparison key with insignificant trailing zeros removed."""
+        """Numeric key with insignificant trailing zeros removed."""
 
-        parts = list(self.parts)
-        while len(parts) > 1 and parts[-1] == 0:
-            parts.pop()
-        return tuple(parts)
+        end = len(self.parts)
+        while end > 1 and self.parts[end - 1] == 0:
+            end -= 1
+        return self.parts[:end]
 
     @property
     def normalized(self) -> str:
-        """Return all parsed numeric components joined by dots."""
+        """Return only numeric components joined by dots."""
 
-        return ".".join(str(component) for component in self.parts)
+        return ".".join(map(str, self.parts))
 
     @property
     def major(self) -> int:
-        return self.parts[0] if self.parts else 0
+        return self.parts[0]
 
     @property
     def minor(self) -> int:
@@ -206,26 +186,24 @@ class VersionNum:
         return self.parts
 
     @property
+    def original(self) -> str:
+        """Compatibility alias for the original source text."""
+
+        return self.source
+
+    @property
     def fullname(self) -> str:
         """Compatibility alias for the historical API."""
 
-        return self.original
+        return self.source
 
     @property
     def valid(self) -> bool:
-        """Compatibility property.
-
-        Invalid versions are no longer represented by a VersionNum instance;
-        construction raises ``TypeError`` or ``ValueError`` instead.
-        """
+        """Compatibility property; constructed VersionNum objects are valid."""
 
         return True
 
-    def starts_with(
-        self,
-        other: VersionNum | str | Sequence[int | str | None],
-        /,
-    ) -> bool:
+    def starts_with(self, other: VersionInput, /) -> bool:
         """Return whether this numeric version starts with another version."""
 
         prefix = VersionNum(other).parts
@@ -235,17 +213,7 @@ class VersionNum:
     def _coerce_other(other: object) -> VersionNum | None:
         if isinstance(other, VersionNum):
             return other
-
-        if isinstance(other, str):
-            return VersionNum.try_parse(other)
-
-        if isinstance(other, Sequence) and not isinstance(
-            other,
-            (str, bytes, bytearray),
-        ):
-            return VersionNum.try_parse(other)
-
-        return None
+        return VersionNum.try_parse(other)
 
     def __eq__(self, other: object) -> bool:
         converted = self._coerce_other(other)
@@ -260,15 +228,13 @@ class VersionNum:
         return self.comparison_key < converted.comparison_key
 
     def __hash__(self) -> int:
-        # Objects that compare equal must have the same hash.
         return hash(self.comparison_key)
 
     def __str__(self) -> str:
-        # Preserve vendor suffixes and the original display spelling.
-        return self.original
+        return self.value
 
     def __repr__(self) -> str:
-        return f"{type(self).__name__}({self.original!r})"
+        return f"{type(self).__name__}({self.value!r})"
 
     def __format__(self, format_spec: str) -> str:
         return format(str(self), format_spec)
@@ -296,29 +262,21 @@ def VERSION(
 ) -> bool:
     """Compare two versions and optionally reject blacklisted versions."""
 
-    if obj is None or compare is None:
-        return False
-
     operation = _VERSION_OPERATORS.get(op)
     if operation is None:
         raise ValueError(f"Unsupported version operator: {op!r}")
 
-    try:
-        left = VersionNum(obj)
-        right = VersionNum(compare)
-    except (TypeError, ValueError):
+    left = VersionNum.try_parse(obj)
+    right = VersionNum.try_parse(compare)
+    if left is None or right is None:
         return False
 
     result = operation(left, right)
-
-    if result and blacklist is not None:
-        return VERSION_BLACKLIST(
-            left,
-            blacklist,
-            fuzzy=fuzzy,
-        )
-
-    return result
+    return (
+        VERSION_BLACKLIST(left, blacklist, fuzzy=fuzzy)
+        if result and blacklist is not None
+        else result
+    )
 
 
 def VERSION_IN_RANGE(
@@ -334,23 +292,17 @@ def VERSION_IN_RANGE(
 ) -> bool:
     """Return whether ``minimum op1 version op2 maximum`` is true."""
 
-    if version is None:
+    if not (
+        VERSION(minimum, op1, version)
+        and VERSION(version, op2, maximum)
+    ):
         return False
 
-    if not VERSION(minimum, op1, version):
-        return False
-
-    if not VERSION(version, op2, maximum):
-        return False
-
-    if blacklist is not None:
-        return VERSION_BLACKLIST(
-            version,
-            blacklist,
-            fuzzy=fuzzy,
-        )
-
-    return True
+    return (
+        VERSION_BLACKLIST(version, blacklist, fuzzy=fuzzy)
+        if blacklist is not None
+        else True
+    )
 
 
 def VERSION_EXCLUDE_RANGE(
@@ -366,25 +318,33 @@ def VERSION_EXCLUDE_RANGE(
 ) -> bool:
     """Return whether a version lies outside an excluded range."""
 
-    if version is None:
-        return False
-
-    in_safe_zone = (
+    if not (
         VERSION(version, op1, minimum)
         or VERSION(version, op2, maximum)
-    )
-
-    if not in_safe_zone:
+    ):
         return False
 
-    if blacklist is not None:
-        return VERSION_BLACKLIST(
-            version,
-            blacklist,
-            fuzzy=fuzzy,
-        )
+    return (
+        VERSION_BLACKLIST(version, blacklist, fuzzy=fuzzy)
+        if blacklist is not None
+        else True
+    )
 
-    return True
+
+def _version_matches(
+    target: VersionNum,
+    item: VersionNum,
+    mode: CompatibilityMode,
+) -> bool:
+    if mode == "STRICT":
+        return target == item
+    if mode == "MINOR":
+        return (target.major, target.minor) == (item.major, item.minor)
+    if mode == "MAJOR":
+        return target.major == item.major
+    if mode == "FUZZY":
+        return target.starts_with(item)
+    raise ValueError(f"Unsupported compatibility mode: {mode!r}")
 
 
 def VERSION_WHITELIST(
@@ -394,16 +354,7 @@ def VERSION_WHITELIST(
     *,
     compatibility: CompatibilityMode = "STRICT",
 ) -> bool:
-    """Return whether a version matches the requested compatibility policy.
-
-    ``STRICT`` compares the full numeric version.
-    ``MINOR`` compares major and minor components.
-    ``MAJOR`` compares only the major component.
-    ``FUZZY`` performs a numeric prefix comparison.
-    """
-
-    if version is None:
-        return False
+    """Return whether a version matches the requested compatibility policy."""
 
     target = VersionNum.try_parse(version)
     if target is None:
@@ -415,30 +366,11 @@ def VERSION_WHITELIST(
             f"Unsupported compatibility mode: {compatibility!r}"
         )
 
-    for raw_item in find_list:
-        item = VersionNum.try_parse(raw_item)
-        if item is None:
-            continue
-
-        if mode == "STRICT" and target == item:
-            return True
-
-        if mode == "MINOR" and (
-            target.major,
-            target.minor,
-        ) == (
-            item.major,
-            item.minor,
-        ):
-            return True
-
-        if mode == "MAJOR" and target.major == item.major:
-            return True
-
-        if mode == "FUZZY" and target.starts_with(item):
-            return True
-
-    return False
+    return any(
+        _version_matches(target, item, mode)
+        for raw_item in find_list
+        if (item := VersionNum.try_parse(raw_item)) is not None
+    )
 
 
 def VERSION_BLACKLIST(
@@ -448,30 +380,21 @@ def VERSION_BLACKLIST(
     *,
     fuzzy: bool = False,
 ) -> bool:
-    """Return ``False`` when a version appears in the prohibited list.
-
-    With ``fuzzy=True``, prohibited entries are treated as numeric prefixes.
-    """
-
-    if version is None:
-        return False
+    """Return ``False`` when a version appears in the prohibited list."""
 
     target = VersionNum.try_parse(version)
     if target is None:
         return False
 
-    for raw_item in prohibited:
-        item = VersionNum.try_parse(raw_item)
-        if item is None:
-            continue
-
-        if fuzzy:
-            if target.starts_with(item):
-                return False
-        elif target == item:
-            return False
-
-    return True
+    return not any(
+        (
+            target.starts_with(item)
+            if fuzzy
+            else target == item
+        )
+        for raw_item in prohibited
+        if (item := VersionNum.try_parse(raw_item)) is not None
+    )
 
 
 @overload

@@ -8,11 +8,13 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from dataclasses import asdict, dataclass, field, replace
+from dataclasses import dataclass, field, fields, replace
 from pathlib import Path
 from typing import Any, ClassVar, Literal, TypeAlias
 
 from utils.compare_functions import VersionNum
+
+from ._modulesobj import *  # noqa
 
 
 ModuleType: TypeAlias = Literal["tcl", "cmake", "file"]
@@ -73,18 +75,18 @@ class ModulesObject:
     PKG_CONFIG: str | None = None
     PKG_CONFIG_SYSROOT_DIR: str | None = None
 
-    CC: str | None = None
-    CXX: str | None = None
-    FC: str | None = None
-    RC: str | None = None
-    OBJC: str | None = None
-    OBJCXX: str | None = None
-    CUDACXX: str | None = None
-    CUDAHOSTCXX: str | None = None
-    HIPCXX: str | None = None
-    HIPHOSTCXX: str | None = None
+    CC: CCompiler | str | None = None
+    CXX: CXXCompiler | str | None = None
+    FC: FCompiler | str | None = None
+    RC: RCompiler | str | None = None
+    OBJC: CCompiler | str | None = None
+    OBJCXX: CXXCompiler | str | None = None
+    CUDACXX: CUDACXXCompiler | str | None = None
+    CUDAHOSTCXX: CXXCompiler | str | None = None
+    HIPCXX: HIPCXXCompiler |str | None = None
+    HIPHOSTCXX: CXXCompiler | str | None = None
     ISPC: str | None = None
-    SWIFTC: str | None = None
+    SWIFTC: SWIFTCompiler | str | None = None
     ASM: str | None = None
     CMAKE_MT: str | None = None
 
@@ -227,7 +229,13 @@ class ModulesObject:
         legacy: bool = True,
         exclude_none: bool = False,
     ) -> dict[str, Any]:
-        result = asdict(self)
+        # Do not use dataclasses.asdict() here. It recursively converts
+        # VersionNum (also a dataclass) into a plain dict before the JSON
+        # encoder gets a chance to serialize it as a version string.
+        result = {
+            field_info.name: deepcopy(getattr(self, field_info.name))
+            for field_info in fields(self)
+        }
 
         if not legacy:
             for canonical, historical in self._CANONICAL_TO_LEGACY.items():
@@ -249,7 +257,7 @@ def modules_object_json_encoder(
     if isinstance(obj, ModulesObject):
         return obj.export(legacy=True)
     if isinstance(obj, VersionNum):
-        return obj.original
+        return str(obj)
     if isinstance(obj, Path):
         return obj.resolve().as_posix()
     raise TypeError(
