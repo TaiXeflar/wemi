@@ -183,9 +183,9 @@ jobs:
           init-modules `
             -InstallPrefix $env:WEMI_MODULES_PREFIX
 
-          module load $env:VS_MODULE
-          module load $env:MSVC_MODULE
-          module load $env:UCRT_MODULE
+          modules load $env:VS_MODULE
+          modules load $env:MSVC_MODULE
+          modules load $env:UCRT_MODULE
 
           module list
 
@@ -215,9 +215,9 @@ jobs:
           init-modules `
             -InstallPrefix $env:WEMI_MODULES_PREFIX
 
-          module load $env:VS_MODULE
-          module load $env:MSVC_MODULE
-          module load $env:UCRT_MODULE
+          modules load $env:VS_MODULE
+          modules load $env:MSVC_MODULE
+          modules load $env:UCRT_MODULE
 
           test-msvc-cc
 
@@ -234,9 +234,9 @@ jobs:
           init-modules `
             -InstallPrefix $env:WEMI_MODULES_PREFIX
 
-          module load $env:VS_MODULE
-          module load $env:MSVC_MODULE
-          module load $env:UCRT_MODULE
+          modules load $env:VS_MODULE
+          modules load $env:MSVC_MODULE
+          modules load $env:UCRT_MODULE
 
           test-msvc-cxx
 
@@ -253,9 +253,9 @@ jobs:
           init-modules `
             -InstallPrefix $env:WEMI_MODULES_PREFIX
 
-          module load $env:VS_MODULE
-          module load $env:MSVC_MODULE
-          module load $env:UCRT_MODULE
+          modules load $env:VS_MODULE
+          modules load $env:MSVC_MODULE
+          modules load $env:UCRT_MODULE
 
           test-ml64
 
@@ -272,8 +272,8 @@ jobs:
           init-modules `
             -InstallPrefix $env:WEMI_MODULES_PREFIX
 
-          module load $env:VS_MODULE
-          module load $env:MSVC_MODULE
-          module load $env:UCRT_MODULE
+          modules load $env:VS_MODULE
+          modules load $env:MSVC_MODULE
+          modules load $env:UCRT_MODULE
 
           test-rc
