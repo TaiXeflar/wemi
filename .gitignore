@@ -14,3 +14,8 @@ docs/*.pptx
 
 # self use hack_scripts
 hack_scripts
+
+
+# Possiable old file
+**/*old*
+**/*bak*
