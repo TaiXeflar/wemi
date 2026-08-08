@@ -146,16 +146,16 @@ function initialize-msvc-environment {
         -InstallPrefix $InstallPrefix
 
     Write-Host "Loading module: $VisualStudioModule"
-    modules load $VisualStudioModule
+    module load $VisualStudioModule
 
     Write-Host "Loading module: $MsvcModule"
-    modules load $MsvcModule
+    module load $MsvcModule
 
     Write-Host "Loading module: $UcrtModule"
-    modules load $UcrtModule
+    module load $UcrtModule
 
     Write-Host "Loaded module stack:"
-    modules list
+    module list
 
     Write-Host "MSVC development commands:"
 
