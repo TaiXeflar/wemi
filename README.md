@@ -67,7 +67,8 @@ WEMI will scan, compile and install tcl Modulefiles to your Environment Modules 
 
 ## Early State development
 
-As WEMI declared current development status is in Early State development and version is InfDev status, WEMI will take several/lot of rolling destructable/refactoring changes, and not recieveng PR requests before a future stable release.
+As WEMI declared current development status is in Early State development and version is InfDev status,
+WEMI will take several/lot of rolling destructable/refactoring changes, and not recieveng PR requests before a future stable release.
 
 Issues and disscutions are open welcomed.
 
@@ -90,13 +91,13 @@ Status will be blank as the test case is pending for CI design.
 - pre-commit, Python 3 version test
     | task | information/details | status |
     | :-- | :-- | :-- |
-    | pre-commit | pre-commit | [![pre-commit-ci-badge][pre-commit-ci-action]][pre-commit-ci-act]
-    | Python test | uv, CPython 3.10.13     | [![python-310-badge][python-310-ci]][python-310-test]
-    | Python test | uv, CPython 3.11.9      | [![python-311-badge][python-311-ci]][python-311-test]
-    | Python test | uv, CPython 3.12.13     | [![python-312-badge][python-312-ci]][python-312-test]
-    | Python test | uv, CPython 3.13.12     | [![python-313-badge][python-313-ci]][python-313-test]
-    | Python test | uv, CPython 3.14.2      | [![python-314-badge][python-314-ci]][python-314-test]
-    | Python test | uv, CPython 3.15.0a     | [![python-315-badge][python-315-ci]][python-315-test]
+    | pre-commit | pre-commit | [![pre-commit-ci-badge][pre-commit-ci-action]][pre-commit-ci-act]   |
+    | Python test | uv, CPython 3.10.13     | [![python-310-badge][python-310-ci]][python-310-test] |
+    | Python test | uv, CPython 3.11.9      | [![python-311-badge][python-311-ci]][python-311-test] |
+    | Python test | uv, CPython 3.12.13     | [![python-312-badge][python-312-ci]][python-312-test] |
+    | Python test | uv, CPython 3.13.12     | [![python-313-badge][python-313-ci]][python-313-test] |
+    | Python test | uv, CPython 3.14.2      | [![python-314-badge][python-314-ci]][python-314-test] |
+    | Python test | uv, CPython 3.15.0a     | [![python-315-badge][python-315-ci]][python-315-test] |
 
   <!-- CI: pre-commit -->
   [pre-commit-ci-action]: https://github.com/TaiXeflar/wemi/actions/workflows/pre-commit.yaml/badge.svg?branch=master
@@ -123,28 +124,37 @@ Status will be blank as the test case is pending for CI design.
 
 - Compiler smoke test
 
-    | task              | details                       | toolchain               | status  |
-    | :--               | :--                           | :--                     | :--     |
-    | Visual C/C++      | Visual C/C++, MASM, Resource  | VS2026 Enterprise       |
-    | Intel C++         | Intel C/C++, Visual Fortran   | Intel oneAPI latest     |
-    | NVIDIA CUDA Host  | CUDA Host                     | CUDA 13.2               |
-    | Cangjie           | cjc                           | Cangjie 1.1.0           |
+    | task              | details                                     | toolchain                                   | status  |
+    | :--               | :--                                         | :--                                         | :--     |
+    | Visual C/C++      | Visual C/C++, MASM, Resource, DLL/LIB test  | VS2026, MSVC v145                           | [![msvc-badge][msvc-ci]][msvc-ci-test] |
+    | Intel C++         | Intel C/C++, Visual Fortran                 | VS2026, MSVC v145, Intel oneAPI latest      |
+    | NVIDIA CUDA Host  | CUDA Host                                   | VS2026, MSVC v145, CUDA 13.2                |
+    | Cangjie           | cjc                                         | Cangjie 1.1.0                               |
 
-- Build test, Recursive build examination
+    [msvc-ci]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-msvc-v145.yaml/badge.svg?branch=master
+    [msvc-ci-test]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-msvc-v145.yaml
 
-    | task              | toolchain                           | status  |
-    | :--               | :--                                 | :--     |
-    | ROCm/TheRock      | VS2026, MSVC v145, Perl 5.42        |
-    | NVIDIA/cutlass    | VS2026, MSVC v145, CUDA 13.4        |
-    | pytorch/pytorch   | VS2026, MSVC v145, CUDA 13.4        |
-    | pytorch/pytorch   | VS2026, MSVC v145, TheRock          |
-    | python/cpython    | VS2026, MSVC v145                   |
-    | HDF4/HDF5         | VS2026, MSVC v145
-    | NetCDF            | VS2026, MSVC v145
-    | pNetCDF           | VS2026, MSVC v145
-    | GDAL              | VS2026, MSVC v145
-    | GMT               | VS2026, MSVC v145
+- Build test, Recursive build examination (No eta)
+
+    | task                | toolchain                           | condition | status   |
+    | :--                 | :--                                 | :--       | :--     |
+    | [ROCm/TheRock]      | VS2026, MSVC v145, Perl 5.42        | `-DTHEROCK_AMDGPU_FAMILIES = gfx1100;gfx1101;gfx1102;gfx1200;gfx1201` |
+    | [NVIDIA/cutlass]    | VS2026, MSVC v145, CUDA 13.4        | `-DBUILD_TESTS=OFF`                                                   |
+    | [pytorch/pytorch]   | VS2026, MSVC v145, CUDA 13.4        | `-DUSE_CUDA=1`, `-DUSE_CUDNN=1`, `-DUSE_CUDNN=1` |
+    | [pytorch/pytorch]   | VS2026, MSVC v145, TheRock          | `-DUSE_ROCM=1` |
+    | [python/cpython]    | VS2026, MSVC v145                   |
+    | [exaloop/codon]     | VS2026, MSVC v145, CUDA 13.4        | `-DCODON_GPU=ON` |
+    | [HDF/HDF4]          | VS2026, MSVC v145                   |
+    | [HDF/HDF5]          | VS2026, MSVC v145                   |
+    | [NetCDF]            | VS2026, MSVC v145                   |
+    | [pNetCDF]           | VS2026, MSVC v145                   |
+    | [GDAL]              | VS2026, MSVC v145                   |
+    | [GMT]               | VS2026, MSVC v145                   |
+    | [form-dev/form]     | VS2026, MSVC v145, MSMPI            |
     | etc.
+
+    <!-- CI: Env build test, Recursive build Test -->
+    <!-- ... -->
 
 - Repository Sync Status
 
@@ -330,7 +340,9 @@ Currently main language will be written in English (US). With after updates, the
 [Environment Modules]:                  https://github.com/envmodules/modules
 
 ### The idea/inventing monent
-This project is based on my collage school lifetime thoughts and with listening [七見斷滅智論抄][Il Dottore] [Prajnaparamitopadesa to Quell Seven Calamities][Il Dottore].
+This project is based on my collage school lifetime thoughts.
+
+The develop environment is have Youtube Music with listening [七見斷滅智論抄][Il Dottore] [Prajnaparamitopadesa to Quell Seven Calamities][Il Dottore].
 
 <!-- links -->
 [Il Dottore]:   https://youtu.be/jBfLW28avYU

@@ -1,0 +1,155 @@
+
+
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
+name: VS2026 MSVC v145 Compile Smoke Test
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "**.py"
+      - ".ci/common/**"
+      - ".ci/sources/**"
+      - ".ci/compile-smoke-test/**"
+      - ".github/workflows/vs2026-msvc-v145.yaml"
+
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "**.py"
+      - ".ci/common/**"
+      - ".ci/sources/**"
+      - ".ci/compile-smoke-test/**"
+      - ".github/workflows/vs2026-msvc-v145.yaml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vs2026-msvc-v145-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compile-smoke-test:
+    name: VS2026 MSVC v145
+    runs-on: windows-2025
+    timeout-minutes: 60
+
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Tcl/Tk
+        run: |
+          .\.ci\common\install-windows-tools.ps1 `
+            -TclTk
+
+      - name: Install Everything
+        run: |
+          .\.ci\common\install-windows-tools.ps1 `
+            -Everything
+
+      - name: Install Everything CLI
+        run: |
+          .\.ci\common\install-windows-tools.ps1 `
+            -EverythingCli
+
+      - name: Start Everything search client
+        run: |
+          .\.ci\common\start-everything.ps1
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.3.2
+        with:
+          python-version: "3.14"
+          github-token: ${{ github.token }}
+
+      # ------------------------------------------------------------
+      # WEMI
+      # ------------------------------------------------------------
+
+      - name: Build WEMI Modules
+        run: |
+          # 放你目前實際的 WEMI configure/build/install 指令
+          #
+          # 例如：
+          # uv run wemi.py configure ...
+          # uv run wemi.py build ...
+          # uv run wemi.py install ...
+          #
+          # 這裡請直接沿用你現在已經能成功建立 VS2026 Modulefile
+          # 的指令，不要重新包進 test-msvc.psm1。
+
+      - name: Initialize Modules support
+        run: |
+          # 放你目前實際的 Modules init/support 初始化。
+          #
+          # 如果這一步只修改目前 pwsh process 的環境，
+          # 則不要期待後續 step 自動繼承。
+          #
+          # 最終需要確保下面每個 smoke-test step
+          # 都能真正載入 WEMI 產生的 VS2026 module。
+
+      # ------------------------------------------------------------
+      # Compile smoke tests
+      # ------------------------------------------------------------
+
+      - name: C language - compile, link and execute
+        run: |
+          Import-Module `
+            .\.ci\compile-smoke-test\test-msvc.psm1 `
+            -Force
+
+          Test-MsvcC
+
+      - name: C++ language - compile, link and execute
+        run: |
+          Import-Module `
+            .\.ci\compile-smoke-test\test-msvc.psm1 `
+            -Force
+
+          Test-MsvcCxx
+
+      - name: Static library - compile, archive, link and execute
+        run: |
+          Import-Module `
+            .\.ci\compile-smoke-test\test-msvc.psm1 `
+            -Force
+
+          Test-MsvcStaticLibrary
+
+      - name: Dynamic library - compile, link and execute
+        run: |
+          Import-Module `
+            .\.ci\compile-smoke-test\test-msvc.psm1 `
+            -Force
+
+          Test-MsvcDynamicLibrary
+
+      - name: MASM - assemble, link and execute
+        run: |
+          Import-Module `
+            .\.ci\compile-smoke-test\test-msvc.psm1 `
+            -Force
+
+          Test-MsvcMasm
+
+      - name: Resource Compiler - compile resource
+        run: |
+          Import-Module `
+            .\.ci\compile-smoke-test\test-msvc.psm1 `
+            -Force
+
+          Test-MsvcResource
