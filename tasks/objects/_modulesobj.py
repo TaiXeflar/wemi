@@ -6,7 +6,31 @@
 # https://opensource.org/licenses/MIT
 
 from typing import Literal, TypeAlias, Union, Optional
-from dataclasses import dataclass
+
+__all__ = [
+    'LLVM_DIST_PROFILE',
+    'HETERO_DIST_PROFILE',
+    'PATH_HINT',
+    'INCLUDE_HINT',
+    'LIB_HINT',
+    'LD_LIBRARY_PATH_HINT',
+    'MANPATH_HINT',
+    'CPATH_HINT',
+    'C_INCLUDE_PATH_HINT',
+    'CPLUS_INCLUDE_PATH_HINT',
+    'RPATH_HINT',
+    'CCompiler',
+    'CXXCompiler',
+    'FCompiler',
+    'RCompiler',
+    'CUDACXXCompiler',
+    'HIPCXXCompiler',
+    'SWIFTCompiler',
+    'RUSTCompiler',
+    'CODONCompiler',
+    'ZENCompiler',
+
+]
 
 LLVM_DIST_PROFILE: TypeAlias = Literal[
     r'llvm-org/llvm',       # LLVM Project release build
@@ -68,24 +92,34 @@ MANPATH_HINT: TypeAlias = Literal[
     r'$root/man',
 ]
 
-CPATH: TypeAlias = Literal[
+CPATH_HINT: TypeAlias = Literal[
     r'$root/include',
 ]
 
-C_INCLUDE_PATH: TypeAlias = Literal[
+C_INCLUDE_PATH_HINT: TypeAlias = Literal[
     r'$root/include',
 ]
 
-CPLUS_INCLUDE_PATH: TypeAlias = Literal[
+CPLUS_INCLUDE_PATH_HINT: TypeAlias = Literal[
     r'$root/include',
 ]
 
-NLSPATH: TypeAlias = Literal[
+NLSPATH_HINT: TypeAlias = Literal[
     r'$root/lib',
     r'$root/lib64',
     r'$root/lib/x64',
     r'$root/lib/arm64',
     r'$root/lib/$env(VSCMD_ARG_TGT_ARCH)',
+]
+
+RPATH_HINT: TypeAlias = Literal[
+    r'$root',
+    r'$root/bin',
+    r'$root/bin64',
+    r'$root/bin/x64',
+    r'$root/bin/arm64',
+    r'$root/bin/$env(VSCMD_ARG_TGT_ARCH)',
+    r'$root/libexec',
 ]
 
 CCompiler: TypeAlias = Literal[
@@ -123,17 +157,33 @@ CXXCompiler: TypeAlias = Literal[
     'nvc++.exe',        # NVHPC C++ compiler
     'pgc++.exe',        # PGI C++ compiler
     'icc.exe',          # Intel C++ compiler classic
-    'icx.exe',
+    'icx.exe',          # IntelLLVM C++ compiler
     'icx-cc.exe',
+    'icx-cl.exe',
     'icpx.exe',
     'dpcpp.exe',
     'dpcpp-cl.exe',
     'amdclang++.exe',
-
 ]
 
-CUDACXXCompiler: TypeAlias = Literal['nvcc.exe']
-HIPCXXCompiler: TypeAlias = Literal['hipcc.exe']
+FCompiler: TypeAlias = Literal[
+    'ifort.exe',
+    'ifx.exe',
+    'gfortran.exe',
+    'flang.exe',
+    'flang1.exe',
+    'flang2.exe',
+    'flang-new.exe',
+]
+
+RCompiler: TypeAlias = Literal['rc.exe', 'windres.exe', 'llvm-rc.exe']
+
+CUDACXXCompiler: TypeAlias = Literal['nvcc.exe']    # NVIDIA/CUDA
+HIPCXXCompiler: TypeAlias = Literal['hipcc.exe']    # AMD HIP
+SWIFTCompiler: TypeAlias = Literal['swift.exe']     # Apple/Swift
+RUSTCompiler: TypeAlias = Literal['rustc.exe']      # Rust
+CODONCompiler: TypeAlias = Literal['codon.exe']     # Exaloop/codon
+ZENCompiler: TypeAlias = Literal['zc.exe']          # Zen-C
 
 
 # Todo: Flags etc.
