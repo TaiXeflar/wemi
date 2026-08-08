@@ -30,21 +30,22 @@ class FindStrawberryPerl(FindSDK):
             return
 
         for perl in perl_lst:
+            perl_dir = perl.parent.parent.parent.resolve()
             perl_v = self._find_version(perl, "--version", "X.Y.Z")
             perl_gcc = self._find_version(
-                perl.parent.parent.parent / "c/bin/gcc.exe", "--version", "X.Y.Z"
+                perl_dir / "c/bin/gcc.exe", "--version", "X.Y.Z"
             )
             perl_gcct = subprocess.run(
-                [perl.parent.parent.parent / "c/bin/gcc.exe", "-dumpmachine"],
+                [perl_dir / "c/bin/gcc.exe", "-dumpmachine"],
                 text=True,
                 capture_output=True,
                 check=True,
             ).stdout.strip()
             perl_cmake = self._find_version(
-                perl.parent.parent.parent / "c/bin/cmake.exe", "--version", "X.Y.Z"
+                perl_dir / "c/bin/cmake.exe", "--version", "X.Y.Z"
             )
             perl_ninja = self._find_version(
-                perl.parent.parent.parent / "c/bin/ninja.exe", "--version", "X.Y.Z"
+                perl_dir / "c/bin/ninja.exe", "--version", "X.Y.Z"
             )
 
             message(f"    Perl {perl_v}     {perl.parent.parent.resolve().as_posix()}")
@@ -61,7 +62,7 @@ class FindStrawberryPerl(FindSDK):
                     Version=perl_v,
                     module_whatis=f"strawberry Perl {perl_v}",
                     conflicts=["strawberry"],
-                    root=perl.resolve().as_posix(),
+                    root=perl_dir.resolve().as_posix(),
                     PATH=[
                         "$root/perl/bin",
                         "$root/perl/site/bin",
