@@ -129,7 +129,17 @@ Status will be blank as the test case is pending for CI design.
     | Visual C/C++      | MSVC v145                                   | [![msvc-badge][msvc-ci]][msvc-ci-test]  |
     | Intel C++         | MSVC v145, oneAPI latest                    | [![intel-badge][intel-ci]][intel-test]  |
     | NVIDIA CUDA Host  | MSVC v145, CUDA 13.2                        | [![cuda-badge][cuda-ci]][cuda-test]     |
-    | Cangjie           | Cangjie 1.1.0                               |
+    | AMD HIP SDK       | MSVC v145, HIP `???`                        | No avail release via winget             |
+    | AMD ROCm/TheRock  | MSVC v145, TheRock `7.XX`                   | No avail release via winget             |
+    | Cangjie Language  | Cangjie 1.1.0                               | No ETA; Pending for develop test        |
+    | Swift Language    | ----                                        | No ETA; Pending for develop test        |
+    | Rust  Language    | ----                                        | No ETA                                  |
+    | Zig   Language    | ----                                        | No ETA; Pending for develop test        |
+    | Zen-C Language    | ----                                        | No ETA; Pending for develop test        |
+    | Perl Languange    | ----                                        | No ETA; Pending for is Strawberry       |
+    | Ruby Languange    | ----                                        | No ETA; Pending for develop test        |
+    | Java Language     | ----                                        | No ETA; Pending for develop test        |
+    | Codon             | ----                                        | No ETA; Pending Exaloop release windows version |
 
     [msvc-ci]:      https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-msvc-v145.yaml/badge.svg?branch=master
     [msvc-ci-test]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-msvc-v145.yaml
@@ -146,7 +156,7 @@ Status will be blank as the test case is pending for CI design.
     | :--                 | :--                                 | :--       | :--     |
     | [ROCm/TheRock]      | VS2026, MSVC v145, Perl 5.42        | `-DTHEROCK_AMDGPU_FAMILIES = gfx1100;gfx1101;gfx1102;gfx1200;gfx1201` |
     | [NVIDIA/cutlass]    | VS2026, MSVC v145, CUDA 13.4        | `-DBUILD_TESTS=OFF`                                                   |
-    | [pytorch/pytorch]   | VS2026, MSVC v145, CUDA 13.4        | `-DUSE_CUDA=1`, `-DUSE_CUDNN=1`, `-DUSE_CUDNN=1` |
+    | [pytorch/pytorch]   | VS2026, MSVC v145, CUDA 13.4        | `-DUSE_CUDA=1`, `-DUSE_CUDNN=1`, `-DUSE_CUDSS=1` |
     | [pytorch/pytorch]   | VS2026, MSVC v145, TheRock          | `-DUSE_ROCM=1` |
     | [python/cpython]    | VS2026, MSVC v145                   |
     | [exaloop/codon]     | VS2026, MSVC v145, CUDA 13.4        | `-DCODON_GPU=ON` |
