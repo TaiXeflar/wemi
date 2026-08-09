@@ -226,6 +226,6 @@ Export-ModuleMember -Function   `
     Install-ES,                 `
     Install-TclTk,              `
     Install-oneAPI,             `
-    Install-CUDA11,             `
-    Install-CUDA12,             `
-    Install-CUDA13
+    Install-CUDA118,             `
+    Install-CUDA126,             `
+    Install-CUDA132
