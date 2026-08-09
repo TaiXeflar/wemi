@@ -127,15 +127,18 @@ Status will be blank as the test case is pending for CI design.
     | task              | toolchain                                   | status  |
     | :--               | :--                                         | :--     |
     | Visual C/C++      | MSVC v145                                   | [![msvc-badge][msvc-ci]][msvc-ci-test]  |
-    | Intel C++         | MSVC v145, oneAPI latest                    | [![intel-badge][intel-ci]][intel-test]  |
-    | NVIDIA CUDA Host  | MSVC v145, CUDA 13.2                        | [![cuda-badge][cuda-ci]][cuda-test]     |
+    | Intel oneAPI      | MSVC v145, oneAPI latest                    | [![intel-badge][intel-ci]][intel-test]  |
+    | NVIDIA CUDA       | MSVC v145, CUDA 13.2                        | [![cuda-badge][cuda-ci]][cuda-test]     |
+    | NVIDIA HPC SDK    | NVHPC Latest                                | No ETA; Pending for Windows x64 release |
     | AMD HIP SDK       | MSVC v145, HIP `???`                        | No avail release via winget             |
     | AMD ROCm/TheRock  | MSVC v145, TheRock `7.XX`                   | No avail release via winget             |
+    | Embarcadero C++   | C++ builder 12                              | No ETA; Pending for develop test        |
     | Cangjie Language  | Cangjie LTS                                 | [![cangjie-badge][cangjie-ci]][cj-test] |
     | Swift Language    | ----                                        | No ETA; Pending for develop test        |
     | Rust  Language    | ----                                        | No ETA                                  |
     | Zig   Language    | ----                                        | No ETA; Pending for develop test        |
     | Zen-C Language    | ----                                        | No ETA; Pending for develop test        |
+    | LLVM              | LLVM                                        | No ETA                                  |
     | Perl Languange    | ----                                        | No ETA; Pending for is Strawberry       |
     | Ruby Languange    | ----                                        | No ETA; Pending for develop test        |
     | Java Language     | ----                                        | No ETA; Pending for develop test        |
