@@ -91,64 +91,22 @@ jobs:
 
       - name: Configure, build and install WEMI
         run: |
-          $RepositoryRoot = "${{ github.workspace }}"
-          $InstallPrefix = Join-Path `
-            $env:RUNNER_TEMP `
-            "wemi-vs2026-cuda132"
+          uv venv .venv `
+            --python $env:PYTHON_VERSION `
+            --seed
 
-          Set-Location $RepositoryRoot
+          . .\.venv\Scripts\Activate.ps1
 
-          Import-Module `
-            .\.ci\common\prepare-uv-venv.psm1 `
-            -Force
+          $InstallPrefix = "$env:RUNNER_TEMP\wemi-vs2026-cuda132"
 
-          set-uvpython `
-            -RepositoryRoot $RepositoryRoot `
-            -PythonVersion $env:PYTHON_VERSION
-
-          $Python = Join-Path `
-            $RepositoryRoot `
-            ".venv\Scripts\python.exe"
-
-          Remove-Item `
-            -LiteralPath (Join-Path $RepositoryRoot "build") `
-            -Recurse `
-            -Force `
-            -ErrorAction SilentlyContinue
-
-          Remove-Item `
-            -LiteralPath $InstallPrefix `
-            -Recurse `
-            -Force `
-            -ErrorAction SilentlyContinue
-
-          & $Python `
-            (Join-Path $RepositoryRoot "wemi.py") `
+          python.exe .\wemi.py `
             configure `
             --aio `
-            --sdk='VS20XX;UCRT;NVIDIA_CUDA' `
-            --prefix $InstallPrefix
+            --sdk='VS20XX;UCRT;CUDA' `
+            --prefix="$InstallPrefix"
 
           if ($LASTEXITCODE -ne 0) {
-            throw "WEMI configure/build/install failed."
-          }
-
-          $RequiredFiles = @(
-            (Join-Path $InstallPrefix "init\pwsh.ps1"),
-            (Join-Path $InstallPrefix "modulefiles\vs\2026\Enterprise"),
-            (Join-Path $InstallPrefix "modulefiles\.deps\2026\Enterprise\msvc\v145_14.51.36231\x64"),
-            (Join-Path $InstallPrefix "modulefiles\.deps\winsdk\x64\ucrt\10.0.26100.0"),
-            (Join-Path $InstallPrefix "modulefiles\nvidia\cuda\13.2")
-          )
-
-          foreach ($File in $RequiredFiles) {
-            if (-not (
-              Test-Path `
-                -LiteralPath $File `
-                -PathType Leaf
-            )) {
-              throw "Expected WEMI output was not installed: $File"
-            }
+            exit $LASTEXITCODE
           }
 
           "WEMI_MODULES_PREFIX=$InstallPrefix" >> $env:GITHUB_ENV

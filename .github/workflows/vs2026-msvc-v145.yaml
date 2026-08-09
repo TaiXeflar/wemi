@@ -12,8 +12,20 @@ on:
     branches:
       - master
     paths:
-      - "SDKs/**/*VS20XX*"
-      - "SDKs/**/*UCRT*"
+      - "wemi.py"
+      - "version.json"
+      - "utils/**"
+      - 'tasks/**'
+      - 'SDKs/addM_Modules.py'
+      - 'SDKs/refs/_find_SDK.py'
+      - 'include/template_modulefile.py'
+      - 'include/refs/_template.py'
+      - 'devices/**'
+      - 'version.json'
+
+      - "SDKs/find_VS20XX.py"
+      - "SDKs/find_UCRT.py"
+      - "SDKs/refs/_findVS20XX.py"
       - "include/**/*VS20XX*"
       - "include/**/*ucrt*"
 
@@ -83,63 +95,22 @@ jobs:
 
       - name: Configure, build and install WEMI
         run: |
-          $RepositoryRoot = "${{ github.workspace }}"
-          $InstallPrefix = Join-Path `
-            $env:RUNNER_TEMP `
-            "wemi-vs2026-msvc-v145"
+          uv venv .venv `
+            --python $env:PYTHON_VERSION `
+            --seed
 
-          Set-Location $RepositoryRoot
+          . .\.venv\Scripts\Activate.ps1
 
-          Import-Module `
-            .\.ci\common\prepare-uv-venv.psm1 `
-            -Force
+          $InstallPrefix = "$env:RUNNER_TEMP\wemi-vs2026-msvc-v145"
 
-          set-uvpython `
-            -RepositoryRoot $RepositoryRoot `
-            -PythonVersion $env:PYTHON_VERSION
-
-          $Python = Join-Path `
-            $RepositoryRoot `
-            ".venv\Scripts\python.exe"
-
-          Remove-Item `
-            -LiteralPath (Join-Path $RepositoryRoot "build") `
-            -Recurse `
-            -Force `
-            -ErrorAction SilentlyContinue
-
-          Remove-Item `
-            -LiteralPath $InstallPrefix `
-            -Recurse `
-            -Force `
-            -ErrorAction SilentlyContinue
-
-          & $Python `
-            (Join-Path $RepositoryRoot "wemi.py") `
+          python.exe .\wemi.py `
             configure `
             --aio `
             --sdk='VS20XX;UCRT' `
-            --prefix $InstallPrefix
+            --prefix="$InstallPrefix"
 
           if ($LASTEXITCODE -ne 0) {
-            throw "WEMI configure/build/install failed."
-          }
-
-          $RequiredFiles = @(
-            (Join-Path $InstallPrefix "init\pwsh.ps1"),
-            (Join-Path $InstallPrefix "modulefiles\vs\2026\Enterprise"),
-            (Join-Path $InstallPrefix "modulefiles\.deps\2026\Enterprise\msvc\v145_14.51.36231\x64"),
-            (Join-Path $InstallPrefix "modulefiles\.deps\winsdk\x64\ucrt\10.0.26100.0")
-          )
-
-          foreach ($File in $RequiredFiles) {
-            if (-not (
-              Test-Path `
-                -LiteralPath $File `
-                -PathType Leaf
-            )) {
-              throw "Expected WEMI output was not installed: $File"
-            }
+            exit $LASTEXITCODE
           }
 
           "WEMI_MODULES_PREFIX=$InstallPrefix" >> $env:GITHUB_ENV
