@@ -13,9 +13,13 @@ on:
       - master
     paths:
       - "wemi.py"
+      - "devices/**"
+      - "SDKs/**"
+      - "tasks/**"
+      - "utils/**"
+      - "include/**"
       - "version.json"
-      - ".ci/common/**"
-      - ".ci/python-test/**"
+
       - ".github/workflows/_python-version-test.yaml"
       - ".github/workflows/python-313-test.yaml"
 
