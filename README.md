@@ -131,7 +131,7 @@ Status will be blank as the test case is pending for CI design.
     | NVIDIA CUDA Host  | MSVC v145, CUDA 13.2                        | [![cuda-badge][cuda-ci]][cuda-test]     |
     | AMD HIP SDK       | MSVC v145, HIP `???`                        | No avail release via winget             |
     | AMD ROCm/TheRock  | MSVC v145, TheRock `7.XX`                   | No avail release via winget             |
-    | Cangjie Language  | Cangjie 1.1.0                               | [![cangjie-badge][cangjie-ci]][cj-test] |
+    | Cangjie Language  | Cangjie LTS                                 | [![cangjie-badge][cangjie-ci]][cj-test] |
     | Swift Language    | ----                                        | No ETA; Pending for develop test        |
     | Rust  Language    | ----                                        | No ETA                                  |
     | Zig   Language    | ----                                        | No ETA; Pending for develop test        |
