@@ -175,7 +175,7 @@ function Install-oneAPI {
     }
 }
 
-function Install-CUDA11 {
+function Install-CUDA11_8 {
     winget install `
         --id Nvidia.CUDA `
         --exact `
@@ -190,7 +190,7 @@ function Install-CUDA11 {
     }
 }
 
-function Install-CUDA12 {
+function Install-CUDA12_6 {
     winget install `
         --id Nvidia.CUDA `
         --exact `
@@ -205,7 +205,7 @@ function Install-CUDA12 {
     }
 }
 
-function Install-CUDA13 {
+function Install-CUDA13_2 {
     winget install `
         --id Nvidia.CUDA `
         --exact `
