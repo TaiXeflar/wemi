@@ -30,6 +30,8 @@ on:
       - ".github/workflows/_python-version-test.yaml"
       - ".github/workflows/python-314-test.yaml"
 
+  workflow_dispatch:
+
 permissions:
   contents: read
 
