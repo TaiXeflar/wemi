@@ -16,6 +16,7 @@ docs/*.pptx
 hack_scripts
 
 
-# Possiable old file
+# Possiable old file, unrelated file
 **/*old*
 **/*bak*
+**/*.zip
