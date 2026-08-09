@@ -26,7 +26,7 @@ on:
       - "SDKs/find_Cangjie.py"
       - "include/template_cangjie.py"
 
-      - '.github/workflows/cangjie-105-test.py'
+      - '.github/workflows/cangjie-105-test.yaml'
       - '.ci/compile/test-cangjie.psm1'
 
   pull_request:
@@ -46,6 +46,9 @@ on:
 
       - "SDKs/find_Cangjie.py"
       - "include/template_cangjie.py"
+
+      - '.github/workflows/cangjie-105-test.yaml'
+      - '.ci/compile/test-cangjie.psm1'
 
   workflow_dispatch:
 
@@ -80,6 +83,10 @@ jobs:
             -TclTk `
             -Everything `
             -EverythingCli
+
+      - name: Start Everything
+        run: |
+          .\.ci\common\start-everything.ps1
 
       - name: Install Cangjie LTS
         run: |
