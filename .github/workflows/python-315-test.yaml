@@ -13,12 +13,15 @@ on:
       - master
     paths:
       - "wemi.py"
-      - "devices/**"
-      - "SDKs/**"
-      - "tasks/**"
-      - "utils/**"
-      - "include/**"
       - "version.json"
+      - "utils/**"
+      - 'tasks/**'
+      - 'SDKs/addM_Modules.py'
+      - 'SDKs/refs/_find_SDK.py'
+      - 'include/template_modulefile.py'
+      - 'include/refs/_template.py'
+      - 'devices/**'
+      - 'version.json'
 
       - ".github/workflows/_python-version-test.yaml"
       - ".github/workflows/python-315-test.yaml"
@@ -29,8 +32,15 @@ on:
     paths:
       - "wemi.py"
       - "version.json"
-      - ".ci/common/**"
-      - ".ci/python-test/**"
+      - "utils/**"
+      - 'tasks/**'
+      - 'SDKs/addM_Modules.py'
+      - 'SDKs/refs/_find_SDK.py'
+      - 'include/template_modulefile.py'
+      - 'include/refs/_template.py'
+      - 'devices/**'
+      - 'version.json'
+
       - ".github/workflows/_python-version-test.yaml"
       - ".github/workflows/python-315-test.yaml"
 
