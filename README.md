@@ -124,12 +124,12 @@ Status will be blank as the test case is pending for CI design.
 
 - Compiler smoke test
 
-    | task              | details                                     | toolchain                                   | status  |
-    | :--               | :--                                         | :--                                         | :--     |
-    | Visual C/C++      | Visual C/C++, MASM, Resource, DLL/LIB test  | VS2026, MSVC v145                           | [![msvc-badge][msvc-ci]][msvc-ci-test] |
-    | Intel C++         | Intel C/C++, Visual Fortran                 | VS2026, MSVC v145, Intel oneAPI latest      |
-    | NVIDIA CUDA Host  | CUDA Host                                   | VS2026, MSVC v145, CUDA 13.2                |
-    | Cangjie           | cjc                                         | Cangjie 1.1.0                               |
+    | task              | toolchain                                   | status  |
+    | :--               | :--                                         | :--     |
+    | Visual C/C++      | MSVC v145                                   | [![msvc-badge][msvc-ci]][msvc-ci-test] |
+    | Intel C++         | MSVC v145, oneAPI latest                    |
+    | NVIDIA CUDA Host  | MSVC v145, CUDA 13.2                        |
+    | Cangjie           | Cangjie 1.1.0                               |
 
     [msvc-ci]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-msvc-v145.yaml/badge.svg?branch=master
     [msvc-ci-test]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-msvc-v145.yaml

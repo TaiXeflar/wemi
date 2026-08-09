@@ -5,7 +5,7 @@
 # This software is released under the MIT License.
 # https://opensource.org/licenses/MIT
 
-name: VS2026 MSVC v145 Compile Smoke Test
+name: MSVC v145 Test
 
 on:
   push:
@@ -166,7 +166,7 @@ jobs:
             -MsvcModule $env:MSVC_MODULE `
             -UcrtModule $env:UCRT_MODULE
 
-      - name: C language - compile, link and execute
+      - name: Test MSVC C language compile
         run: |
           Import-Module .\.ci\compile\test-msvc.psm1 -Force
 
@@ -177,7 +177,7 @@ jobs:
             -MsvcModule $env:MSVC_MODULE `
             -UcrtModule $env:UCRT_MODULE
 
-      - name: C++ language - compile, link and execute
+      - name: Test MSVC CXX language compile
         run: |
           Import-Module .\.ci\compile\test-msvc.psm1 -Force
 
@@ -188,7 +188,7 @@ jobs:
             -MsvcModule $env:MSVC_MODULE `
             -UcrtModule $env:UCRT_MODULE
 
-      - name: Static library - compile and archive
+      - name: Test MSVC archive static linking
         run: |
           Import-Module .\.ci\compile\test-msvc.psm1 -Force
 
@@ -199,7 +199,7 @@ jobs:
             -MsvcModule $env:MSVC_MODULE `
             -UcrtModule $env:UCRT_MODULE
 
-      - name: Dynamic library - compile and link
+      - name: Test MSVC DLL dynamic linking
         run: |
           Import-Module .\.ci\compile\test-msvc.psm1 -Force
 
@@ -210,7 +210,7 @@ jobs:
             -MsvcModule $env:MSVC_MODULE `
             -UcrtModule $env:UCRT_MODULE
 
-      - name: MASM x64 - assemble, link and execute
+      - name: Test MSVC MASM assembling
         run: |
           Import-Module .\.ci\compile\test-msvc.psm1 -Force
 
@@ -221,7 +221,7 @@ jobs:
             -MsvcModule $env:MSVC_MODULE `
             -UcrtModule $env:UCRT_MODULE
 
-      - name: Windows Resource Compiler - compile resource
+      - name: Test Windows Resource file compile
         run: |
           Import-Module .\.ci\compile\test-msvc.psm1 -Force
 
