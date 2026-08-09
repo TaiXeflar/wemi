@@ -16,14 +16,10 @@ on:
       - "SDKs/**/*UCRT*"
       - "include/**/*VS20XX*"
       - "include/**/*ucrt*"
-      - "devices/**"
-      - "tasks/**"
-      - "utils/**"
-      - "wemi.py"
-      - ".ci/common/**"
-      - ".ci/compile/**"
-      - ".ci/sources/**"
+
       - ".github/workflows/vs2026-msvc-v145.yaml"
+      - ".ci/compile/test-msvc.psm1"
+
 
   pull_request:
     branches:
@@ -33,14 +29,9 @@ on:
       - "SDKs/**/*UCRT*"
       - "include/**/*VS20XX*"
       - "include/**/*ucrt*"
-      - "devices/**"
-      - "tasks/**"
-      - "utils/**"
-      - "wemi.py"
-      - ".ci/common/**"
-      - ".ci/compile/**"
-      - ".ci/sources/**"
+
       - ".github/workflows/vs2026-msvc-v145.yaml"
+      - ".ci/compile/test-msvc.psm1"
 
   workflow_dispatch:
 

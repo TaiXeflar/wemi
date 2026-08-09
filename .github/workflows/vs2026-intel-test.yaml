@@ -11,49 +11,24 @@ on:
     branches:
       - master
     paths:
-      - "SDKs/**/*INTEL_ONEAPI*"
-      - "SDKs/refs/**/*Intel*"
+      - "SDKs/find_INTEL_ONEAPI.py"
+      - "SDKs/refs/_findIntel.py"
       - "include/**/*intel*"
 
-      - "SDKs/**/*VS20XX*"
-      - "SDKs/**/*UCRT*"
-      - "include/**/*VS20XX*"
-      - "include/**/*ucrt*"
-
-      - "devices/**"
-      - "tasks/**"
-      - "utils/**"
-      - "wemi.py"
-
-      - ".ci/common/**"
-      - ".ci/compile/**"
-      - ".ci/sources/**"
-
       - ".github/workflows/vs2026-intel-test.yaml"
+      - ".ci/compile/test-intel.psm1"
+
 
   pull_request:
     branches:
       - master
     paths:
-      - "SDKs/**/*INTEL_ONEAPI*"
-      - "SDKs/refs/**/*Intel*"
+      - "SDKs/find_INTEL_ONEAPI.py"
+      - "SDKs/refs/_findIntel.py"
       - "include/**/*intel*"
 
-      - "SDKs/**/*VS20XX*"
-      - "SDKs/**/*UCRT*"
-      - "include/**/*VS20XX*"
-      - "include/**/*ucrt*"
-
-      - "devices/**"
-      - "tasks/**"
-      - "utils/**"
-      - "wemi.py"
-
-      - ".ci/common/**"
-      - ".ci/compile/**"
-      - ".ci/sources/**"
-
       - ".github/workflows/vs2026-intel-test.yaml"
+      - ".ci/compile/test-intel.psm1"
 
   workflow_dispatch:
 

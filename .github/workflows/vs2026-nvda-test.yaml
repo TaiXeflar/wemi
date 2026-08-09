@@ -12,49 +12,23 @@ on:
     branches:
       - master
     paths:
-      - "SDKs/**/*NVIDIA_CUDA*"
-      - "SDKs/refs/**/*CUDA*"
-      - "include/**/*nvidia_cuda*"
-
-      - "SDKs/**/*VS20XX*"
-      - "SDKs/**/*UCRT*"
-      - "include/**/*VS20XX*"
-      - "include/**/*ucrt*"
-
-      - "devices/**"
-      - "tasks/**"
-      - "utils/**"
-      - "wemi.py"
-
-      - ".ci/common/**"
-      - ".ci/compile/**"
-      - ".ci/sources/**"
+      - "SDKs/find_NVIDIA_CUDA.py"
+      - "SDKs/refs/_findCUDA.py"
+      - "include/template_nvidia_cuda_toolkit.py"
 
       - ".github/workflows/vs2026-nvda-test.yaml"
+      - ".ci/compile/test-nvda.psm1"
 
   pull_request:
     branches:
       - master
     paths:
       - "SDKs/**/*NVIDIA_CUDA*"
-      - "SDKs/refs/**/*CUDA*"
       - "include/**/*nvidia_cuda*"
-
-      - "SDKs/**/*VS20XX*"
-      - "SDKs/**/*UCRT*"
-      - "include/**/*VS20XX*"
-      - "include/**/*ucrt*"
-
-      - "devices/**"
-      - "tasks/**"
-      - "utils/**"
-      - "wemi.py"
-
-      - ".ci/common/**"
-      - ".ci/compile/**"
-      - ".ci/sources/**"
+      - "include/template_nvidia_cuda_toolkit.py"
 
       - ".github/workflows/vs2026-nvda-test.yaml"
+      - ".ci/compile/test-nvda.psm1"
 
   workflow_dispatch:
 
