@@ -127,12 +127,15 @@ Status will be blank as the test case is pending for CI design.
     | task              | toolchain                                   | status  |
     | :--               | :--                                         | :--     |
     | Visual C/C++      | MSVC v145                                   | [![msvc-badge][msvc-ci]][msvc-ci-test] |
-    | Intel C++         | MSVC v145, oneAPI latest                    |
+    | Intel C++         | MSVC v145, oneAPI latest                    | [![intel-badge][intel-ci]][intel-test] |
     | NVIDIA CUDA Host  | MSVC v145, CUDA 13.2                        |
     | Cangjie           | Cangjie 1.1.0                               |
 
     [msvc-ci]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-msvc-v145.yaml/badge.svg?branch=master
     [msvc-ci-test]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-msvc-v145.yaml
+
+    [intel-ci]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-intel-test.yaml/badge.svg?branch=master
+    [intel-test]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-intel-test.yaml
 
 - Build test, Recursive build examination (No eta)
 
