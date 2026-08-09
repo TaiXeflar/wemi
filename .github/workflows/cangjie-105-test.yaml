@@ -1,0 +1,122 @@
+
+
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
+name: Cangjie 1.0.5 LTS Test
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "SDKs/**/*Cangjie*"
+      - "include/**/*cangjie*"
+      - "devices/**"
+      - "tasks/**"
+      - "utils/**"
+      - "wemi.py"
+
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "SDKs/**/*Cangjie*"
+      - "include/**/*cangjie*"
+      - "devices/**"
+      - "tasks/**"
+      - "utils/**"
+      - "wemi.py"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cangjie-lts-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compile-smoke-test:
+    name: Cangjie LTS 1.0.5
+    runs-on: windows-2025
+    timeout-minutes: 60
+
+    defaults:
+      run:
+        shell: pwsh
+
+    env:
+      PYTHON_VERSION: "3.14.2"
+      CANGJIE_MODULE: "cangjie/1.0.5"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install WEMI runtime dependencies
+        run: |
+          .\.ci\common\install-windows-tools.ps1 `
+            -TclTk `
+            -Everything `
+            -EverythingCli
+
+      - name: Install Cangjie LTS
+        run: |
+          Import-Module `
+            .\.ci\common\winget-functions.psm1 `
+            -Force
+
+          Test-Winget
+          Install-CangjieLTS
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.3.2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          github-token: ${{ github.token }}
+          enable-cache: true
+          cache-python: true
+
+      - name: Configure, build and install WEMI
+        run: |
+          uv venv .venv `
+            --python $env:PYTHON_VERSION `
+            --seed
+
+          . .\.venv\Scripts\Activate.ps1
+
+          $InstallPrefix = "$env:RUNNER_TEMP\wemi-cangjie"
+
+          python.exe .\wemi.py `
+            configure `
+            --aio `
+            --sdk='Cangjie' `
+            --prefix="$InstallPrefix"
+
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+
+          "WEMI_MODULES_PREFIX=$InstallPrefix" >> $env:GITHUB_ENV
+
+      - name: Validate Cangjie module
+        run: |
+          Import-Module .\.ci\compile\test-cangjie.psm1 -Force
+
+          test-cangjie `
+            -Case Environment `
+            -InstallPrefix $env:WEMI_MODULES_PREFIX `
+            -CangjieModule $env:CANGJIE_MODULE
+
+      - name: Cangjie - compile, link and execute
+        run: |
+          Import-Module .\.ci\compile\test-cangjie.psm1 -Force
+
+          test-cangjie `
+            -Case Compile `
+            -InstallPrefix $env:WEMI_MODULES_PREFIX `
+            -CangjieModule $env:CANGJIE_MODULE

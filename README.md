@@ -131,7 +131,7 @@ Status will be blank as the test case is pending for CI design.
     | NVIDIA CUDA Host  | MSVC v145, CUDA 13.2                        | [![cuda-badge][cuda-ci]][cuda-test]     |
     | AMD HIP SDK       | MSVC v145, HIP `???`                        | No avail release via winget             |
     | AMD ROCm/TheRock  | MSVC v145, TheRock `7.XX`                   | No avail release via winget             |
-    | Cangjie Language  | Cangjie 1.1.0                               | No ETA; Pending for develop test        |
+    | Cangjie Language  | Cangjie 1.1.0                               | [![cangjie-badge][cangjie-ci]][cj-test] |
     | Swift Language    | ----                                        | No ETA; Pending for develop test        |
     | Rust  Language    | ----                                        | No ETA                                  |
     | Zig   Language    | ----                                        | No ETA; Pending for develop test        |
@@ -139,6 +139,7 @@ Status will be blank as the test case is pending for CI design.
     | Perl Languange    | ----                                        | No ETA; Pending for is Strawberry       |
     | Ruby Languange    | ----                                        | No ETA; Pending for develop test        |
     | Java Language     | ----                                        | No ETA; Pending for develop test        |
+    | Go Language       | ----                                        | No ETA; Pending for develop test        |
     | Codon             | ----                                        | No ETA; Pending Exaloop release windows version |
 
     [msvc-ci]:      https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-msvc-v145.yaml/badge.svg?branch=master
@@ -149,6 +150,9 @@ Status will be blank as the test case is pending for CI design.
 
     [cuda-ci]:      https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-nvda-test.yaml/badge.svg?branch=master
     [cuda-test]:    https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-nvda-test.yaml
+
+    [cangjie-ci]:   https://github.com/TaiXeflar/wemi/actions/workflows/cangjie-105-test.yaml/badge.svg?branch=master
+    [cj-test]:      https://github.com/TaiXeflar/wemi/actions/workflows/cangjie-105-test.yaml
 
 - Build test, Recursive build examination (No eta)
 

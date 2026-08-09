@@ -220,6 +220,19 @@ function Install-CUDA132 {
     }
 }
 
+function Install-CangjieLTS {
+    winget install `
+        -e `
+        --id Huawei.Cangjie.LTS `
+        --accept-package-agreements `
+        --accept-source-agreements `
+        --disable-interactivity
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to install Cangjie LTS."
+    }
+}
+
 Export-ModuleMember -Function   `
     Test-Winget,                `
     Install-Everything,         `
@@ -228,4 +241,5 @@ Export-ModuleMember -Function   `
     Install-oneAPI,             `
     Install-CUDA118,             `
     Install-CUDA126,             `
-    Install-CUDA132
+    Install-CUDA132,             `
+    Install-CangjieLTS
