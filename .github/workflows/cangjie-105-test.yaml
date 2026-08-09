@@ -12,23 +12,40 @@ on:
     branches:
       - master
     paths:
-      - "SDKs/**/*Cangjie*"
-      - "include/**/*cangjie*"
-      - "devices/**"
-      - "tasks/**"
-      - "utils/**"
       - "wemi.py"
+      - "version.json"
+      - "utils/**"
+      - 'tasks/**'
+      - 'SDKs/addM_Modules.py'
+      - 'SDKs/refs/_find_SDK.py'
+      - 'include/template_modulefile.py'
+      - 'include/refs/_template.py'
+      - 'devices/**'
+      - 'version.json'
+
+      - "SDKs/find_Cangjie.py"
+      - "include/template_cangjie.py"
+
+      - '.github/workflows/cangjie-105-test.py'
+      - '.ci/compile/test-cangjie.psm1'
 
   pull_request:
     branches:
       - master
     paths:
-      - "SDKs/**/*Cangjie*"
-      - "include/**/*cangjie*"
-      - "devices/**"
-      - "tasks/**"
-      - "utils/**"
       - "wemi.py"
+      - "version.json"
+      - "utils/**"
+      - 'tasks/**'
+      - 'SDKs/addM_Modules.py'
+      - 'SDKs/refs/_find_SDK.py'
+      - 'include/template_modulefile.py'
+      - 'include/refs/_template.py'
+      - 'devices/**'
+      - 'version.json'
+
+      - "SDKs/find_Cangjie.py"
+      - "include/template_cangjie.py"
 
   workflow_dispatch:
 
