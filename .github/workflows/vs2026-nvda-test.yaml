@@ -1,0 +1,204 @@
+
+
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
+name: CUDA 13.2 Test
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "SDKs/**/*NVIDIA_CUDA*"
+      - "SDKs/refs/**/*CUDA*"
+      - "include/**/*nvidia_cuda*"
+
+      - "SDKs/**/*VS20XX*"
+      - "SDKs/**/*UCRT*"
+      - "include/**/*VS20XX*"
+      - "include/**/*ucrt*"
+
+      - "devices/**"
+      - "tasks/**"
+      - "utils/**"
+      - "wemi.py"
+
+      - ".ci/common/**"
+      - ".ci/compile/**"
+      - ".ci/sources/**"
+
+      - ".github/workflows/vs2026-nvda-test.yaml"
+
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "SDKs/**/*NVIDIA_CUDA*"
+      - "SDKs/refs/**/*CUDA*"
+      - "include/**/*nvidia_cuda*"
+
+      - "SDKs/**/*VS20XX*"
+      - "SDKs/**/*UCRT*"
+      - "include/**/*VS20XX*"
+      - "include/**/*ucrt*"
+
+      - "devices/**"
+      - "tasks/**"
+      - "utils/**"
+      - "wemi.py"
+
+      - ".ci/common/**"
+      - ".ci/compile/**"
+      - ".ci/sources/**"
+
+      - ".github/workflows/vs2026-nvda-test.yaml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vs2026-nvda-cuda132-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compile-smoke-test:
+    name: VS2026 / NVIDIA CUDA 13.2
+    runs-on: windows-2025
+    timeout-minutes: 90
+
+    defaults:
+      run:
+        shell: pwsh
+
+    env:
+      PYTHON_VERSION: "3.14.2"
+
+      VS_MODULE: "vs/2026/Enterprise"
+      MSVC_MODULE: "msvc/v145_14.51.36231/x64"
+      UCRT_MODULE: "ucrt/10.0.26100.0"
+      CUDA_MODULE: "nvidia/cuda/13.2"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install WEMI runtime dependencies
+        run: |
+          .\.ci\common\install-windows-tools.ps1 `
+            -TclTk `
+            -Everything `
+            -EverythingCli
+
+      - name: Start Everything
+        run: |
+          .\.ci\common\start-everything.ps1
+
+      - name: Install NVIDIA CUDA 13.2
+        run: |
+          Import-Module `
+            .\.ci\common\winget-functions.psm1 `
+            -Force
+
+          Test-Winget
+          Install-CUDA13_2
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.3.2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          github-token: ${{ github.token }}
+          enable-cache: true
+          cache-python: true
+
+      - name: Configure, build and install WEMI
+        run: |
+          $RepositoryRoot = "${{ github.workspace }}"
+          $InstallPrefix = Join-Path `
+            $env:RUNNER_TEMP `
+            "wemi-vs2026-cuda132"
+
+          Set-Location $RepositoryRoot
+
+          Import-Module `
+            .\.ci\common\prepare-uv-venv.psm1 `
+            -Force
+
+          set-uvpython `
+            -RepositoryRoot $RepositoryRoot `
+            -PythonVersion $env:PYTHON_VERSION
+
+          $Python = Join-Path `
+            $RepositoryRoot `
+            ".venv\Scripts\python.exe"
+
+          Remove-Item `
+            -LiteralPath (Join-Path $RepositoryRoot "build") `
+            -Recurse `
+            -Force `
+            -ErrorAction SilentlyContinue
+
+          Remove-Item `
+            -LiteralPath $InstallPrefix `
+            -Recurse `
+            -Force `
+            -ErrorAction SilentlyContinue
+
+          & $Python `
+            (Join-Path $RepositoryRoot "wemi.py") `
+            configure `
+            --aio `
+            --sdk='VS20XX;UCRT;NVIDIA_CUDA' `
+            --prefix $InstallPrefix
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "WEMI configure/build/install failed."
+          }
+
+          $RequiredFiles = @(
+            (Join-Path $InstallPrefix "init\pwsh.ps1"),
+            (Join-Path $InstallPrefix "modulefiles\vs\2026\Enterprise"),
+            (Join-Path $InstallPrefix "modulefiles\.deps\2026\Enterprise\msvc\v145_14.51.36231\x64"),
+            (Join-Path $InstallPrefix "modulefiles\.deps\winsdk\x64\ucrt\10.0.26100.0"),
+            (Join-Path $InstallPrefix "modulefiles\nvidia\cuda\13.2")
+          )
+
+          foreach ($File in $RequiredFiles) {
+            if (-not (
+              Test-Path `
+                -LiteralPath $File `
+                -PathType Leaf
+            )) {
+              throw "Expected WEMI output was not installed: $File"
+            }
+          }
+
+          "WEMI_MODULES_PREFIX=$InstallPrefix" >> $env:GITHUB_ENV
+
+      - name: Validate CUDA 13.2 module stack
+        run: |
+          Import-Module .\.ci\compile\test-nvda.psm1 -Force
+
+          test-nvda `
+            -Case Environment `
+            -InstallPrefix $env:WEMI_MODULES_PREFIX `
+            -VisualStudioModule $env:VS_MODULE `
+            -MsvcModule $env:MSVC_MODULE `
+            -UcrtModule $env:UCRT_MODULE `
+            -CudaModule $env:CUDA_MODULE
+
+      - name: CUDA host - compile, link and execute
+        run: |
+          Import-Module .\.ci\compile\test-nvda.psm1 -Force
+
+          test-nvda `
+            -Case NVCC `
+            -InstallPrefix $env:WEMI_MODULES_PREFIX `
+            -VisualStudioModule $env:VS_MODULE `
+            -MsvcModule $env:MSVC_MODULE `
+            -UcrtModule $env:UCRT_MODULE `
+            -CudaModule $env:CUDA_MODULE
