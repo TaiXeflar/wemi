@@ -124,26 +124,31 @@ Status will be blank as the test case is pending for CI design.
 
 - Compiler smoke test
 
-    | task              | toolchain                                   | status  |
-    | :--               | :--                                         | :--     |
-    | Visual C/C++      | MSVC v145                                   | [![msvc-badge][msvc-ci]][msvc-ci-test]  |
-    | Intel oneAPI      | MSVC v145, oneAPI latest                    | [![intel-badge][intel-ci]][intel-test]  |
-    | NVIDIA CUDA       | MSVC v145, CUDA 13.2                        | [![cuda-badge][cuda-ci]][cuda-test]     |
-    | NVIDIA HPC SDK    | NVHPC Latest                                | No ETA; Pending for Windows x64 release |
-    | AMD HIP SDK       | MSVC v145, HIP `???`                        | No avail release via winget             |
-    | AMD ROCm/TheRock  | MSVC v145, TheRock `7.XX`                   | No avail release via winget             |
-    | Embarcadero C++   | C++ builder 12                              | No ETA; Pending for develop test        |
-    | Cangjie Language  | Cangjie LTS                                 | [![cangjie-badge][cangjie-ci]][cj-test] |
-    | Swift Language    | ----                                        | No ETA; Pending for develop test        |
-    | Rust  Language    | ----                                        | No ETA                                  |
-    | Zig   Language    | ----                                        | No ETA; Pending for develop test        |
-    | Zen-C Language    | ----                                        | No ETA; Pending for develop test        |
-    | LLVM              | LLVM                                        | No ETA                                  |
-    | Perl Languange    | ----                                        | No ETA; Pending for is Strawberry       |
-    | Ruby Languange    | ----                                        | No ETA; Pending for develop test        |
-    | Java Language     | ----                                        | No ETA; Pending for develop test        |
-    | Go Language       | ----                                        | No ETA; Pending for develop test        |
-    | Codon             | ----                                        | No ETA; Pending Exaloop release windows version |
+    | task              | toolchain                   | Local build   | CI status                               |
+    | :--               | :--                         | :--:          | :--                                     |
+    | Visual C/C++      | MSVC v145                   | ✅            | [![msvc-badge][msvc-ci]][msvc-ci-test]  |
+    |                   | MSVC v143                   | ✅            |
+    |                   | MSVC v142                   | ✅            |
+    |                   | MSVC v141                   | ✅            |
+    | Windows SDK       |                             | ✅            | Combined test with VC++                 |
+    | Intel oneAPI      | MSVC v145, oneAPI latest    | ✅            | [![intel-badge][intel-ci]][intel-test]  |
+    | NVIDIA CUDA       | MSVC v145, CUDA 13.2        | ✅            | [![cuda-badge][cuda-ci]][cuda-test]     |
+    | NVIDIA HPC SDK    | NVHPC Latest                |               | Pending for Windows x64 release         |
+    | AMD HIP SDK       | MSVC v145, HIP `???`        | ✅            | No avail release via winget             |
+    | AMD ROCm/TheRock  | MSVC v145, TheRock `7.XX`   | ✅            | No avail release via winget             |
+    | Embarcadero C++   | C++ builder 12              |               | Pending                                 |
+    | Cangjie Language  | Cangjie LTS                 | ✅            | [![cangjie-badge][cangjie-ci]][cj-test] |
+    | Swift Language    | ----                        |               | Pending                                 |
+    | Rust  Language    | ----                        |               | No ETA                                  |
+    | Zig   Language    | ----                        |               | Pending
+    | Zen-C Language    | ----                        |               | Pending
+    | LLVM              | LLVM                        |               | No ETA                                  |
+    | Perl Languange    | ----                        |               | Pending
+    | Ruby Languange    | ----                        |               | No ETA
+    | Java Language     | ----                        |               | No ETA
+    | Go Language       | ----                        |               | Pending
+    | Codon             | ----                        |               | Pending Exaloop release windows version |
+    | Form              | 5.0                         |               | Pending
 
     [msvc-ci]:      https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-msvc-v145.yaml/badge.svg?branch=master
     [msvc-ci-test]: https://github.com/TaiXeflar/wemi/actions/workflows/vs2026-msvc-v145.yaml
