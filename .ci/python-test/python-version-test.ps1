@@ -20,20 +20,19 @@ $InstallPrefix = Join-Path $env:RUNNER_TEMP "wemi-python-$PythonVersion"
 Set-Location $RepositoryRoot
 
 Import-Module `
-    (Join-Path $RepositoryRoot ".ci\common\prepare-uv-venv.psm1") `
-    -Force
-
-Import-Module `
     (Join-Path $RepositoryRoot ".ci\common\modules-init.psm1") `
     -Force
 
 Write-Host "Python test version: $PythonVersion"
 Write-Host "WEMI install prefix: $InstallPrefix"
 
+& uv venv ".venv" `
+    --python $PythonVersion `
+    --clear
 
-set-uvpython `
-    -RepositoryRoot $RepositoryRoot `
-    -PythonVersion $PythonVersion
+if ($LASTEXITCODE -ne 0) {
+    throw "Failed to create uv virtual environment for Python $PythonVersion."
+}
 
 $Python = Join-Path $RepositoryRoot ".venv\Scripts\python.exe"
 
