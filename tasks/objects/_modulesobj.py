@@ -41,7 +41,7 @@ LLVM_DIST_PROFILE: TypeAlias = Literal[
     r'nvidia/nvhpc',        # NVIDIA NVHPC SDK
     r'nvidia/nvhpc-byo',    # NVIDIA NVHPC SDK
     r'nvidia/pgi',          # NVIDIA/PGI Compilers
-    r'qualcomm/llvm'        # Qualcomm LLVM compiler SDK
+    r'qualcomm/llvm',       # Qualcomm LLVM compiler SDK
     r'cangjie', r'lfortran', r'rust', r'swift', r'zig', r'exaloop/codon', r'root-project/cling'
 ]
 
