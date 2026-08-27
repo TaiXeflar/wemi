@@ -17,8 +17,9 @@ class ModuleTemplate(BaseModuleTemplate):
         self.set_root(self.module.root)
         self.set_env(**self.module.ENV)
         self.add_prereq(*self.module.prereq)
+        self.prepend_path("MODULEPATH", *self.module.MODULEPATH)
         self.prepend_path("PATH", *self.module.PATH)
         self.prepend_path("INCLUDE", *self.module.INCLUDE)
         self.prepend_path("LIB", *self.module.LIB)
         self.prepend_path("LD_LIBRARY_PATH", *self.module.LD_LIBRARY_PATH)
-        self.prepend_path("MODULEPATH", *self.module.MODULEPATH)
+        
