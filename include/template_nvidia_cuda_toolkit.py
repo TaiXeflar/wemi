@@ -22,4 +22,3 @@ class ModuleTemplate(BaseModuleTemplate):
         self.prepend_path("INCLUDE", *self.module.INCLUDE)
         self.prepend_path("LIB", *self.module.LIB)
         self.prepend_path("LD_LIBRARY_PATH", *self.module.LD_LIBRARY_PATH)
-        
