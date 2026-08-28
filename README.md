@@ -124,6 +124,11 @@ Status will be blank as the test case is pending for CI design.
 
 - Compiler smoke test
 
+     - Note: NVIDIA CUDA 13.4 Toolkit has been local tested via my PC, but have no official release from winget.
+
+       NVIDIA CUDA Toolkit Modulefile rule is using `$(env:VSCMD_ARG_TGT_ARCH)` follows host compiler `cl.exe` to
+       select correct target platform. So there's no need major fix.
+
     | task              | toolchain                   | Local build   | CI status                               |
     | :--               | :--                         | :--:          | :--                                     |
     | Visual C/C++      | MSVC v145                   | ✅            | [![msvc-badge][msvc-ci]][msvc-ci-test]  |
@@ -133,6 +138,7 @@ Status will be blank as the test case is pending for CI design.
     | Windows SDK       |                             | ✅            | Combined test with VC++                 |
     | Intel oneAPI      | MSVC v145, oneAPI latest    | ✅            | [![intel-badge][intel-ci]][intel-test]  |
     | NVIDIA CUDA       | MSVC v145, CUDA 13.2        | ✅            | [![cuda-badge][cuda-ci]][cuda-test]     |
+    | NVIDIA CUDA       | MSVC v145, CUDA 13.4        | ✅            | No avail winget install binary installer|
     | NVIDIA HPC SDK    | NVHPC Latest                |               | Pending for Windows x64 release         |
     | AMD HIP SDK       | MSVC v145, HIP `???`        | ✅            | No avail release via winget             |
     | AMD ROCm/TheRock  | MSVC v145, TheRock `7.XX`   | ✅            | No avail release via winget             |
@@ -167,7 +173,7 @@ Status will be blank as the test case is pending for CI design.
     | task                | toolchain                           | condition | status   |
     | :--                 | :--                                 | :--       | :--     |
     | [ROCm/TheRock]      | VS2026, MSVC v145, Perl 5.42        | `-DTHEROCK_AMDGPU_FAMILIES = gfx1100;gfx1101;gfx1102;gfx1200;gfx1201` |
-    | [NVIDIA/cutlass]    | VS2026, MSVC v145, CUDA 13.4        | `-DBUILD_TESTS=OFF`                                                   |
+    | [NVIDIA/cutlass]    | VS2026, MSVC v145, CUDA 13.4        | `-DBUILD_TESTING=OFF`                                                   |
     | [pytorch/pytorch]   | VS2026, MSVC v145, CUDA 13.4        | `-DUSE_CUDA=1`, `-DUSE_CUDNN=1`, `-DUSE_CUDSS=1` |
     | [pytorch/pytorch]   | VS2026, MSVC v145, TheRock          | `-DUSE_ROCM=1` |
     | [python/cpython]    | VS2026, MSVC v145                   |
@@ -339,8 +345,7 @@ Status will be blank as the test case is pending for CI design.
 
     4. Some SDKs will require Licenses to install:
         - MATLAB
-        - Borland C++
-        - Embarcadero C++
+        - Borland/Embarcadero C++ Builder
 
     5. Experimential SDKs:
         - MiHoYo/Hoyoverse GunsGirlsZ, GGZ/BH2
