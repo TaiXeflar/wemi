@@ -139,6 +139,12 @@ def args_update():
         dest="GPU_CONFLICT",
         help="Disable GPU compilers projects conflict rule",
     )
+    options_config.add_argument('--cuda-prereq-msvc-host-compiler',
+                                '-DCUDA_PREREQ_MSVC_HOST_COMPILER',
+                                action='store_true',
+                                dest="CUDA_PREREQ_MSVC_HOST_COMPILER",
+                                help='Preset Force NVCC require MSVC'
+    )
     options_config.add_argument(
         "--free-for-all",
         "-DFREE_FOR_ALL",

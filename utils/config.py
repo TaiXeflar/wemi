@@ -37,6 +37,7 @@ MODULE_ZIP_VERSION = 'latest'
 if SEH_STYLE.lower() not in ("default", "python", "gcc", "clang", "msvc"):
     SEH_STYLE = "default"
 
+CUDA_PREREQ_MSVC_HOST_COMPILER: bool = False
 
 EXP_MIHOYO_SDK = False
 ALL_IN_ONE = False

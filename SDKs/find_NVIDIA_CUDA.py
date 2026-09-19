@@ -14,7 +14,7 @@ from .refs import FindSDK
 from .refs._findCUDA import CUDA_X_TYPEHINT, cuda_components_phonebook
 
 from utils.cmake_analyzer import cmake_variable_finder
-from utils import message
+from utils import message, config
 from tasks import ModulesObject
 
 class FindCUDA(FindSDK):
@@ -120,6 +120,9 @@ class FindCUDA(FindSDK):
             message(f"\t{cudaX:<22} {cudaX_version}")
             cudax_stat[cudaX] = cudaX_version
 
+
+        _prereq = [] if config.CUDA_PREREQ_MSVC_HOST_COMPILER else ["msvc", "ucrt"]
+
         self.add_rule(
             ModulesObject(
                 Module=f"nvidia/cuda/{verstr}",
@@ -129,7 +132,7 @@ class FindCUDA(FindSDK):
                 Version=verstr,
                 conflicts=["nvidia/cuda", "nvidia/nvhpc", "nvidia/nvhpc-byo"],
                 hetero_conflicts=["amd/hip", "intel/ocloc"],
-                prereq=["msvc", "ucrt"],
+                prereq=_prereq,
                 deps=[],
                 ENVs={
                     "CUDA_HOME": "$root",
