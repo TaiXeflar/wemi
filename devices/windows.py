@@ -36,6 +36,17 @@ class WindowsNT:
         "Strawberry": FindStrawberryPerl,
     }
 
+    # Experimential
+    if config.EXP_MIHOYO_SDK:
+        _SDK_REGISTRY.update({"MiHoYo": FindMiHoYo})
+    
+    # Add Modules
+    if config.ADD_MODULES or not config.NO_MODULES:
+        _SDK_REGISTRY.update({"Modules": AddModules})
+
+    _reports = []
+
+
     @tic_toc("Configuring Done")
     def __init__(self, modules_only:bool=None, /):
         WindowsCheck()
@@ -58,16 +69,23 @@ class WindowsNT:
 
                 sdk_class = registry_lower.get(sdk_name.lower())
                 if sdk_class:
+
+                    if sdk_name == 'Modules':
+                        self.info[sdk_name] = sdk_class(config.MODULE_ZIP_VERSION)
+                        continue
+                    
                     self.info[sdk_name] = sdk_class()
                 else:
                     message(f"[Warning] Cannot Find SDK type'{sdk_name}'.")
 
-            # Experimential
-            if config.EXP_MIHOYO_SDK:
-                self.info["MiHoYo"] = FindMiHoYo()
 
-        if config.ADD_MODULES or not config.NO_MODULES:
-            self.info['Modules'] = AddModules(config.MODULE_ZIP_VERSION)
+        for sdk in self.info.values():
+            contents = sdk.reports
+            self._reports.extend(contents)
+
+        for msg in self._reports:
+            message(msg)
+        
 
         self.rules: list[ModulesObject] = []
         try:
