@@ -6,7 +6,7 @@
 from abc import ABC, abstractmethod
 import platform
 from pathlib import Path
-from typing import Union, Literal, Any
+from typing import Union, Literal, Any, TypeAlias
 from shutil import which as where
 import subprocess
 import sys
@@ -17,6 +17,8 @@ import os
 from utils.compare_functions import VersionNum
 from utils import message
 from tasks.objects.modulesobject import ModulesObject
+
+ReportContent: TypeAlias = list[str]
 
 
 def os_type() -> (
@@ -72,12 +74,14 @@ class FindSDK(ABC):
     is_llvm_infra = False
     is_hetero_tgt = False
 
+    reports = []
+
     @property
     def SDK_NAME(self) -> str:
         return str
 
     def __init__(self):
-        message(f" -- Checking for {self._name_desc}")
+        self.report(f" -- Checking for {self._name_desc}")
 
         self.os = os_type()
 
@@ -464,3 +468,9 @@ class FindSDK(ABC):
 
     def update(self, name: str, info_dict: dict):
         self.stat.update({name: info_dict})
+
+    # Set SDK find messages summary together
+
+    def report(self, content:ReportContent):
+        if content: 
+            self.reports.append(content)

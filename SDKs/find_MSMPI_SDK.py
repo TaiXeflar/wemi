@@ -25,10 +25,7 @@ class FindMSMPISDK(FindSDK):
         ]
 
         if not mpi_header_all:
-            message(
-                "WARNING",
-                "Warning: Failed to compile MSMPI SDK modulefile object due to no results.",
-            )
+            self.report('Warning: Failed to compile MSMPI SDK modulefile object due to no results.')
             return
 
         msmpi_dir = mpi_header_all[0].parent.parent.resolve()

@@ -54,7 +54,7 @@ class FindHIPSDK(RocXParserMixin, FindSDK):
             verstr = f"{major}.{minor}"
             hipverXY = f"HIP_PATH_{major}{minor}"
 
-            message(f"    {self._name_desc} {verstr:<12} {hip_path.as_posix()}")
+            self.report(f"    {self._name_desc} {verstr:<12} {hip_path.as_posix()}")
 
             rocm_stat: dict[str, Any] = {
                 "Path": hip_path.as_posix(),
@@ -68,7 +68,7 @@ class FindHIPSDK(RocXParserMixin, FindSDK):
 
                 rocm_stat[rocX] = self._get_rocx_version(rocX, v_rule, hip_path)
 
-                message(f"\t{rocX:<22}{rocm_stat[rocX]}")
+                self.report(f"\t{rocX:<22}{rocm_stat[rocX]}")
 
             self.add_rule(
                 ModulesObject(

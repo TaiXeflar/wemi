@@ -37,7 +37,7 @@ class FindUCRT(FindSDK):
             for ucrt in ucrt_versions:
                 archs = subdirs(ucrt_root / "Lib" / ucrt / "ucrt", leaf=True)
 
-                message(f"\tUCRT {ucrt}")
+                self.report(f"    UCRT {ucrt}")
 
                 self.add_rule(
                     [

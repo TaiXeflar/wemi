@@ -43,7 +43,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
         # self.add_nvidia_cucollect()
 
     def add_nvidia_cudnn(self) -> None:
-        message(" -- Checking for NVIDIA cuDNN SDK/backend library")
+        self.report(" -- Checking for NVIDIA cuDNN SDK/backend library")
 
         cudnn_h_list = [Path(h) for h in self.everything("cudnn_version.h")]
 
@@ -109,12 +109,12 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 )
             )
 
-            message(
-                f"    NVIDIA cuDNN {cudnn_ver:<7}(cu{cuda_deps_ver})    {cudnn_dir.resolve().as_posix()}"
+            self.report(
+                f"\tNVIDIA cuDNN {cudnn_ver:<7}(cu{cuda_deps_ver})    {cudnn_dir.resolve().as_posix()}"
             )
 
     def add_nvidia_cudss(self) -> None:
-        message(" -- Checking for NVIDIA cuDSS library")
+        self.report(" -- Checking for NVIDIA cuDSS library")
 
         cudss_dlls = [Path(dll) for dll in self.everything("cudss64*.dll")]
 
@@ -160,14 +160,14 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 ],
             )
 
-            message(
-                f"    NVIDIA cuDSS {cudss_ver:<7}(cu{cuda_deps_ver})    {cudss_dir.resolve().as_posix()}"
+            self.report(
+                f"\tNVIDIA cuDSS {cudss_ver:<7}(cu{cuda_deps_ver})    {cudss_dir.resolve().as_posix()}"
             )
 
         ...
 
     def add_nvidia_cutensor(self):
-        message(" -- Checking for NVIDIA cuTENSOR library")
+        self.report(" -- Checking for NVIDIA cuTENSOR library")
         dlls = [Path(dll) for dll in self.everything("cutensor.dll")]
 
         for dll in dlls:
@@ -206,12 +206,12 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 ],
             )
 
-            message(
-                f"    NVIDIA cuTENSOR {cutensor_ver:<7}(cu{cuda_deps_ver})    {cutensor_dir.resolve().as_posix()}"
+            self.report(
+                f"\tNVIDIA cuTENSOR {cutensor_ver:<7}(cu{cuda_deps_ver})    {cutensor_dir.resolve().as_posix()}"
             )
 
     def add_nvidia_cusparselt(self):
-        message(" -- Checking for NVIDIA cuSPARSELt library")
+        self.report(" -- Checking for NVIDIA cuSPARSELt library")
         dlls = [Path(dll) for dll in self.everything("cusparseLt.dll")]
 
         for dll in dlls:
@@ -250,12 +250,12 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 ],
             )
 
-            message(
-                f"    NVIDIA cuTENSOR {cusparselt_ver:<7}(cu{cuda_deps_ver})    {cusparselt_dir.resolve().as_posix()}"
+            self.report(
+                f"\tNVIDIA cuTENSOR {cusparselt_ver:<7}(cu{cuda_deps_ver})    {cusparselt_dir.resolve().as_posix()}"
             )
 
     def add_nvidia_cutlass(self):
-        message(" -- Checking for NVIDIA cutlass C++ Library")
+        self.report(" -- Checking for NVIDIA cutlass C++ Library")
         dlls = [
             Path(dll) for dll in self.everything("cutlass.*dll")
         ]  # Include cutlass.dll and cutlass.debug.dll etc.
@@ -283,12 +283,12 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 )
             )
 
-            message(
-                f"    NVIDIA cutlass {cutlass_ver:<4}    {cutlass_dir.resolve().as_posix()}"
+            self.report(
+                f"\tNVIDIA cutlass {cutlass_ver:<4}    {cutlass_dir.resolve().as_posix()}"
             )
 
     def add_nvidia_tensorrt(self):
-        message(" -- Checking for NVIDIA TensorRT")
+        self.report(" -- Checking for NVIDIA TensorRT")
         dlls = [
             Path(dll)
             for dll in self.everything(regex=r"nvinfer_\d+\.dll")
@@ -322,12 +322,12 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 )
             )
 
-            message(
-                f"    NVIDIA TensorRT {nvinfer_ver_major:<4}(cuda{cuda_deps_ver})    {tensorrt_dir.resolve().as_posix()}"
+            self.report(
+                f"\tNVIDIA TensorRT {nvinfer_ver_major:<4}(cuda{cuda_deps_ver})    {tensorrt_dir.resolve().as_posix()}"
             )
 
     def add_nvidia_amgx(self):
-        message(" -- Checking for NVIDIA AmgX")
+        self.report(" -- Checking for NVIDIA AmgX")
         dlls = [Path(dll) for dll in self.everything(regex=r'^amgxsh.dll$')]
 
         host = cpu_host_arch()
@@ -372,7 +372,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 return
 
             if version_str:
-                message(f'    NVIDIA AmgX {version_str} (CUDA {cuda_deps_ver}) {dll.as_posix()}')
+                self.report(f'    NVIDIA AmgX {version_str} (CUDA {cuda_deps_ver}) {dll.as_posix()}')
                 self.add_rule(ModulesObject(
                     Module=f'nvidia/amgx/{version_str}',
                     output=f'.deps/nvidia/cuda/{cuda_deps_ver}/nvidia/amgx/{version_str}',
@@ -392,7 +392,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                 continue
 
     def add_nvidia_libmathdx(self):
-        message(' -- Checking for NVIDIA LibMathDx')
+        self.report(' -- Checking for NVIDIA LibMathDx')
         dlls = [dll for dll in self.everything(regex=r'^mathdx64\_\d+.dll')]
 
         if not dlls:
@@ -403,7 +403,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
             cuda_dep = self.cudaX_cuda_deps(dll)
             ver = self.libmathdx_ver_extract(root/'include/libmathdx.h')
 
-            message(f'    NVIDIA libmathdx {ver} (CUDA {cuda_dep})')
+            self.report(f'    NVIDIA libmathdx {ver} (CUDA {cuda_dep})')
             self.add_rule(ModulesObject(
                 Module=f'nvidia/libmathdx/{ver}',
                 output=f'.deps/nvidia/cuda/{cuda_dep}/nvidia/libmathdx/{ver}',

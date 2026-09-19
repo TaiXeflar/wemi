@@ -5,15 +5,19 @@
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Union, Any, overload
+from typing import Union, Any, overload, TypeAlias
 from typing_extensions import Literal
 from utils.compare_functions import VersionNum
 from tasks import ModulesObject
+
+ReportContent: TypeAlias = str
 
 class FindSDK(ABC):
     _name_desc: str = ...
     is_llvm_infra: bool = ...
     is_hetero_tgt: bool = ...
+
+    reports: list[str] = ...
 
     @property
     def SDK_NAME(self) -> str:
@@ -114,3 +118,5 @@ class FindSDK(ABC):
     @overload
     def add_rule(self, obj: dict): ...
     def update(self, name: str, info_dict: dict): ...
+
+    def report(self, content:ReportContent) -> None: ...

@@ -97,7 +97,7 @@ class FindCUDA(FindSDK):
         cuda_path_verstr = f"CUDA_PATH_V{major}_{minor}"
 
         seen_roots.add(cuda_path)
-        message(f"    NVIDIA CUDA {verstr}:    {cuda_path.as_posix()}")
+        self.report(f"    NVIDIA CUDA {verstr}:    {cuda_path.as_posix()}")
 
         cudax_stat: dict[CUDA_X_TYPEHINT, Union[str, None]] = {
             "Path": cuda_path.as_posix()
@@ -117,7 +117,7 @@ class FindCUDA(FindSDK):
                     if isinstance(cudaX_dict, dict):
                         cudaX_version = cudaX_dict.get("version")
 
-            message(f"\t{cudaX:<22} {cudaX_version}")
+            self.report(f"\t{cudaX:<22} {cudaX_version}")
             cudax_stat[cudaX] = cudaX_version
 
 

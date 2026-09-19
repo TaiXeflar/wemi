@@ -23,9 +23,7 @@ class FindMSMPI(FindSDK):
 
     def __WINDOWS__(self):
         if os.getenv("PROCESSOR_ARCHITECTURE") not in ("AMD64", "i686"):
-            message(
-                "WARNING", "Found ARM/ARM64/ARM64EC devices. Disable MSMPI support."
-            )
+            self.report("Warning: Found ARM/ARM64/ARM64EC devices. Disable MSMPI support.")
             return
 
         msmpi_regedit_root = (
@@ -39,10 +37,7 @@ class FindMSMPI(FindSDK):
         )
 
         if not msmpi_regedit_root:
-            message(
-                "WARNING",
-                "Warning: Failed to compile MSMPI modulefile object due to no results.",
-            )
+            self.report("Warning: Failed to compile MSMPI modulefile object due to no results.")
             return
 
         try:

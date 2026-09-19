@@ -64,14 +64,15 @@ class FindOneAPI(FindSDK):
         self.add_intel_gdb(self.ONEAPI_ROOT / "debugger")
 
     def add_intel_tbb(self, pth: Path) -> list[ModulesObject]:
-        message(" -- Checking for Intel Thread Building Blocks (TBB) Library")
+        
+        self.report(" -- Checking for Intel Thread Building Blocks (TBB) Library")
         tbb_list = []
 
         for tbb in (pth).iterdir():
             tbb_ver = tbb.name
             tbb_files = subdirs(tbb, leaf=True)
 
-            message(f"\tIntel TBB   {tbb_ver}")
+            self.report(f"\tIntel TBB   {tbb_ver}")
 
             tbb_tree_new = True if "bin" in tbb_files else False
 
@@ -123,7 +124,7 @@ class FindOneAPI(FindSDK):
         self.add_rule(tbb_list)
 
     def add_intel_tcm(self, pth: Path) -> list[ModulesObject]:
-        message(" -- Checking for Intel Thread Composability Manager (TCM)")
+        self.report(" -- Checking for Intel Thread Composability Manager (TCM)")
         tcm_list = []
 
         for tcm in subdirs(pth):
@@ -145,15 +146,16 @@ class FindOneAPI(FindSDK):
                 )
             )
 
-            message(f"\tIntel tcm   {tcm.name}")
+            self.report(f"\tIntel tcm   {tcm.name}")
 
         self.add_rule(tcm_list)
 
     def add_intel_mpi(self, pth: Path) -> list[ModulesObject]:
-        message(" -- Checking for Intel Message Passing Interface (Intel MPI)")
+        self.report(" -- Checking for Intel Message Passing Interface (Intel MPI)")
         mpi_vers = subdirs(pth)
         for mpi in mpi_vers:
-            message(f"\tIntel MPI   {mpi.name}")
+        
+            self.report(f"\tIntel MPI   {mpi.name}")
 
             if (mpi / "bin/impi.dll").exists():
                 self.add_rule(
@@ -254,7 +256,7 @@ class FindOneAPI(FindSDK):
                 )
 
     def add_intel_compiler(self, pth: Path) -> list[ModulesObject]:
-        message(" -- Checking for Intel C/C++/DPC++/Visual Fortran HPC compilers")
+        self.report(" -- Checking for Intel C/C++/DPC++/Visual Fortran HPC compilers")
 
         compilers = []
 
@@ -282,14 +284,15 @@ class FindOneAPI(FindSDK):
                     ver / "windows/bin-llvm/clang.exe", "--version", "X.Y.Z"
                 )
 
-                message(f"    Intel compiler     {ver.name}")
-                message(f"\t - icl         {icl}")
-                message(f"\t - icx         {icx}")
-                message(f"\t - ifort       {ifort}")
-                message(f"\t - ifx         {ifx}")
-                message(f"\t - dpcpp       {dpcpp}")
-                message(f"\t - icpx        {icpx}")
-                message(f"\t - IntelLLVM   {llvm}")
+                self.report(dedent(f"""    Intel compiler     {ver.name}\
+                    \t - icl         {icl}
+                    \t - icx         {icx}
+                    \t - ifort       {ifort}
+                    \t - ifx         {ifx}
+                    \t - dpcpp       {dpcpp}
+                    \t - icpx        {icpx}
+                    \t - IntelLLVM   {llvm}"""
+                ))
 
                 # Not include Intel LLVM
                 compilers.append(
@@ -429,11 +432,13 @@ class FindOneAPI(FindSDK):
                     ver / "bin/compiler/clang.exe", "--version", "X.Y.Z"
                 )
 
-                message(f"    Intel compiler     {ver.name}")
-                message(f"\t - icx         {icx}")
-                message(f"\t - ifx         {ifx}")
-                message(f"\t - icpx        {icpx}")
-                message(f"\t - IntelLLVM   {llvm}")
+                self.report(f"""\tIntel compiler     {ver.name}\
+                
+                - icx         {icx}
+                - ifx         {ifx}
+                - icpx        {icpx}
+                - IntelLLVM   {llvm}
+                """)
 
                 # Not include Intel LLVM
                 compilers.append(
@@ -553,7 +558,7 @@ class FindOneAPI(FindSDK):
         self.add_rule(compilers)
 
     def add_intel_mkl(self, pth: Path) -> list[ModulesObject]:
-        message(" -- Checking for Intel Math Kernel Library (MKL)")
+        self.report(" -- Checking for Intel Math Kernel Library (MKL)")
         mkl_ver_dirs = subdirs(pth)
 
         for mkl in mkl_ver_dirs:
@@ -565,7 +570,7 @@ class FindOneAPI(FindSDK):
                 else ["$root/lib"]
             )
 
-            message(f"\tIntel MKL   {mkl_ver} (LP64)")
+            self.report(f"\tIntel MKL   {mkl_ver} (LP64)")
 
             # LP64
             self.add_rule(
@@ -594,7 +599,7 @@ class FindOneAPI(FindSDK):
                 )
             )
 
-            message(f"\tIntel MKL   {mkl_ver} (ILP64)")
+            self.report(f"\tIntel MKL   {mkl_ver} (ILP64)")
 
             # ILP64
             self.add_rule(
@@ -627,7 +632,7 @@ class FindOneAPI(FindSDK):
         dnnl_list: list[ModulesObject] = []
         dnnl_dist: dict[str, str] = {}
 
-        message(" -- Checking for Intel Deep Neural Networks Library (oneDNN/DNNL)")
+        self.report(" -- Checking for Intel Deep Neural Networks Library (oneDNN/DNNL)")
 
         for dnnl in subdirs(pth):
             dnnl_ver = dnnl.name
@@ -643,7 +648,7 @@ class FindOneAPI(FindSDK):
 
             dnnl_subdir = subdirs(dnnl, leaf=True)
             if "bin" in dnnl_subdir:
-                message(f"\tIntel DNNL  {dnnl_ver}")
+                self.report(f"\tIntel DNNL  {dnnl_ver}")
 
                 dnnl_dist.update({dnnl_ver: dnnl_ver})
 
@@ -687,7 +692,7 @@ class FindOneAPI(FindSDK):
                 dnnl_b = ["cpu_dpcpp_gpu_dpcpp", "cpu_iomp", "cpu_tbb", "cpu_vcomp"]
 
                 for b in dnnl_b:
-                    message(f"\tIntel DNNL  {dnnl_ver} ({b})")
+                    self.report(f"\tIntel DNNL  {dnnl_ver} ({b})")
 
                 dnnl_list.extend(
                     [
@@ -728,10 +733,10 @@ class FindOneAPI(FindSDK):
         self.add_rule(dnnl_list)
 
     def add_intel_gdb(self, pth: Path) -> list[ModulesObject]:
-        message(" -- Checking for Intel Distribution for GDB")
+        self.report(" -- Checking for Intel Distribution for GDB")
 
         for gdb in subdirs(pth):
-            message(f"\tIntel GDB   {gdb.name}")
+            self.report(f"\tIntel GDB   {gdb.name}")
             self.add_rule(
                 ModulesObject(
                     Module=f"intel/gdb/{gdb.name}",

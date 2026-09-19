@@ -21,6 +21,8 @@ class FindMATLAB(FindSDK):
     def __WINDOWS__(self):
         super().__WINDOWS__()
 
+        self.report(' -- Checking for Mathworks/MATLAB')
+
         matlab_versions = regedit("HKLM", r"SOFTWARE\MathWorks\MATLAB")
         if matlab_versions is None:
             return
@@ -66,7 +68,7 @@ class FindMATLAB(FindSDK):
         )
 
         for ver, pth in zip(matlab_versioning, matlab_install_dirs):
-            message(f"\tMATLAB {ver}:   {pth.as_posix()}")
+            self.report(f"\tMATLAB {ver}:   {pth.as_posix()}")
 
     def _matlab_version_analyzer(self, version: str):
         ab: Literal["1", "2"]

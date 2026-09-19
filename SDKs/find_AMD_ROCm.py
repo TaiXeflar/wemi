@@ -15,7 +15,7 @@ from utils import message
 from tasks import ModulesObject
 
 
-class FindTheRock(RocXParserMixin, FindSDK):
+class FindTheRock(FindSDK, RocXParserMixin,):
     _name_desc = "ROCm/TheRock"
     is_llvm_infra = True
     is_hetero_tgt = True
@@ -29,6 +29,7 @@ class FindTheRock(RocXParserMixin, FindSDK):
 
     # --- 主流程 ---
     def __WINDOWS__(self):
+        
         hip_dirs = [Path(hip) for hip in self.everything("hipcc.exe")]
 
         if not hip_dirs:
@@ -55,7 +56,8 @@ class FindTheRock(RocXParserMixin, FindSDK):
                 continue
 
             rocm_ver = ver_file.read_text("utf-8").strip()
-            message(f"    ROCm/TheRock {rocm_ver}    {dist.resolve().as_posix()}")
+
+            self.report(f"    ROCm/TheRock {rocm_ver}    {dist.resolve().as_posix()}")
 
             dist_info_path = dist / "share/therock/dist_info.json"
             if dist_info_path.exists():
@@ -67,13 +69,12 @@ class FindTheRock(RocXParserMixin, FindSDK):
 
             for rocX, v_rule in rocX_config_version_cmake_phonebook.items():
                 rocm_config[rocX] = self._get_rocx_version(rocX, v_rule, dist)
-                message(f"\t{rocX:<22}{rocm_config[rocX]}")
+
+                self.report(f"\t{rocX:<22}{rocm_config[rocX]}")
 
             rocm_version = rocm_config.get("therock")
             if not rocm_version or rocm_version != rocm_ver:
-                message("WARNING", dedent(f"""\
-                    Warning: skipping ROCm/TheRock {rocm_ver} profile with version cinfigure incorrect."""
-                    ))
+                self.report(f'Warning: skipping ROCm/TheRock {rocm_ver} profile with version configure incorrect.')
                 continue
 
             self.add_rule(ModulesObject(

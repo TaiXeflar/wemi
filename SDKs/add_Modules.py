@@ -41,7 +41,7 @@ class AddModules(FindSDK):
         return z
 
     def add_module_scripts(self):
-        print(' -- Generating Modules rules')
+        self.report(' -- Generating Modules rules')
 
         modules_dir_files = [ # Modules/*/
             'bin/envml.cmd',

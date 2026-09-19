@@ -51,7 +51,7 @@ class FindGMT(FindSDK):
                 )
             )
 
-            message(f"    GMT{gmt_major} ({gmt_version})    {gmt.resolve().as_posix()}")
+            self.report(f"    GMT{gmt_major} ({gmt_version})    {gmt.resolve().as_posix()}")
 
     def gmt_ver_extract(self, header: Path | str, /) -> str:
         if not header.exists() or not header.is_file():

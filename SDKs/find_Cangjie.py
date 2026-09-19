@@ -9,6 +9,7 @@ from pathlib import Path
 from .refs import FindSDK
 from utils import message
 from tasks import ModulesObject
+from textwrap import dedent
 
 
 class FindCangjie(FindSDK):
@@ -29,10 +30,7 @@ class FindCangjie(FindSDK):
 
             cangjie_llvm = cjc_dir / "third_party/llvm/bin"
             if not cangjie_llvm.exists():
-                message(
-                    "WARNING",
-                    f"[Warning] Found Cangjie {cjc_ver} have no llvm dist. Skip.",
-                )
+                self.report(f"[Warning] Found Cangjie {cjc_ver} have no llvm dist. Skip.")
                 continue
 
             cangjie_llvm_ver = self._find_version(
@@ -57,10 +55,11 @@ class FindCangjie(FindSDK):
             else:
                 cangjie_mingw_ver = None
 
-            message(f"    Cangjie Lang {cjc_ver}")
-            message(f"\tcjc:    {cjc_ver}")
-            message(f"\tLLVM:   {cangjie_llvm_ver}, target {cangjie_llvm_tgt}")
-            message(f"\tMinGW:  {cangjie_mingw_ver}")
+            self.report(f'''    Cangjie Lang {cjc_ver} \n\
+                cjc:    {cjc_ver}
+                LLVM:   {cangjie_llvm_ver}, target {cangjie_llvm_tgt}
+                MinGW:  {cangjie_mingw_ver}
+            ''')
 
             self.add_rule(
                 ModulesObject(

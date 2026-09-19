@@ -6,7 +6,7 @@
 import re
 from pathlib import Path
 
-from utils import regedit, message
+from utils import regedit
 from tasks import ModulesObject
 from .refs import FindSDK
 from .refs._findMHY import (
@@ -28,12 +28,14 @@ class FindMiHoYo(FindSDK):
     def __WINDOWS__(self):
         k: MIHOYO_PROJECTS_TYPEHINT
 
+        self.report(' -- Checking for HoYoVerse SDK')
+
         hoyo_launcher_path = regedit("HKCU", r'Software\Cognosphere\HYP\1_0', key_name='InstallPath')
         hoyo_mi_launcher_path = regedit("HKCU", r'Software\miHoYo\HYP\1_1', key_name='InstallPath')
 
         if hoyo_launcher_path:
             _pth = Path(hoyo_launcher_path).as_posix()
-            message(f'    Found MiHoYo/HoYoVerse Launcher (Global)      {_pth}')
+            self.report(f'    Found MiHoYo/HoYoVerse Launcher (Global)      {_pth}')
             self.add_rule(ModulesObject(
                 Module='miHoYo/HoYoVerse',
                 output='miHoYo/HoYoVerse',
@@ -68,7 +70,7 @@ class FindMiHoYo(FindSDK):
                         )
 
                 _fmt = "    Project " + f"{k:<15}" + f"{version:<15}" + pth
-                message(_fmt)
+                self.report(_fmt)
                 proj, _, server = k.partition('.')
                 server = 'global' if not server else server
                 self.add_rule(
@@ -82,7 +84,7 @@ class FindMiHoYo(FindSDK):
 
         if hoyo_mi_launcher_path:
             _pth = Path(hoyo_mi_launcher_path).as_posix()
-            message(f'    Found MiHoYo/MiHoYo Launcher (Mainland China)     {_pth}')
+            self.report(f'    Found MiHoYo/MiHoYo Launcher (Mainland China)     {_pth}')
             self.add_rule(ModulesObject(
                 Module='miHoYo/miHoYo',
                 output='miHoYo/miHoYo',
@@ -116,7 +118,7 @@ class FindMiHoYo(FindSDK):
                         )
 
                 _fmt = "    Project " + f"{k:<15}" + f"{version:<15}" + pth
-                message(_fmt)
+                self.report(_fmt)
                 proj, _, server = k.partition('.')
                 server = 'global' if not server else server
                 self.add_rule(

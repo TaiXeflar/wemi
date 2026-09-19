@@ -48,11 +48,12 @@ class FindStrawberryPerl(FindSDK):
                 perl_dir / "c/bin/ninja.exe", "--version", "X.Y.Z"
             )
 
-            message(f"    Perl {perl_v}     {perl.parent.parent.resolve().as_posix()}")
-            message(f"\tGCC             {perl_gcc}, target {perl_gcct}")
-            message(f"\tCMake           {perl_cmake}")
-            message(f"\tNinja-build     {perl_ninja}")
-
+            self.report(f"""    Perl {perl_v}     {perl.parent.parent.resolve().as_posix()}  \n\
+                GCC             {perl_gcc}, target {perl_gcct}
+                CMake           {perl_cmake}
+                Ninja-build     {perl_ninja}"""
+            )
+            
             self.add_rule(
                 ModulesObject(
                     Module=f"strawberry/{perl_v}",

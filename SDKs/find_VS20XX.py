@@ -46,7 +46,7 @@ class FindVS20XX(FindSDK):
 
             vs_name_fmt = f"{vs_ver} {vs_dst}:"
 
-            message(f"    {vs_name_fmt:<25}{vs_dir.as_posix()}")
+            self.report(f"    Visual Studio {vs_name_fmt:<20}{vs_dir.as_posix()}")
 
             self.add_rule(
                 Module=f"vs/{vs_ver}/{vs_dst}",
@@ -84,7 +84,7 @@ class FindVS20XX(FindSDK):
 
                 vc_fmt = f"MSVC {vc_ver} ({vc_tag}),"
 
-                message(f"\t{vc_fmt:<30}target: {vc_archs_installed}")
+                self.report(f"\t{vc_fmt:<30}target: {vc_archs_installed}")
 
                 self.add_rule(
                     [
@@ -189,8 +189,8 @@ class FindVS20XX(FindSDK):
                     check=True,
                 ).stdout.strip()
 
-                ll_fmt = f"LLVM/Clang {llvm_version},"
-                message(f"\t{ll_fmt:<30}target: {ll_target_triple}")
+                ll_fmt = f"LLVM/Clang {llvm_version}"
+                self.report(f"\t{ll_fmt:<30}target: {ll_target_triple}")
 
                 self.add_rule(
                     Module=f"llvm/{llvm_version}",
@@ -221,7 +221,7 @@ class FindVS20XX(FindSDK):
                 )
                 vs_cmake_rootdir = vs_cmake_exe.parent.parent
 
-                message(f"\tCMake {vs_cmake_version}")
+                self.report(f"\tCMake {vs_cmake_version}")
 
                 self.add_rule(
                     Module=f"cmake/{vs_cmake_version}",
@@ -245,7 +245,7 @@ class FindVS20XX(FindSDK):
                 )
                 vs_ninja_dir = vs_ninja_exe.parent
 
-                message(f"\tNinja-Build {vs_ninja_version}")
+                self.report(f"\tNinja-Build {vs_ninja_version}")
 
                 (
                     self.add_rule(
@@ -276,7 +276,7 @@ class FindVS20XX(FindSDK):
                     msbuild_exe, "/version", "X.Y.Z", line=1
                 )
 
-                message(f"\tMSBuild {msbuild_ver}")
+                self.report(f"\tMSBuild {msbuild_ver}")
 
                 self.add_rule(
                     Module=f"msbuild/{msbuild_ver}",
