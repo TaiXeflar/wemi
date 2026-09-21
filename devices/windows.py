@@ -36,6 +36,14 @@ class WindowsNT:
         "Strawberry": FindStrawberryPerl,
     }
 
+    # Experimential
+    if config.EXP_MIHOYO_SDK:
+        _SDK_REGISTRY.update({"MiHoYo": FindMiHoYo})
+                    
+    # Add Modules
+    if config.ADD_MODULES or not config.NO_MODULES:
+        _SDK_REGISTRY.update({"Modules": AddModules})
+
 
     _reports = []
 
@@ -49,7 +57,9 @@ class WindowsNT:
         raw_target_sdks = getattr(config, "ENABLE_SDKS", [])
         registry_lower = {k.lower(): v for k, v in self._SDK_REGISTRY.items()}
 
+
         if not modules_only:
+
             if not raw_target_sdks:
                 target_sdks = list(self._SDK_REGISTRY.keys())
                 message(" -- WEMI Enabled All SDK scanning.")
@@ -57,13 +67,13 @@ class WindowsNT:
                 target_sdks = raw_target_sdks
                 message(f" -- WEMI Selected SDKs: {target_sdks}")
 
-            # Experimential
             if config.EXP_MIHOYO_SDK:
-                self._SDK_REGISTRY.update({"mihoyo": FindMiHoYo})
-                            
-            # Add Modules
+                target_sdks.append('MiHoYo')
+
             if config.ADD_MODULES or not config.NO_MODULES:
-                self._SDK_REGISTRY.update({"modules": AddModules})
+                target_sdks.append("Modules")
+       
+            print(list(target_sdks))
 
             for sdk_name in target_sdks:
 
