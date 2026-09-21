@@ -49,14 +49,6 @@ class WindowsNT:
         raw_target_sdks = getattr(config, "ENABLE_SDKS", [])
         registry_lower = {k.lower(): v for k, v in self._SDK_REGISTRY.items()}
 
-        # Experimential
-        if config.EXP_MIHOYO_SDK:
-            self._SDK_REGISTRY.update({"MiHoYo": FindMiHoYo})
-        
-        # Add Modules
-        if config.ADD_MODULES or not config.NO_MODULES:
-            self._SDK_REGISTRY.update({"Modules": AddModules})
-
         if not modules_only:
             if not raw_target_sdks:
                 target_sdks = list(self._SDK_REGISTRY.keys())
@@ -64,6 +56,14 @@ class WindowsNT:
             else:
                 target_sdks = raw_target_sdks
                 message(f" -- WEMI Selected SDKs: {target_sdks}")
+
+            # Experimential
+            if config.EXP_MIHOYO_SDK:
+                self._SDK_REGISTRY.update({"MiHoYo": FindMiHoYo})
+                            
+            # Add Modules
+            if config.ADD_MODULES or not config.NO_MODULES:
+                self._SDK_REGISTRY.update({"Modules": AddModules})
 
             for sdk_name in target_sdks:
 
@@ -77,7 +77,8 @@ class WindowsNT:
                     self.info[sdk_name] = sdk_class()
                 else:
                     message(f"[Warning] Cannot Find SDK type'{sdk_name}'.")
-
+        else:
+            self.info['Modules'] = AddModules(config.MODULE_ZIP_VERSION)
 
         for sdk in self.info.values():
             contents = sdk.reports
