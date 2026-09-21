@@ -20,3 +20,6 @@ hack_scripts
 **/*old*
 **/*bak*
 **/*.zip
+
+# Testing install dir
+**/*install
