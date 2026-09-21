@@ -59,18 +59,18 @@ class WindowsNT:
 
             # Experimential
             if config.EXP_MIHOYO_SDK:
-                self._SDK_REGISTRY.update({"MiHoYo": FindMiHoYo})
+                self._SDK_REGISTRY.update({"mihoyo": FindMiHoYo})
                             
             # Add Modules
             if config.ADD_MODULES or not config.NO_MODULES:
-                self._SDK_REGISTRY.update({"Modules": AddModules})
+                self._SDK_REGISTRY.update({"modules": AddModules})
 
             for sdk_name in target_sdks:
 
                 sdk_class = registry_lower.get(sdk_name.lower())
                 if sdk_class:
 
-                    if sdk_name == 'Modules':
+                    if sdk_name == 'modules':
                         self.info[sdk_name] = sdk_class(config.MODULE_ZIP_VERSION)
                         continue
                     
@@ -78,7 +78,7 @@ class WindowsNT:
                 else:
                     message(f"[Warning] Cannot Find SDK type'{sdk_name}'.")
         else:
-            self.info['Modules'] = AddModules(config.MODULE_ZIP_VERSION)
+            self.info['modules'] = AddModules(config.MODULE_ZIP_VERSION)
 
         for sdk in self.info.values():
             contents = sdk.reports
