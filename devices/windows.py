@@ -13,6 +13,7 @@ from SDKs.refs import FindSDK
 from SDKs import *
 
 from utils import message, tic_toc, config
+from tasks.progress import ProgressDisplay
 
 
 from tasks import seh, ModulesObject, modules_object_json_encoder
@@ -36,13 +37,6 @@ class WindowsNT:
         "Strawberry": FindStrawberryPerl,
     }
 
-    # Experimential
-    if config.EXP_MIHOYO_SDK:
-        _SDK_REGISTRY.update({"MiHoYo": FindMiHoYo})
-    
-    # Add Modules
-    if config.ADD_MODULES or not config.NO_MODULES:
-        _SDK_REGISTRY.update({"Modules": AddModules})
 
     _reports = []
 
@@ -56,6 +50,13 @@ class WindowsNT:
         raw_target_sdks = getattr(config, "ENABLE_SDKS", [])
         registry_lower = {k.lower(): v for k, v in self._SDK_REGISTRY.items()}
 
+        # Experimential
+        if config.EXP_MIHOYO_SDK:
+            self._SDK_REGISTRY.update({"MiHoYo": FindMiHoYo})
+        
+        # Add Modules
+        if config.ADD_MODULES or not config.NO_MODULES:
+            self._SDK_REGISTRY.update({"Modules": AddModules})
 
         if not modules_only:
             if not raw_target_sdks:
