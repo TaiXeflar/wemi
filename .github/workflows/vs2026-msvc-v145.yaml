@@ -16,7 +16,7 @@ on:
       - "version.json"
       - "utils/**"
       - 'tasks/**'
-      - 'SDKs/addM_Modules.py'
+      - 'SDKs/add_Modules.py'
       - 'SDKs/refs/_find_SDK.py'
       - 'include/template_modulefile.py'
       - 'include/refs/_template.py'
