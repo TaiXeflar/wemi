@@ -27,7 +27,7 @@ class FindTheRock(FindSDK, RocXParserMixin,):
 
     # --- 主流程 ---
     def __WINDOWS__(self):
-        
+
         hip_dirs = [Path(hip) for hip in self.everything("hipcc.exe")]
 
         if not hip_dirs:
@@ -39,9 +39,9 @@ class FindTheRock(FindSDK, RocXParserMixin,):
 
         total_rocx = len(hip_dirs_therock)*len(rocX_config_version_cmake_phonebook)
         task = self.progress.add(
-            "ROCm/TheRock", 
+            "ROCm/TheRock",
             total=total_rocx
-        )        
+        )
 
         for hip in hip_dirs_therock:
             dist = hip.parent.parent

@@ -82,7 +82,7 @@ class WindowsNT:
                 if sdk_name.lower() == 'modules':
                     self.info[sdk_name] = sdk_class(config.MODULE_ZIP_VERSION)
                     continue
-                
+
                 self.info[sdk_name] = sdk_class()
 
 
@@ -92,7 +92,7 @@ class WindowsNT:
 
         for msg in self._reports:
             message(msg)
-        
+
 
         self.rules: list[ModulesObject] = []
         try:

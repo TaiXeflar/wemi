@@ -474,5 +474,5 @@ class FindSDK(ABC):
     # Set SDK find messages summary together
 
     def report(self, content:ReportContent):
-        if content: 
+        if content:
             self._reports.append(content)

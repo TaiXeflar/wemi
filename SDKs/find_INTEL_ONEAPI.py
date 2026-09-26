@@ -64,7 +64,7 @@ class FindOneAPI(FindSDK):
         self.add_intel_gdb(self.ONEAPI_ROOT / "debugger")
 
     def add_intel_tbb(self, pth: Path) -> list[ModulesObject]:
-        
+
         self.report(" -- Checking for Intel Thread Building Blocks (TBB) Library")
         tbb_list = []
 
@@ -154,7 +154,7 @@ class FindOneAPI(FindSDK):
         self.report(" -- Checking for Intel Message Passing Interface (Intel MPI)")
         mpi_vers = subdirs(pth)
         for mpi in mpi_vers:
-        
+
             self.report(f"\tIntel MPI   {mpi.name}")
 
             if (mpi / "bin/impi.dll").exists():
@@ -433,7 +433,7 @@ class FindOneAPI(FindSDK):
                 )
 
                 self.report(f"""\tIntel compiler     {ver.name}\
-                
+
                 - icx         {icx}
                 - ifx         {ifx}
                 - icpx        {icpx}

@@ -1,3 +1,8 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026-${year} WEMI Contributors
+# This software is released under the MIT License.
+# https://opensource.org/licenses/MIT
+
 from __future__ import annotations
 
 import sys
@@ -26,7 +31,7 @@ class ProgressTask:
     """One active row owned by a ProgressDisplay."""
 
     def __init__(self, display: ProgressDisplay, state: _ProgressState) -> None:
-        
+
         self._display: ProgressDisplay = display
         self._state: _ProgressState = state
         self._closed: bool = False
@@ -72,7 +77,7 @@ class ProgressDisplay:
         self._rendered_lines: int = 0
 
     def add(self, name: str, /, total: int, *, stage: str = "") -> ProgressTask:
-        
+
         state = _ProgressState(
             name=name,
             total=max(total, 1),

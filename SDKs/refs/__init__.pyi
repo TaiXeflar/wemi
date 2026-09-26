@@ -24,9 +24,9 @@ class FindSDK(ABC):
     def SDK_NAME(self) -> str:
         return str
 
-    def __init__(self): 
+    def __init__(self):
         self._reports: list[str] = ...
-        
+
     @abstractmethod
     def __WINDOWS__(self):
         ...

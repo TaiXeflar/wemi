@@ -22,7 +22,7 @@ class FindCUDAX(FindSDK, NVIDIA_CUDAX_EXTENSION):
 
     def __init__(self):
         super().__init__()
-        
+
 
     def __WINDOWS__(self):
 

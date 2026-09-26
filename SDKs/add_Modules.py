@@ -42,7 +42,7 @@ class AddModules(FindSDK):
 
     def add_module_scripts(self):
         self.report(' -- Generating Modules rules')
-        
+
         modules_dir_files = [ # Modules/*/
             'bin/envml.cmd',
             'bin/ml.cmd',
@@ -72,7 +72,7 @@ class AddModules(FindSDK):
         ]
 
         task = self.progress.add(
-            "Add Modules ", 
+            "Add Modules ",
             total=len(modules_dir_files)+len(modules_test_files),
         )
 

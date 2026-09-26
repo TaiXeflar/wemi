@@ -53,7 +53,7 @@ class FindStrawberryPerl(FindSDK):
                 CMake           {perl_cmake}
                 Ninja-build     {perl_ninja}"""
             )
-            
+
             self.add_rule(
                 ModulesObject(
                     Module=f"strawberry/{perl_v}",
