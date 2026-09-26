@@ -18,6 +18,8 @@ from utils.compare_functions import VersionNum
 from utils import message
 from tasks.objects.modulesobject import ModulesObject
 
+from tasks import ProgressDisplay
+
 ReportContent: TypeAlias = list[str]
 
 
@@ -74,21 +76,21 @@ class FindSDK(ABC):
     is_llvm_infra = False
     is_hetero_tgt = False
 
-    reports = []
+    progress = ProgressDisplay()
 
     @property
     def SDK_NAME(self) -> str:
         return str
 
     def __init__(self):
-        self.report(f" -- Checking for {self._name_desc}")
+        self._reports = []
 
         self.os = os_type()
-
         self.es: Path = es if (es := self.__where__("es.exe")) else Path(".deps/es.exe")
-
         self.info: list[ModulesObject] = []
         self.stat: dict[str, Any] = {}
+
+        self.report(f" -- Checking for {self._name_desc}")
 
         super().__init__()
 
@@ -473,4 +475,4 @@ class FindSDK(ABC):
 
     def report(self, content:ReportContent):
         if content: 
-            self.reports.append(content)
+            self._reports.append(content)

@@ -42,7 +42,7 @@ class AddModules(FindSDK):
 
     def add_module_scripts(self):
         self.report(' -- Generating Modules rules')
-
+        
         modules_dir_files = [ # Modules/*/
             'bin/envml.cmd',
             'bin/ml.cmd',
@@ -71,7 +71,13 @@ class AddModules(FindSDK):
             'TESTINSTALL.bat',
         ]
 
+        task = self.progress.add(
+            "Add Modules ", 
+            total=len(modules_dir_files)+len(modules_test_files),
+        )
+
         for f in modules_dir_files:
+            task.update(stage='f')
             if f == 'init/pwsh.ps1':
                 self.add_rule(ModulesObject(
                     Module=f,
@@ -89,6 +95,7 @@ class AddModules(FindSDK):
                     Include_file='template_modulefile',
                     src=f'.deps/{self.z.foldername}/{f}'
                 ))
+            task.advance()
 
         self.add_rule([ModulesObject(
             Module=f,
@@ -97,3 +104,5 @@ class AddModules(FindSDK):
             Include_file='template_modulefile',
             src=f'.deps/{self.z.foldername}/{f}'
         ) for f in modules_test_files])
+
+        task.close()

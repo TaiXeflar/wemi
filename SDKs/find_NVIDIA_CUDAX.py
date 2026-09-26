@@ -12,24 +12,44 @@ from .refs._findCUDAX import NVIDIA_CUDAX_EXTENSION
 from .refs._findVS20XX import cpu_host_arch
 from tasks import ModulesObject
 from utils import message
+from tasks.progress import ProgressDisplay, ProgressTask
+
+from typing import Callable
 
 
-class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
+class FindCUDAX(FindSDK, NVIDIA_CUDAX_EXTENSION):
     _name_desc = "NVIDIA CUDA-X Library"
 
     def __init__(self):
         super().__init__()
+        
 
     def __WINDOWS__(self):
-        self.add_nvidia_cudnn()
-        self.add_nvidia_cudss()
-        self.add_nvidia_cutensor()
-        self.add_nvidia_cusparselt()
-        self.add_nvidia_cutlass()
 
-        self.add_nvidia_tensorrt()
-        self.add_nvidia_amgx()
-        self.add_nvidia_libmathdx()
+        cudax_tasks: dict[str, Callable] = {
+            "NVIDIA cuDNN":         self.add_nvidia_cudnn,
+            "NVIDIA cuDSS":         self.add_nvidia_cudss,
+            "NVIDIA cuTENSOR":      self.add_nvidia_cutensor,
+            "NVIDIA cuSPARSELt":    self.add_nvidia_cusparselt,
+            "NVIDIA cutlass":       self.add_nvidia_cutlass,
+            "NVIDIA TensorRT":      self.add_nvidia_tensorrt,
+            "NVIDIA AmgX":          self.add_nvidia_amgx,
+            "NVIDIA libmathDX":     self.add_nvidia_libmathdx,
+        }
+
+        task = self.progress.add("NVIDIA/CUDA-X", total=len(cudax_tasks))
+
+        try:
+            # 先畫出 0% 與第一個正在處理的項目。
+            for task_name, task_function in cudax_tasks.items():
+                task.update(stage=task_name)
+
+                task_function()
+
+                # 成功完成這個 component 後才推進。
+                task.advance()
+        finally:
+            task.close()
 
         # self.add_nvidia_cutile()
 
@@ -333,7 +353,6 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
         host = cpu_host_arch()
 
         for dll in dlls:
-            # print(dll.as_posix())
             cuda_deps_ver = self.cudaX_cuda_deps(dll)
             req_cublas_dll = self.everything(f'cublas64_{cuda_deps_ver}.dll')[0]
             req_vcruntime140_1_dll = self.everything(f'vcruntime140_1.dll')[0]
@@ -368,7 +387,7 @@ class FindCUDAX(NVIDIA_CUDAX_EXTENSION, FindSDK):
                     version_str = None
 
             except Exception as e:
-                print(e)
+                self.report(e)
                 return
 
             if version_str:

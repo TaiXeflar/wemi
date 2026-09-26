@@ -7,11 +7,9 @@ from typing import Any
 from pathlib import Path
 import json
 from typing import Dict
-from textwrap import dedent
 
 from .refs import FindSDK
 from .refs._findROCm import RocXParserMixin, rocX_config_version_cmake_phonebook
-from utils import message
 from tasks import ModulesObject
 
 
@@ -38,6 +36,12 @@ class FindTheRock(FindSDK, RocXParserMixin,):
         hip_dirs_therock = [
             hip for hip in hip_dirs if self._hip_is_from_therock(hip)
         ]
+
+        total_rocx = len(hip_dirs_therock)*len(rocX_config_version_cmake_phonebook)
+        task = self.progress.add(
+            "ROCm/TheRock", 
+            total=total_rocx
+        )        
 
         for hip in hip_dirs_therock:
             dist = hip.parent.parent
@@ -68,6 +72,9 @@ class FindTheRock(FindSDK, RocXParserMixin,):
                 rocm_config["__GFX__"] = []
 
             for rocX, v_rule in rocX_config_version_cmake_phonebook.items():
+
+                task.advance(stage=f'ROCM/TheRock {rocm_ver} ({rocX}')
+
                 rocm_config[rocX] = self._get_rocx_version(rocX, v_rule, dist)
 
                 self.report(f"\t{rocX:<22}{rocm_config[rocX]}")
@@ -110,3 +117,6 @@ class FindTheRock(FindSDK, RocXParserMixin,):
                 LD_LIBRARY_PATH=["$root/bin", "$root/lib/llvm/bin"],
                 CMAKE_PREFIX_PATH=["$root", "$root/lib/llvm"],
             ))
+
+        task.update(completed=total_rocx)
+        task.close()

@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Union, Any, overload, TypeAlias
 from typing_extensions import Literal
 from utils.compare_functions import VersionNum
+from tasks import ProgressDisplay, ProgressTask
 from tasks import ModulesObject
 
 ReportContent: TypeAlias = str
@@ -17,13 +18,15 @@ class FindSDK(ABC):
     is_llvm_infra: bool = ...
     is_hetero_tgt: bool = ...
 
-    reports: list[str] = ...
+    progress: ProgressDisplay = ...
 
     @property
     def SDK_NAME(self) -> str:
         return str
 
-    def __init__(self): ...
+    def __init__(self): 
+        self._reports: list[str] = ...
+        
     @abstractmethod
     def __WINDOWS__(self):
         ...

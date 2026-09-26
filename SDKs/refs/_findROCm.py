@@ -215,6 +215,9 @@ class RocXParserMixin:
         hip_bin_dir = hip.parent
         hip_dir = hip.parent.parent
 
+        if 'dist/rocm' in hip_dir.as_posix() or 'build' in hip_dir.as_posix():
+            return False
+
         if (hip_bin_dir / "clang.exe").exists() and (hip_dir / "amdgcn").exists():
             return False
         elif (hip_dir / "lib/llvm/bin/clang.exe").exists() and (hip_dir/'.info/version').exists():

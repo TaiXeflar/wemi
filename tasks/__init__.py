@@ -8,6 +8,7 @@ from .compiler import Compiler
 from .generator import Generator
 from .driver import Driver
 from .seh import unwind
+from .progress import ProgressDisplay, ProgressTask
 
 __all__ = [
     "ModulesObject",
@@ -16,5 +17,6 @@ __all__ = [
     "Compiler",
     "Generator",
     "unwind",
-    'ModulesZip'
+    'ModulesZip',
+    'ProgressDisplay', 'ProgressTask',
 ]

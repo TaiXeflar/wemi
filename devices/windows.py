@@ -20,7 +20,12 @@ from .windows_checks import WindowsCheck
 
 
 class WindowsNT:
-    _SDK_REGISTRY: dict[str, FindSDK] = {
+    _SDK_REGISTRY: dict[str, FindSDK] = { }
+
+    if config.ADD_MODULES or not config.NO_MODULES:
+        _SDK_REGISTRY.update({"Modules": AddModules})
+
+    _SDK_REGISTRY.update({
         "TheRock": FindTheRock,
         "HIP": FindHIPSDK,
         "CUDA": FindCUDA,
@@ -34,18 +39,11 @@ class WindowsNT:
         "GMT": FindGMT,
         "MATLAB": FindMATLAB,
         "Strawberry": FindStrawberryPerl,
-    }
+    })
 
     # Experimential
     if config.EXP_MIHOYO_SDK:
         _SDK_REGISTRY.update({"MiHoYo": FindMiHoYo})
-                    
-    # Add Modules
-    if config.ADD_MODULES or not config.NO_MODULES:
-        _SDK_REGISTRY.update({"Modules": AddModules})
-
-
-    _reports = []
 
 
     @tic_toc("Configuring Done")
@@ -57,41 +55,39 @@ class WindowsNT:
         raw_target_sdks = getattr(config, "ENABLE_SDKS", [])
         registry_lower = {k.lower(): v for k, v in self._SDK_REGISTRY.items()}
 
+        self._reports = []
 
-        if not modules_only:
+        if modules_only:
+            self.info['modules'] = AddModules(config.MODULE_ZIP_VERSION)
+
+        else:
+            target_sdks: list[str] = ['modules']
 
             if not raw_target_sdks:
-                target_sdks = list(self._SDK_REGISTRY.keys())
+                target_sdks.extend(list(self._SDK_REGISTRY.keys()))
                 message(" -- WEMI Enabled All SDK scanning.")
             else:
-                target_sdks = raw_target_sdks
+                target_sdks.extend(raw_target_sdks)
                 message(f" -- WEMI Selected SDKs: {target_sdks}")
 
             if config.EXP_MIHOYO_SDK:
                 target_sdks.append('MiHoYo')
 
-            if config.ADD_MODULES or not config.NO_MODULES:
-                target_sdks.append("Modules")
-       
-            print(list(target_sdks))
-
             for sdk_name in target_sdks:
-
                 sdk_class = registry_lower.get(sdk_name.lower())
-                if sdk_class:
-
-                    if sdk_name == 'modules':
-                        self.info[sdk_name] = sdk_class(config.MODULE_ZIP_VERSION)
-                        continue
-                    
-                    self.info[sdk_name] = sdk_class()
-                else:
+                if sdk_class is None:
                     message(f"[Warning] Cannot Find SDK type'{sdk_name}'.")
-        else:
-            self.info['modules'] = AddModules(config.MODULE_ZIP_VERSION)
+                    continue
+
+                if sdk_name.lower() == 'modules':
+                    self.info[sdk_name] = sdk_class(config.MODULE_ZIP_VERSION)
+                    continue
+                
+                self.info[sdk_name] = sdk_class()
+
 
         for sdk in self.info.values():
-            contents = sdk.reports
+            contents = sdk._reports
             self._reports.extend(contents)
 
         for msg in self._reports:

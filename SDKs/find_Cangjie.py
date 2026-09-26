@@ -8,6 +8,7 @@ from pathlib import Path
 
 from .refs import FindSDK
 from utils import message
+from time import sleep as wait
 from tasks import ModulesObject
 from textwrap import dedent
 
@@ -22,6 +23,10 @@ class FindCangjie(FindSDK):
 
     def __WINDOWS__(self):
         cjc_list = [Path(cjc) for cjc in self.everything(regex=r"^cjc.exe$")]
+
+        if not cjc_list: return
+
+        task = self.progress.add("Huawei/Cangjie-Lang ", total=len(cjc_list))
 
         for cjc in cjc_list:
             cjc_ver = self._find_version(cjc, "--version", "X.Y.Z", 0)
@@ -61,6 +66,8 @@ class FindCangjie(FindSDK):
                 MinGW:  {cangjie_mingw_ver}
             ''')
 
+            task.advance(stage=f'Cangjie {cjc_ver}')
+
             self.add_rule(
                 ModulesObject(
                     Module=f"cangjie/{cjc_ver}",
@@ -83,3 +90,5 @@ class FindCangjie(FindSDK):
                     ],
                 )
             )
+            
+        task.close()
